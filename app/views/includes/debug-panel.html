@@ -1,0 +1,89 @@
+{#
+Debug panel - prototype only.
+
+Shows the live session data and how each collection rule currently evaluates,
+so designers and researchers can see why the service reached its answer while
+walking through the journey.
+
+It is built from decision.explain() in app/lib/decision.js, and added to every
+page by app/views/layouts/main.html. Hide it for a session with ?debug=off.
+#}
+
+<button type="button" class="app-debug-toggle" id="app-debug-toggle" aria-expanded="true" aria-controls="app-debug">Debug</button>
+
+<aside class="app-debug" id="app-debug" aria-label="Prototype debug panel">
+
+  <h2 class="app-debug__title">Debug — decision state</h2>
+
+  {% if debug.verdict %}
+    <p class="app-debug__verdict app-debug__verdict--{{ "collect" if debug.verdict.collect else "no-collect" }}">
+      {{ debug.verdict.summary }}
+      {% if debug.verdict.priority %}<span class="app-debug__flag">PRIORITY</span>{% endif %}
+    </p>
+  {% else %}
+    <p class="app-debug__verdict app-debug__verdict--pending">Verdict pending — answer all gating questions</p>
+  {% endif %}
+
+  <h3 class="app-debug__heading">Rules</h3>
+  <table class="app-debug__table">
+    <tbody>
+      {% for check in debug.checks %}
+        <tr class="app-debug__row--{{ check.status }}">
+          <td>
+            <span class="app-debug__dot app-debug__dot--{{ check.status }}"></span>{{ check.rule }}
+            <span class="app-debug__detail">{{ check.detail }}</span>
+          </td>
+          <td class="app-debug__value">{{ check.value }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h3 class="app-debug__heading">Session data</h3>
+  {% if data | length %}
+    <table class="app-debug__table">
+      <tbody>
+        {% for key, value in data %}
+          <tr>
+            <td class="app-debug__key">{{ key }}</td>
+            <td class="app-debug__value">{{ value | dump }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="app-debug__note">No answers yet.</p>
+  {% endif %}
+
+  <h3 class="app-debug__heading">Derived</h3>
+  <table class="app-debug__table">
+    <tbody>
+      <tr><td class="app-debug__key">countValue</td><td class="app-debug__value">{{ debug.countValue }}</td></tr>
+      <tr><td class="app-debug__key">threshold</td><td class="app-debug__value">{{ debug.threshold if debug.threshold else "—" }}</td></tr>
+      <tr><td class="app-debug__key">highRisk</td><td class="app-debug__value">{{ debug.highRisk }}</td></tr>
+      <tr><td class="app-debug__key">massMortality</td><td class="app-debug__value">{{ debug.massMortality }}</td></tr>
+    </tbody>
+  </table>
+
+  <details class="app-debug__details">
+    <summary>Threshold config ({{ debug.species | length }} species)</summary>
+    <p class="app-debug__note">Set in app/lib/decision.js — mass mortality is more than {{ debug.massMortalityThreshold }} birds.</p>
+    <table class="app-debug__table">
+      <thead>
+        <tr><th>species</th><th>threshold</th><th>risk</th></tr>
+      </thead>
+      <tbody>
+        {% for key, species in debug.species %}
+          <tr class="{{ "app-debug__row--current" if key == data.species }}">
+            <td class="app-debug__key">{{ key }}</td>
+            <td class="app-debug__value">{{ species.threshold }}</td>
+            <td class="app-debug__value">{{ "HIGH" if key in debug.highRiskList else "—" }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </details>
+
+  <p class="app-debug__note"><a href="?debug=off">Hide panel</a> for this session</p>
+
+</aside>

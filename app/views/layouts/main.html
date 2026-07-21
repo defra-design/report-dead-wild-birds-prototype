@@ -1,6 +1,33 @@
 {#
 For guidance on how to use layouts see:
 https://prototype-kit.service.gov.uk/docs/how-to-use-layouts
+
+This is the layout every page in the prototype uses. It adds the phase banner,
+an optional Back link, and the debug panel that shows the live decision state.
+
+To show a Back link, set backLink in the page, for example:
+  {% set backLink = "/species" %}
 #}
 
 {% extends "govuk-prototype-kit/layouts/govuk-branded.njk" %}
+
+{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+
+{% block beforeContent %}
+  {{ govukPhaseBanner({
+    tag: { text: "Prototype" },
+    text: "This is a prototype used for testing and design. It is not a live service."
+  }) }}
+
+  {% if backLink %}
+    {{ govukBackLink({ text: "Back", href: backLink }) }}
+  {% endif %}
+{% endblock %}
+
+{% block pageScripts %}
+  {% if showDebug %}
+    {% include "includes/debug-panel.html" %}
+  {% endif %}
+  {% block javascripts %}{% endblock %}
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends "layouts/question.html" %}
+
+{% set pageName = "Where is the bird?" %}
+{% set backLink = "/species" %}
+
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/error-message/macro.njk" import govukErrorMessage %}
+
+{% block form %}
+
+<h1 class="govuk-heading-l">Where is the bird?</h1>
+
+{# The map pin is mandatory: an exact location is what lets a collector find
+   the bird. #}
+<p class="govuk-body">Getting the exact location right is the single most important thing you can do. Most birds that are not found were reported with a vague location.</p>
+
+<form method="post" novalidate>
+
+  <div class="govuk-form-group {%- if errors.map %} govuk-form-group--error{% endif %}">
+    <label class="govuk-label govuk-label--m" for="map">Drop a pin on the map</label>
+    <div id="map-hint" class="govuk-hint">Move the map and select the exact spot where the bird is. Zoom in as far as you can.</div>
+
+    {% if errors.map %}
+      {{ govukErrorMessage({ text: errors.map }) }}
+    {% endif %}
+
+    {# A stand-in for a real map. It behaves like one for testing the journey:
+       selecting a point stores coordinates. Replace with an Ordnance Survey or
+       OS Maps component before any public testing. #}
+    <div class="app-map" id="map" role="application" aria-describedby="map-hint" tabindex="0">
+      <div class="app-map__water"></div>
+      <div class="app-map__road app-map__road--vertical"></div>
+      <div class="app-map__road app-map__road--horizontal"></div>
+      <svg class="app-map__pin" id="map-pin" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
+        <path d="M12 0C7 0 3 4 3 9c0 6.5 9 15 9 15s9-8.5 9-15c0-5-4-9-9-9zm0 12.5A3.5 3.5 0 1 1 12 5.5a3.5 3.5 0 0 1 0 7z"/>
+      </svg>
+      <p class="app-map__readout" id="map-readout">No location selected yet</p>
+    </div>
+
+    <input type="hidden" name="lat" id="lat" value="{{ data.location.lat if data.location }}">
+    <input type="hidden" name="lng" id="lng" value="{{ data.location.lng if data.location }}">
+  </div>
+
+  {{ govukInput({
+    label: { text: "what3words address (optional)", classes: "govuk-label--s" },
+    id: "what3words",
+    name: "what3words",
+    classes: "govuk-input--width-20",
+    hint: { text: "If you know it, for example ///filled.count.soap. This gives collectors a 3-metre location." },
+    value: data.location.what3words if data.location
+  }) }}
+
+  {{ govukRadios({
+    name: "standingNextTo",
+    fieldset: {
+      legend: {
+        text: "Are you standing next to the bird now?",
+        classes: "govuk-fieldset__legend--m"
+      }
+    },
+    hint: { text: "Locations reported from the spot are far more accurate." },
+    errorMessage: { text: errors.standingNextTo } if errors.standingNextTo,
+    items: [
+      { value: "yes", text: "Yes", checked: data.standingNextTo == "yes" },
+      { value: "no", text: "No", checked: data.standingNextTo == "no" }
+    ]
+  }) }}
+
+  {{ govukButton({ text: "Continue" }) }}
+
+</form>
+{% endblock %}

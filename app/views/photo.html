@@ -1,0 +1,37 @@
+{% extends "layouts/question.html" %}
+
+{% set pageName = "Add a photo of the bird" %}
+{% set backLink = "/location" %}
+
+{% from "govuk/components/file-upload/macro.njk" import govukFileUpload %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+
+{% block form %}
+
+<h1 class="govuk-heading-l">Add a photo of the bird</h1>
+
+{# A photo lets the type of bird, its condition and how reachable it is all be
+   confirmed before anyone travels. #}
+{{ govukInsetText({
+  text: "A photo helps us confirm the type of bird, its condition and whether it can be safely reached — before anyone travels to collect it. This is one of the best ways to help."
+}) }}
+
+<p class="govuk-body">If you can, take at least one photo showing the bird <strong>and its surroundings</strong>. Do not touch the bird or put yourself at risk to take a photo.</p>
+
+<form method="post" novalidate>
+
+  {{ govukFileUpload({
+    id: "photo",
+    name: "photo",
+    label: { text: "Upload a photo (optional)", classes: "govuk-label--s" },
+    attributes: { accept: "image/*" }
+  }) }}
+
+  {# The prototype records only the file name, so the journey can be tested
+     without handling real uploads. #}
+  <input type="hidden" name="photoName" id="photoName" value="{{ data.photo }}">
+
+  {{ govukButton({ text: "Continue" }) }}
+
+</form>
+{% endblock %}

@@ -1,20 +1,56 @@
 {% extends "layouts/main.html" %}
 
-{% set pageName="Home" %}
+{% set pageName = "Report a dead wild bird" %}
+
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 
 {% block content %}
-
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
 
-    {% include "govuk-prototype-kit/includes/homepage-top.njk" %}
+    <h1 class="govuk-heading-xl">Report a dead wild bird</h1>
 
-    <h1 class="govuk-heading-xl">
-      {{ serviceName }}
-    </h1>
+    <p class="govuk-body">Use this service to tell us about dead wild birds you have found. This helps us monitor how bird flu (avian influenza) and other diseases are spreading in wild birds across England, Scotland and Wales.</p>
 
-    {% include "govuk-prototype-kit/includes/homepage-bottom.njk" %}
+    {# Stated before the start button, so people know what the service is for
+       before they begin. #}
+    {{ govukInsetText({
+      html: 'This is a disease monitoring service. It is <strong>not</strong> a bird collection or removal service. We only collect a small number of birds for testing. Most reported birds will not be collected, but your report is still valuable for tracking disease.'
+    }) }}
+
+    <h2 class="govuk-heading-m">Before you start</h2>
+
+    <p class="govuk-body">It helps if you report the bird while you are standing next to it, so you can:</p>
+
+    <ul class="govuk-list govuk-list--bullet">
+      <li>drop a pin on a map to show its exact location</li>
+      <li>add a photo of the bird and its surroundings</li>
+    </ul>
+
+    <p class="govuk-body">You will be asked about:</p>
+
+    <ul class="govuk-list govuk-list--bullet">
+      <li>when you first saw the bird</li>
+      <li>where it is and whether it can be reached safely</li>
+      <li>what type of bird it is and how many there are</li>
+      <li>the condition of the bird</li>
+    </ul>
+
+    <p class="govuk-body">It takes around 5 minutes.</p>
+
+    {{ govukButton({
+      text: "Start now",
+      href: "/dead",
+      isStartButton: true
+    }) }}
+
+    <h2 class="govuk-heading-m">If the bird is sick or injured</h2>
+    <p class="govuk-body">This service is only for birds that have died. Read guidance on <a class="govuk-link" href="/sick-or-injured">what to do about a sick or injured bird</a>.</p>
+
+    <h2 class="govuk-heading-m">Disposing of a dead bird</h2>
+    <p class="govuk-body">If a bird will not be collected, you may need to dispose of it. Do not touch it with your bare hands. You will get guidance on safe disposal at the end of your report.</p>
+
   </div>
 </div>
-
 {% endblock %}
