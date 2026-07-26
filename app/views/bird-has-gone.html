@@ -1,0 +1,24 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName = "If the bird has gone" %}
+{% set backLink = "/still-there" %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-l">There is nothing for us to collect</h1>
+
+    <p class="govuk-body">You told us the bird is no longer at the location. We can only test a bird that is still where it was found, so there is nothing for a collector to pick up.</p>
+
+    <h2 class="govuk-heading-m">You do not need to do anything else</h2>
+
+    <p class="govuk-body">If someone has already moved or disposed of the bird safely, no further action is needed.</p>
+
+    <h2 class="govuk-heading-m">If you see more dead birds</h2>
+
+    <p class="govuk-body">Seeing several dead wild birds in the same place can be a sign of disease. If you find more dead birds that are still there, please <a class="govuk-link" href="/start-again">report them</a> — ideally while you are standing next to them.</p>
+
+  </div>
+</div>
+{% endblock %}

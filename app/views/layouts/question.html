@@ -1,0 +1,38 @@
+{#
+The layout used by every question page in the journey.
+
+It sets up the two-thirds column all GOV.UK question pages use, and shows the
+error summary at the top of the page when an answer is missing or invalid.
+
+A question page only needs to provide the form itself:
+
+  {% extends "layouts/question.html" %}
+  {% set pageName = "Is the bird dead?" %}
+  {% set backLink = "/" %}
+
+  {% block form %}
+    ... your question and Continue button ...
+  {% endblock %}
+#}
+
+{% extends "layouts/main.html" %}
+
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      {% if errorSummary %}
+        {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: errorSummary
+        }) }}
+      {% endif %}
+
+      {% block form %}{% endblock %}
+
+    </div>
+  </div>
+{% endblock %}

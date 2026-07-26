@@ -1,6 +1,268 @@
 //
 // For guidance on how to add CSS and SCSS see:
 // https://prototype-kit.service.gov.uk/docs/adding-css-javascript-and-images
-// 
+//
 
-// Add extra styles here
+// Styles below are for prototype-only components: the stand-in map on the
+// location page, and the debug panel. Neither would ship in a live service.
+
+// ---------------------------------------------------------------------------
+// Stand-in map (location page)
+// ---------------------------------------------------------------------------
+// Draws a simple map-like background so the pin drop can be tested without
+// loading map tiles. Replace with a real map component before public testing.
+
+.app-map {
+  position: relative;
+  height: 320px;
+  overflow: hidden;
+  cursor: crosshair;
+  border: 2px solid govuk-colour("black");
+  background:
+    repeating-linear-gradient(0deg, #cfe3cf, #cfe3cf 39px, #bcd6bc 39px, #bcd6bc 40px),
+    repeating-linear-gradient(90deg, #cfe3cf, #cfe3cf 39px, #bcd6bc 39px, #bcd6bc 40px);
+}
+
+.app-map__water {
+  position: absolute;
+  top: 60%;
+  left: 0;
+  width: 100%;
+  height: 40%;
+  background: #a8cfe0;
+}
+
+.app-map__road {
+  position: absolute;
+  background: govuk-colour("black", $variant: "tint-95");
+}
+
+.app-map__road--vertical {
+  top: 0;
+  left: 20%;
+  width: 12px;
+  height: 100%;
+}
+
+.app-map__road--horizontal {
+  top: 30%;
+  left: 0;
+  width: 100%;
+  height: 12px;
+}
+
+.app-map__pin {
+  position: absolute;
+  display: none; // shown by JavaScript once a pin is dropped
+  width: 24px;
+  height: 24px;
+  margin: -24px 0 0 -12px;
+  color: govuk-colour("red");
+}
+
+.app-map__readout {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  left: 8px;
+  margin: 0;
+  padding: 5px 8px;
+  background: rgba(255, 255, 255, 0.9);
+  color: govuk-colour("black");
+  @include govuk-font($size: 16);
+}
+
+// ---------------------------------------------------------------------------
+// Debug panel
+// ---------------------------------------------------------------------------
+// Shows live session data and the state of every collection rule.
+
+$app-debug-background: #1d1d1d;
+$app-debug-border: #3d3d3d;
+$app-debug-muted: #9c9c9c;
+$app-debug-key: #8ac7ff;
+
+.app-debug {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 100;
+  width: 360px;
+  padding: 12px 14px 40px;
+  overflow-y: auto;
+  border-left: 4px solid govuk-colour("yellow");
+  background: $app-debug-background;
+  color: #f3f2f1;
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: 13px;
+  line-height: 1.4;
+
+  &[hidden] {
+    display: none;
+  }
+
+  a {
+    color: $app-debug-key;
+  }
+}
+
+.app-debug__title {
+  margin: 0 0 10px;
+  color: govuk-colour("yellow");
+  font-size: 14px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.app-debug__heading {
+  margin: 16px 0 4px;
+  color: $app-debug-muted;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.app-debug__verdict {
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: 3px;
+  font-weight: bold;
+
+  &--collect {
+    background: govuk-colour("green");
+    color: govuk-colour("white");
+  }
+
+  &--no-collect {
+    background: govuk-colour("red");
+    color: govuk-colour("white");
+  }
+
+  &--pending {
+    background: $app-debug-border;
+    color: #b1b4b6;
+    font-weight: normal;
+  }
+}
+
+.app-debug__flag {
+  padding: 1px 5px;
+  border-radius: 2px;
+  background: govuk-colour("yellow");
+  color: govuk-colour("black");
+  font-size: 11px;
+}
+
+.app-debug__table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th {
+    padding: 2px 4px;
+    color: $app-debug-muted;
+    font-size: 11px;
+    font-weight: normal;
+    text-align: left;
+  }
+
+  td {
+    padding: 3px 4px;
+    border-top: 1px solid $app-debug-border;
+    vertical-align: top;
+    word-break: break-word;
+  }
+}
+
+.app-debug__key {
+  width: 45%;
+  color: $app-debug-key;
+}
+
+.app-debug__value {
+  color: govuk-colour("white");
+  text-align: right;
+}
+
+.app-debug__detail {
+  display: block;
+  color: #7a7a7a;
+  font-size: 11px;
+}
+
+.app-debug__dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: #7a7a7a;
+
+  &--pass { background: #00c853; }
+  &--fail { background: #ff5252; }
+  &--pending { background: #7a7a7a; }
+  &--info { background: $app-debug-key; }
+}
+
+.app-debug__row--fail td {
+  color: #ff8a80;
+}
+
+.app-debug__row--current td {
+  background: #33420f;
+}
+
+.app-debug__note {
+  color: $app-debug-muted;
+  font-size: 12px;
+}
+
+.app-debug__details {
+  margin-top: 14px;
+
+  summary {
+    color: govuk-colour("yellow");
+    font-size: 12px;
+    cursor: pointer;
+  }
+}
+
+.app-debug-toggle {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 101;
+  padding: 6px 12px;
+  border: 0;
+  background: govuk-colour("yellow");
+  color: govuk-colour("black");
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+// Stop the panel covering the page content on wide screens.
+@media (min-width: 1300px) {
+  .app-debug-open .govuk-width-container {
+    margin-left: 30px;
+  }
+}
+
+// On narrow screens show the panel along the bottom instead of the side.
+@media (max-width: 900px) {
+  .app-debug {
+    top: auto;
+    width: 100%;
+    height: 55vh;
+    border-top: 4px solid govuk-colour("yellow");
+    border-left: 0;
+  }
+}
+
+@media print {
+  .app-debug,
+  .app-debug-toggle {
+    display: none;
+  }
+}

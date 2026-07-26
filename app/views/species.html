@@ -1,0 +1,48 @@
+{% extends "layouts/question.html" %}
+
+{% set pageName = "What type of bird is it?" %}
+{% set backLink = "/how-many" %}
+
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/details/macro.njk" import govukDetails %}
+
+{% block form %}
+<form method="post" novalidate>
+
+  {# The values here must match the keys in app/lib/decision.js, which holds the
+     collection threshold and risk level for each type of bird. #}
+  {{ govukRadios({
+    name: "species",
+    fieldset: {
+      legend: {
+        text: "What type of bird is it?",
+        isPageHeading: true,
+        classes: "govuk-fieldset__legend--l"
+      }
+    },
+    hint: { text: "If more than one type of bird, choose the one there are most of. Choose 'I do not know' if you are not sure." },
+    errorMessage: { text: errors.species } if errors.species,
+    items: [
+      { value: "swan", text: "Swan", checked: data.species == "swan" },
+      { value: "goose", text: "Goose (including pink-footed goose)", checked: data.species == "goose" },
+      { value: "duck", text: "Duck", checked: data.species == "duck" },
+      { value: "gull-seabird", text: "Gull or other seabird", checked: data.species == "gull-seabird" },
+      { value: "bird-of-prey", text: "Bird of prey (for example buzzard, owl)", checked: data.species == "bird-of-prey" },
+      { value: "grebe", text: "Grebe", checked: data.species == "grebe" },
+      { value: "corvid", text: "Crow, rook, magpie or other corvid", checked: data.species == "corvid" },
+      { value: "pigeon", text: "Pigeon or dove", checked: data.species == "pigeon" },
+      { value: "garden-bird", text: "Small garden bird (for example blackbird, finch)", checked: data.species == "garden-bird" },
+      { value: "other", text: "Another type of bird", checked: data.species == "other" },
+      { value: "unknown", text: "I do not know", checked: data.species == "unknown" }
+    ]
+  }) }}
+
+  {{ govukDetails({
+    summaryText: "Why we ask about the type of bird",
+    text: "Some species, such as swans, geese, ducks, gulls and birds of prey, are a higher priority for disease monitoring and are more likely to be collected for testing."
+  }) }}
+
+  {{ govukButton({ text: "Continue" }) }}
+
+</form>
+{% endblock %}

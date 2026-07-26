@@ -1,0 +1,52 @@
+{% extends "layouts/question.html" %}
+
+{% set pageName = "Your details" %}
+{% set backLink = "/condition" %}
+
+{% from "govuk/components/input/macro.njk" import govukInput %}
+
+{% block form %}
+
+<h1 class="govuk-heading-l">Your details</h1>
+
+{# Email is required, so every report can be given an outcome. #}
+<p class="govuk-body">We need your email address so we can tell you what happens next. A collector may also contact you if they need to find the bird.</p>
+
+<form method="post" novalidate>
+
+  {{ govukInput({
+    label: { text: "Full name", classes: "govuk-label--s" },
+    id: "name",
+    name: "name",
+    autocomplete: "name",
+    errorMessage: { text: errors.name } if errors.name,
+    value: data.name
+  }) }}
+
+  {{ govukInput({
+    label: { text: "Email address", classes: "govuk-label--s" },
+    id: "email",
+    name: "email",
+    type: "email",
+    autocomplete: "email",
+    spellcheck: false,
+    hint: { text: "We will send your report outcome here." },
+    errorMessage: { text: errors.email } if errors.email,
+    value: data.email
+  }) }}
+
+  {{ govukInput({
+    label: { text: "Phone number (optional)", classes: "govuk-label--s" },
+    id: "phone",
+    name: "phone",
+    type: "tel",
+    autocomplete: "tel",
+    classes: "govuk-input--width-20",
+    hint: { text: "A collector may call you if they cannot find the bird." },
+    value: data.phone
+  }) }}
+
+  {{ govukButton({ text: "Continue" }) }}
+
+</form>
+{% endblock %}

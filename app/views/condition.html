@@ -1,0 +1,49 @@
+{% extends "layouts/question.html" %}
+
+{% set pageName = "What condition is the bird in?" %}
+{% set backLink = "/private-land" %}
+
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/details/macro.njk" import govukDetails %}
+
+{% block form %}
+<form method="post" novalidate>
+
+  {# Deliberately only two options, each describing what it actually looks like.
+     An "unsure" option tends to absorb answers that should be Decomposed. #}
+  {{ govukRadios({
+    name: "condition",
+    fieldset: {
+      legend: {
+        text: "What condition is the bird in?",
+        isPageHeading: true,
+        classes: "govuk-fieldset__legend--l"
+      }
+    },
+    hint: { text: "If there is more than one bird, describe the freshest one." },
+    errorMessage: { text: errors.condition } if errors.condition,
+    items: [
+      {
+        value: "good",
+        text: "Good – fresh or mostly intact",
+        hint: { text: "The bird looks like it died recently. Its body is whole, or nearly whole, and does not smell strongly." },
+        checked: data.condition == "good"
+      },
+      {
+        value: "decomposed",
+        text: "Decomposed – breaking down",
+        hint: { text: "The bird is falling apart, has been partly eaten, is flat or dried out, or has a strong smell." },
+        checked: data.condition == "decomposed"
+      }
+    ]
+  }) }}
+
+  {{ govukDetails({
+    summaryText: "Why there is no 'not sure' option",
+    text: "We used to offer a 'mixed or not sure' option, but it led to birds being collected that were not suitable for testing. If you genuinely cannot tell, a decomposing bird usually has a strong smell, dull or matted feathers, or signs of being eaten. If in doubt, choose 'Decomposed'."
+  }) }}
+
+  {{ govukButton({ text: "Continue" }) }}
+
+</form>
+{% endblock %}
