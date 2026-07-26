@@ -117,8 +117,6 @@ These would need real implementations before public testing:
 - **The map is a stand-in.** It behaves like a map for testing the journey but
   draws a pattern rather than real tiles. Replace with an Ordnance Survey map.
 - **Photos are not stored.** Only the file name is recorded.
-- **"Today" is fixed** to 17 July 2026 in `app/lib/journey.js`, so the 48-hour
-  logic behaves predictably. Use the real date in a live service.
 - **No duplicate detection or no-collect zones.** Both need back-end lookups.
 - **Thresholds do not vary by country** yet, although the country is captured.
 
