@@ -29,10 +29,7 @@ const STEPS = [
   'check'
 ]
 
-// A fixed "today" so the 48-hour logic behaves predictably in a prototype.
-// In a live service this would be the real current date.
-const TODAY = new Date('2026-07-17T10:00:00Z')
-
+// How recently the bird must have been seen for a viable test sample.
 const HOURS_FOR_VIABLE_TESTING = 48
 
 function isBlank (value) {
@@ -66,15 +63,22 @@ const VALIDATORS = {
       return [{ field: 'date-seen', message: 'Enter a real date' }]
     }
 
-    const seen = new Date(Date.UTC(year, month - 1, day, 10, 0, 0))
-    if (seen > TODAY) {
+    const now = new Date()
+
+    // Reject dates in the future, comparing calendar dates only so that today
+    // always counts as valid regardless of the time of day.
+    const seenDate = Date.UTC(year, month - 1, day)
+    const todayDate = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate())
+    if (seenDate > todayDate) {
       return [{ field: 'date-seen', message: 'The date you first saw the bird cannot be in the future' }]
     }
 
     data.dateSeen = { day: day, month: month, year: year }
 
-    // Derived answer used by the decision engine.
-    const hoursSinceSeen = (TODAY - seen) / (1000 * 60 * 60)
+    // Derived answer used by the decision engine. Measured from midday on the
+    // day the bird was seen, so a bird seen "today" is never over the limit.
+    const seen = new Date(Date.UTC(year, month - 1, day, 12, 0, 0))
+    const hoursSinceSeen = (now - seen) / (1000 * 60 * 60)
     data.seenMoreThan48h = hoursSinceSeen > HOURS_FOR_VIABLE_TESTING ? 'yes' : 'no'
     return []
   },
@@ -188,6 +192,5 @@ function nextStep (currentStep, data) {
 module.exports = {
   STEPS: STEPS,
   VALIDATORS: VALIDATORS,
-  nextStep: nextStep,
-  TODAY: TODAY
+  nextStep: nextStep
 }
