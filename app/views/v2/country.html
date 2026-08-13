@@ -1,0 +1,34 @@
+{% extends "layouts/question.html" %}
+
+{% set pageName = "Which country is the bird in?" %}
+{% set backLink = "/start" %}
+
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% block form %}
+<form method="post" novalidate>
+
+  {{ govukRadios({
+    name: "country",
+    fieldset: {
+      legend: {
+        text: "Which country is the bird in?",
+        isPageHeading: true,
+        classes: "govuk-fieldset__legend--l"
+      }
+    },
+    hint: { text: "Collection thresholds can differ between countries." },
+    errorMessage: { text: errors.country } if errors.country,
+    items: [
+      { value: "england", text: "England", checked: data.country == "england" },
+      { value: "scotland", text: "Scotland", checked: data.country == "scotland" },
+      { value: "wales", text: "Wales", checked: data.country == "wales" },
+      { divider: "or" },
+      { value: "northern-ireland", text: "Northern Ireland", checked: data.country == "northern-ireland" }
+    ]
+  }) }}
+
+  {{ govukButton({ text: "Continue" }) }}
+
+</form>
+{% endblock %}

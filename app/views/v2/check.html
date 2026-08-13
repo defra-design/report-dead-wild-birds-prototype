@@ -1,0 +1,128 @@
+{% extends "layouts/question.html" %}
+
+{% set pageName = "Check your answers before sending your report" %}
+{% set backLink = "/contact" %}
+
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% block form %}
+
+<h1 class="govuk-heading-l">Check your answers before sending your report</h1>
+
+{% set countText = {
+  "1": "1 bird",
+  "2-5": "2 to 5 birds",
+  "more-than-5": "More than 5 birds"
+} %}
+
+{% set whenSeenText = {
+  "today": "Today",
+  "yesterday": "Yesterday",
+  "2-to-7-days": "Between 2 and 7 days ago",
+  "more-than-7-days": "More than 7 days ago"
+} %}
+
+{% set conditionText = {
+  "good": "Good – fresh or mostly intact",
+  "decomposed": "Decomposed – breaking down"
+} %}
+
+{# Change links carry ?return=check so editing one answer returns here instead
+   of walking the rest of the form again. #}
+{% set change = "?return=check" %}
+
+{% set locationHtml %}
+  {%- if data.location -%}
+    {%- if data.location.lat %}Pin: {{ data.location.lat }}, {{ data.location.lng }}<br>{% endif -%}
+    {%- if data.location.addressPostcode %}Address or postcode: {{ data.location.addressPostcode }}<br>{% endif -%}
+    {%- if data.location.what3words %}what3words: {{ data.location.what3words }}<br>{% endif -%}
+    {%- if data.location.details %}Details: {{ data.location.details }}{% endif -%}
+  {%- else -%}
+    Not provided
+  {%- endif -%}
+{% endset %}
+
+{{ govukSummaryList({
+  rows: [
+    {
+      key: { text: "Country" },
+      value: { text: data.country | replace("-", " ") | capitalize if data.country else "Not provided" },
+      actions: { items: [ { href: basePath + "/country" + change, text: "Change", visuallyHiddenText: "country" } ] }
+    },
+    {
+      key: { text: "When first seen" },
+      value: { text: whenSeenText[data.whenSeen] or "Not provided" },
+      actions: { items: [ { href: basePath + "/when-seen" + change, text: "Change", visuallyHiddenText: "when first seen" } ] }
+    },
+    {
+      key: { text: "Type of bird" },
+      value: { text: speciesLabel(data.species) },
+      actions: { items: [ { href: basePath + "/species" + change, text: "Change", visuallyHiddenText: "type of bird" } ] }
+    },
+    {
+      key: { text: "Number of birds" },
+      value: { text: countText[data.count] or "Not provided" },
+      actions: { items: [ { href: basePath + "/how-many" + change, text: "Change", visuallyHiddenText: "number of birds" } ] }
+    },
+    {
+      key: { text: "Location" },
+      value: { html: locationHtml },
+      actions: { items: [ { href: basePath + "/location" + change, text: "Change", visuallyHiddenText: "location" } ] }
+    },
+    {
+      key: { text: "Photo" },
+      value: { text: data.photo if data.photo else "No photo added" },
+      actions: { items: [ { href: basePath + "/photo" + change, text: "Change", visuallyHiddenText: "photo" } ] }
+    },
+    {
+      key: { text: "Can be reached safely" },
+      value: { text: data.reachable | yesNo },
+      actions: { items: [ { href: basePath + "/reachable" + change, text: "Change", visuallyHiddenText: "whether the bird can be reached safely" } ] }
+    },
+    {
+      key: { text: "In or near water" },
+      value: { text: data.nearWater | yesNo },
+      actions: { items: [ { href: basePath + "/reachable" + change, text: "Change", visuallyHiddenText: "whether the bird is near water" } ] }
+    },
+    {
+      key: { text: "On private land" },
+      value: { text: data.privateLand | yesNo },
+      actions: { items: [ { href: basePath + "/private-land" + change, text: "Change", visuallyHiddenText: "whether the bird is on private land" } ] }
+    },
+    {
+      key: { text: "Access notes" },
+      value: { text: data.accessNotes if data.accessNotes else "None" },
+      actions: { items: [ { href: basePath + "/private-land" + change, text: "Change", visuallyHiddenText: "access notes" } ] }
+    },
+    {
+      key: { text: "Condition" },
+      value: { text: conditionText[data.condition] or "Not provided" },
+      actions: { items: [ { href: basePath + "/condition" + change, text: "Change", visuallyHiddenText: "condition" } ] }
+    },
+    {
+      key: { text: "Name" },
+      value: { text: data.name if data.name else "Not provided" },
+      actions: { items: [ { href: basePath + "/contact" + change, text: "Change", visuallyHiddenText: "name" } ] }
+    },
+    {
+      key: { text: "Email" },
+      value: { text: data.email if data.email else "Not provided" },
+      actions: { items: [ { href: basePath + "/contact" + change, text: "Change", visuallyHiddenText: "email" } ] }
+    },
+    {
+      key: { text: "Phone" },
+      value: { text: data.phone if data.phone else "Not provided" },
+      actions: { items: [ { href: basePath + "/contact" + change, text: "Change", visuallyHiddenText: "phone" } ] }
+    }
+  ]
+}) }}
+
+<h2 class="govuk-heading-m">Now send your report</h2>
+
+<p class="govuk-body">By sending this report you confirm that the details you are providing are correct to the best of your knowledge.</p>
+
+<form method="post" novalidate>
+  {{ govukButton({ text: "Accept and send report" }) }}
+</form>
+
+{% endblock %}

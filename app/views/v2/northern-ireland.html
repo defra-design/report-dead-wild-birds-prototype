@@ -1,0 +1,27 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName = "Reporting a dead wild bird in Northern Ireland" %}
+{% set backLink = "/country" %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-l">This service does not cover Northern Ireland</h1>
+
+    <p class="govuk-body">This service is for reporting dead wild birds in England, Scotland and Wales.</p>
+
+    <p class="govuk-body">In Northern Ireland, dead wild birds are handled by the Department of Agriculture, Environment and Rural Affairs (DAERA).</p>
+
+    <h2 class="govuk-heading-m">What you can do</h2>
+
+    <ul class="govuk-list govuk-list--bullet">
+      <li>report it to the <a class="govuk-link" href="https://www.daera-ni.gov.uk/articles/avian-influenza-bird-flu" rel="noreferrer noopener" target="_blank">DAERA dead wild bird helpline (opens in new tab)</a></li>
+      <li>do not touch the bird with your bare hands</li>
+    </ul>
+
+    <p class="govuk-body">If the bird is in England, Scotland or Wales, <a class="govuk-link" href="{{ basePath }}/start-again">start again and choose the right country</a>.</p>
+
+  </div>
+</div>
+{% endblock %}

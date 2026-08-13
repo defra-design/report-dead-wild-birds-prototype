@@ -4,91 +4,136 @@
 // For guidance on how to create routes see:
 // https://prototype-kit.service.gov.uk/docs/create-routes
 //
-// The journey itself (page order, validation, branching) is defined in
-// app/lib/journey.js, and the collection decision in app/lib/decision.js.
-// Most pages need no code here - they are driven by those two files.
+// The prototype hosts several versions of the journey side by side (see
+// app/lib/versions.js). The home page is a version picker. Each version is
+// mounted under its own path, for example /v1 and /v2, and its pages, journey
+// and decision engine are all self-contained.
 //
 
+const fs = require('fs')
+const path = require('path')
 const govukPrototypeKit = require('govuk-prototype-kit')
 const router = govukPrototypeKit.requests.setupRouter()
 
-const journey = require('./lib/journey')
-const decision = require('./lib/decision')
+const versions = require('./lib/versions')
 
 // ---------------------------------------------------------------------------
-// Debug panel
+// Home page - version picker
 // ---------------------------------------------------------------------------
-// Shows the live session data and how each decision rule currently evaluates,
-// so designers and researchers can see why the service reached its answer.
-// Turn it off for a session with ?debug=off, and back on with ?debug=on.
-router.use(function (req, res, next) {
-  if (req.query.debug === 'off') req.session.showDebug = false
-  if (req.query.debug === 'on') req.session.showDebug = true
-
-  res.locals.showDebug = req.session.showDebug !== false
-  res.locals.debug = decision.explain(req.session.data || {})
-  next()
+router.get('/', function (req, res) {
+  res.render('index', { versions: versions.VERSIONS })
 })
 
 // ---------------------------------------------------------------------------
-// Start the journey again from the beginning
+// Mount every version
 // ---------------------------------------------------------------------------
-router.get('/start-again', function (req, res) {
-  req.session.data = {}
-  res.redirect('/')
+versions.VERSIONS.forEach(function (version) {
+  mountVersion(version)
 })
 
-// ---------------------------------------------------------------------------
-// Journey pages
-// ---------------------------------------------------------------------------
-// Every step in journey.STEPS gets the same treatment: show the page, then on
-// submit validate the answer and either redisplay the page with errors or move
-// on to whichever page comes next.
-journey.STEPS.forEach(function (step) {
-  // 'check' only reviews answers rather than collecting one, so it is below.
-  if (step === 'check') return
+function mountVersion (version) {
+  const basePath = '/' + version.id
+  const journey = version.journey
+  const decision = version.decision
 
-  router.get('/' + step, function (req, res) {
-    res.render(step)
+  // Give every page in this version its answers, its debug state and its base
+  // path. Answers are kept per version so switching versions does not mix them.
+  function withVersion (req, res, next) {
+    const data = req.session.data[version.id] || (req.session.data[version.id] = {})
+    res.locals.data = data
+    res.locals.basePath = basePath
+    res.locals.version = version
+    res.locals.speciesLabel = decision.speciesLabel
+
+    const debugKey = 'showDebug_' + version.id
+    if (req.query.debug === 'off') req.session[debugKey] = false
+    if (req.query.debug === 'on') req.session[debugKey] = true
+    res.locals.showDebug = req.session[debugKey] !== false
+    res.locals.debug = decision.explain(data)
+
+    next()
+  }
+
+  // Version start page, and a clean restart.
+  router.get(basePath, withVersion, function (req, res) {
+    res.render(version.id + '/start')
+  })
+  router.get(basePath + '/start', withVersion, function (req, res) {
+    res.render(version.id + '/start')
+  })
+  router.get(basePath + '/start-again', function (req, res) {
+    req.session.data[version.id] = {}
+    res.redirect(basePath)
   })
 
-  router.post('/' + step, function (req, res) {
-    const data = req.session.data
-    const errors = journey.VALIDATORS[step](req.body, data)
+  // Journey pages. Each renders its view, then on submit validates and either
+  // redisplays with errors or moves to the next page. When reached from Check
+  // your answers (?return=check), it returns there after answering.
+  journey.STEPS.forEach(function (step) {
+    if (step === 'check') return
 
-    if (errors.length) {
-      return res.render(step, {
-        errors: errorsByField(errors),
-        errorSummary: errorSummary(errors)
-      })
-    }
+    router.get(basePath + '/' + step, withVersion, function (req, res) {
+      res.render(version.id + '/' + step, { returnToCheck: req.query.return === 'check' })
+    })
 
-    res.redirect('/' + journey.nextStep(step, data))
+    router.post(basePath + '/' + step, withVersion, function (req, res) {
+      const data = res.locals.data
+      const errors = journey.VALIDATORS[step](req.body, data)
+
+      if (errors.length) {
+        return res.render(version.id + '/' + step, {
+          returnToCheck: req.query.return === 'check',
+          errors: errorsByField(errors),
+          errorSummary: errorSummary(errors)
+        })
+      }
+
+      const next = journey.nextStep(step, data)
+      if (req.query.return === 'check' && journey.STEPS.indexOf(next) !== -1) {
+        return res.redirect(basePath + '/check')
+      }
+      res.redirect(basePath + '/' + next)
+    })
   })
-})
 
-// ---------------------------------------------------------------------------
-// Check your answers
-// ---------------------------------------------------------------------------
-router.post('/check', function (req, res) {
-  res.redirect('/outcome')
-})
-
-// ---------------------------------------------------------------------------
-// Outcome - runs the decision engine and tells the reporter what happens next
-// ---------------------------------------------------------------------------
-router.get('/outcome', function (req, res) {
-  const data = req.session.data
-
-  res.render('outcome', {
-    outcome: decision.decide(data),
-    referenceNumber: referenceNumber(data)
+  // Check your answers, and the outcome (which runs the decision engine).
+  router.get(basePath + '/check', withVersion, function (req, res) {
+    res.render(version.id + '/check')
   })
-})
+  router.post(basePath + '/check', function (req, res) {
+    res.redirect(basePath + '/outcome')
+  })
+  router.get(basePath + '/outcome', withVersion, function (req, res) {
+    res.render(version.id + '/outcome', {
+      outcome: decision.decide(res.locals.data),
+      referenceNumber: referenceNumber(res.locals.data)
+    })
+  })
+
+  // Guidance pages: any template in the version folder that is not a journey
+  // step or one of the pages handled above. These are plain GET pages people
+  // are diverted to (for example sick-or-injured, bird-has-gone).
+  guidancePages(version).forEach(function (page) {
+    router.get(basePath + '/' + page, withVersion, function (req, res) {
+      res.render(version.id + '/' + page)
+    })
+  })
+}
 
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
+
+// Templates in a version folder that are not steps or the start/check/outcome
+// pages, so they can be registered as plain guidance pages.
+function guidancePages (version) {
+  const handled = version.journey.STEPS.concat(['start', 'check', 'outcome'])
+  const dir = path.join(__dirname, 'views', version.id)
+  return fs.readdirSync(dir)
+    .filter(function (file) { return file.endsWith('.html') })
+    .map(function (file) { return file.replace(/\.html$/, '') })
+    .filter(function (name) { return handled.indexOf(name) === -1 })
+}
 
 // Turns [{ field, message }] into { field: message } so a view can ask for the
 // error on a single field, for example errors.condition.
