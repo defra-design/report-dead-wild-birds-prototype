@@ -1,0 +1,26 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName = "If a bird is sick or injured" %}
+{% set backLink = "/dead" %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-l">This service is for dead birds only</h1>
+
+    <p class="govuk-body">You told us the bird is sick or injured, not dead. This service is used to monitor disease in birds that have died, so we cannot take a report about a live bird here.</p>
+
+    <h2 class="govuk-heading-m">What you can do</h2>
+
+    <ul class="govuk-list govuk-list--bullet">
+      <li>for a sick or injured wild bird, contact the <a class="govuk-link" href="https://www.rspca.org.uk" rel="noreferrer noopener" target="_blank">RSPCA (opens in new tab)</a> or a local wildlife rescue</li>
+      <li>do not touch the bird with your bare hands</li>
+      <li>if you keep poultry or captive birds and suspect bird flu, report it under <a class="govuk-link" href="https://www.gov.uk/guidance/avian-influenza-bird-flu" rel="noreferrer noopener" target="_blank">the bird flu rules (opens in new tab)</a></li>
+    </ul>
+
+    <p class="govuk-body">If the bird later dies and you still know where it is, you can <a class="govuk-link" href="{{ basePath }}/start-again">start a new report</a>.</p>
+
+  </div>
+</div>
+{% endblock %}

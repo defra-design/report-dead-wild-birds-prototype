@@ -1,0 +1,35 @@
+{% extends "layouts/question.html" %}
+
+{% set pageName = "When did you first see the bird?" %}
+{% set backLink = "/still-there" %}
+
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% block form %}
+<form method="post" novalidate>
+
+  {# Captured as a rough recency band rather than an exact date. It is recorded
+     for information but no longer affects the collection decision. #}
+  {{ govukRadios({
+    name: "whenSeen",
+    fieldset: {
+      legend: {
+        text: "When did you first see the bird?",
+        isPageHeading: true,
+        classes: "govuk-fieldset__legend--l"
+      }
+    },
+    hint: { text: "Choose the closest answer." },
+    errorMessage: { text: errors.whenSeen } if errors.whenSeen,
+    items: [
+      { value: "today", text: "Today", checked: data.whenSeen == "today" },
+      { value: "yesterday", text: "Yesterday", checked: data.whenSeen == "yesterday" },
+      { value: "2-to-7-days", text: "Between 2 and 7 days ago", checked: data.whenSeen == "2-to-7-days" },
+      { value: "more-than-7-days", text: "More than 7 days ago", checked: data.whenSeen == "more-than-7-days" }
+    ]
+  }) }}
+
+  {{ govukButton({ text: "Continue" }) }}
+
+</form>
+{% endblock %}

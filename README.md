@@ -28,8 +28,22 @@ editing an existing one, so earlier rounds stay available for comparison.
 
 | Version | Path | Notes |
 |---|---|---|
-| 2.0 | `/v2` | Current. This round of team feedback. |
+| 3.0 | `/v3` | Current. Version 2 aligned to the 2023 service assessment. |
+| 2.0 | `/v2` | Team feedback round. |
 | 1.0 | `/v1` | First build of the reporting journey. |
+
+### What changed in v3
+
+Built on v2, aligned to the March 2023 Beta service assessment:
+
+- **Location** takes a **validated postcode** (UK format), and the **what3words**
+  field is format-checked — the 2023 assessment found no validation on these
+- The **outcome** explains the reporter will only be contacted if needed, and is
+  not usually told the test results (the 2023 "will I hear the results?" user need)
+
+Deferred to the production build (see **For the production build** below) rather
+than faked in the prototype: unique reference numbers, real address/postcode
+lookup, and the privacy / accessibility / cookies footer.
 
 ### What changed in v2
 
@@ -120,6 +134,25 @@ These would need real implementations before public testing:
   what was typed only.
 - **No duplicate detection or no-collect zones.** Both need back-end lookups.
 - **Thresholds do not vary by country** yet, although the country is captured.
+
+## For the production build
+
+Items surfaced by the 2023 service assessment that a front-end prototype cannot
+resolve, flagged here so they are picked up when the service is built:
+
+- **Unique reference numbers.** The prototype's reference is a stand-in. The real
+  service must generate a guaranteed-unique reference per submission (the 2023
+  assessment flagged a risk of the same reference for different reports).
+- **Real postcode / address lookup.** v3 validates postcode *format* only; live
+  validation against an address service (for example OS Places) is a back-end job.
+- **Privacy, accessibility and cookies.** A privacy policy link, an accurate cookie
+  policy with an essential-cookies notification, and a corrected accessibility
+  statement are needed in the built service (assessment standards 5 and 9).
+- **Accessibility audit.** A full WCAG 2.1 AA audit and testing with assistive-tech
+  and low-digital users (assessment standard 5).
+- **Non-front-end standards.** Service/product owner, security assurance
+  (pen test, data-protection sign-off), performance/KPIs, and the tools/hosting
+  decision sit outside the prototype (assessment standards 6, 9, 10, 11, 14).
 
 ## Scope
 

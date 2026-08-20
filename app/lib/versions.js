@@ -18,10 +18,19 @@
 
 const VERSIONS = [
   {
+    id: 'v3',
+    number: '3.0',
+    date: '20 August 2026',
+    current: true,
+    summary: 'Built on version 2, aligned to the 2023 service assessment. Location now takes a validated postcode (and validates what3words format), and the outcome page explains that reporters will only be contacted if needed and are not usually told the test results. Reference numbers, real address lookup, and the privacy/accessibility/cookies footer are noted as production-build work.',
+    journey: require('./v3/journey'),
+    decision: require('./v3/decision')
+  },
+  {
     id: 'v2',
     number: '2.0',
     date: '4 August 2026',
-    current: true,
+    current: false,
     summary: 'Country moved first (with Northern Ireland signposting), species before number of birds, when-seen simplified to recency bands, time since seen no longer affects the collection decision, address and postcode added to location, email or phone accepted, and Check your answers no longer restarts the form.',
     journey: require('./v2/journey'),
     decision: require('./v2/decision')
