@@ -13,11 +13,10 @@
 //
 
 // The order of the journey. Each id matches a view in app/views and a route.
+// This version (usability test B) has no screening questions: reporters go
+// straight from the guidance start page into the form.
 const STEPS = [
-  'intent',
   'country',
-  'dead',
-  'still-there',
   'when-seen',
   'species',
   'how-many',
@@ -43,29 +42,9 @@ const WHAT3WORDS = /^\/{0,3}[^\s.\/]+\.[^\s.\/]+\.[^\s.\/]+$/
 // Each validator returns an array of { field, message } errors. When the answer
 // is valid it writes the tidied value onto `data` (the session).
 const VALIDATORS = {
-  // Screening question: surfaces the collection misconception and triages out
-  // people who want a bird removed rather than reported for disease monitoring.
-  intent: function (body, data) {
-    if (isBlank(body.intent)) return [{ field: 'intent', message: 'Select what you want to do' }]
-    data.intent = body.intent
-    return []
-  },
-
   country: function (body, data) {
     if (isBlank(body.country)) return [{ field: 'country', message: 'Select which country the bird is in' }]
     data.country = body.country
-    return []
-  },
-
-  dead: function (body, data) {
-    if (isBlank(body.dead)) return [{ field: 'dead', message: 'Select yes if the bird is dead' }]
-    data.dead = body.dead
-    return []
-  },
-
-  'still-there': function (body, data) {
-    if (isBlank(body.stillThere)) return [{ field: 'stillThere', message: 'Select whether the bird is still at the location' }]
-    data.stillThere = body.stillThere
     return []
   },
 
@@ -189,15 +168,11 @@ const VALIDATORS = {
 
 //
 // Work out which page comes next.
-// Screening answers divert people to guidance instead of continuing:
-// wanting a bird removed, a report in Northern Ireland, a bird that is not dead,
-// or one that has gone.
+// This version has no triage screeners; the only diversion is Northern Ireland,
+// which the service does not cover.
 //
 function nextStep (currentStep, data) {
-  if (currentStep === 'intent' && data.intent === 'removal') return 'removal-help'
   if (currentStep === 'country' && data.country === 'northern-ireland') return 'northern-ireland'
-  if (currentStep === 'dead' && data.dead === 'no') return 'sick-or-injured'
-  if (currentStep === 'still-there' && data.stillThere === 'no') return 'bird-has-gone'
   if (currentStep === 'check') return 'outcome'
   return STEPS[STEPS.indexOf(currentStep) + 1]
 }

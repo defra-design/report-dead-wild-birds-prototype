@@ -28,13 +28,32 @@ editing an existing one, so earlier rounds stay available for comparison.
 
 | Version | Path | Notes |
 |---|---|---|
-| 3.0 | `/v3` | Current. Version 2 aligned to the 2023 service assessment. |
+| 4.0 | `/v4` | Usability test B — more start-page guidance, no screening questions. |
+| 3.0 | `/v3` | Usability test A — standard guidance plus screening questions. |
 | 2.0 | `/v2` | Team feedback round. |
 | 1.0 | `/v1` | First build of the reporting journey. |
 
-### What changed in v3
+### v3 and v4 — the usability-test pair
 
-Built on v2, aligned to the March 2023 Beta service assessment:
+v3 and v4 test how best to make clear that this is a disease-monitoring service,
+not a bird-removal service, and whether screening questions are needed. Both are
+built on the v2 journey and include the assessment fixes below.
+
+**v3 — guidance + screening.** Standard start-page guidance, then screening
+questions that triage out people who do not need the form — starting with an
+**intent question** ("report a dead bird to help monitor disease" vs "ask for a
+dead bird to be removed"). Choosing removal goes to guidance instead of the form.
+
+**v4 — more guidance, no screening.** A fuller start page that explains what the
+service is for and is not for, then straight into the form with no screening.
+Tests whether stronger guidance alone sets expectations.
+
+Note: v4 changes two things at once (more guidance and no screening), so it tests
+them as a package rather than isolating either.
+
+### Assessment fixes (in v3 and v4)
+
+Aligned to the March 2023 Beta service assessment:
 
 - **Location** takes a **validated postcode** (UK format), and the **what3words**
   field is format-checked — the 2023 assessment found no validation on these

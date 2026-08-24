@@ -1,0 +1,43 @@
+{% extends "layouts/question.html" %}
+
+{% set pageName = "Is the bird on private land?" %}
+{% set backLink = "/reachable" %}
+
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
+
+{% block form %}
+<form method="post" novalidate>
+
+  {# Captures access details up front, so a collector does not have to ring the
+     reporter back for gate codes or opening times. #}
+  {{ govukRadios({
+    name: "privateLand",
+    fieldset: {
+      legend: {
+        text: "Is the bird on private land?",
+        isPageHeading: true,
+        classes: "govuk-fieldset__legend--l"
+      }
+    },
+    hint: { text: "For example a garden, farm, business premises or somewhere with restricted access or opening times." },
+    errorMessage: { text: errors.privateLand } if errors.privateLand,
+    items: [
+      { value: "yes", text: "Yes", checked: data.privateLand == "yes" },
+      { value: "no", text: "No, it is on public land", checked: data.privateLand == "no" }
+    ]
+  }) }}
+
+  {{ govukCharacterCount({
+    id: "accessNotes",
+    name: "accessNotes",
+    maxlength: 300,
+    label: { text: "How can a collector get to the bird? (optional)", classes: "govuk-label--s" },
+    hint: { text: "For example gate codes, opening times, parking, who to ask for, or hazards to be aware of." },
+    value: data.accessNotes
+  }) }}
+
+  {{ govukButton({ text: "Continue" }) }}
+
+</form>
+{% endblock %}

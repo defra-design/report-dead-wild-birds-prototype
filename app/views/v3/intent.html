@@ -1,0 +1,42 @@
+{% extends "layouts/question.html" %}
+
+{% set pageName = "What do you want to do?" %}
+{% set backLink = "/start" %}
+
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% block form %}
+<form method="post" novalidate>
+
+  {# Screening question. It surfaces the common misconception that this is a bird
+     removal service, and triages out people who only want a bird taken away. #}
+  {{ govukRadios({
+    name: "intent",
+    fieldset: {
+      legend: {
+        text: "What do you want to do?",
+        isPageHeading: true,
+        classes: "govuk-fieldset__legend--l"
+      }
+    },
+    errorMessage: { text: errors.intent } if errors.intent,
+    items: [
+      {
+        value: "report",
+        text: "Report a dead wild bird to help monitor disease",
+        hint: { text: "We use reports to track bird flu and other diseases in wild birds." },
+        checked: data.intent == "report"
+      },
+      {
+        value: "removal",
+        text: "Ask for a dead bird to be removed or collected",
+        hint: { text: "For example a bird in your garden or on the pavement that you want taken away." },
+        checked: data.intent == "removal"
+      }
+    ]
+  }) }}
+
+  {{ govukButton({ text: "Continue" }) }}
+
+</form>
+{% endblock %}

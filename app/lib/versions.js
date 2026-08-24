@@ -18,11 +18,20 @@
 
 const VERSIONS = [
   {
+    id: 'v4',
+    number: '4.0',
+    date: '20 August 2026',
+    current: false,
+    summary: 'Usability test B. A fuller start page that explains the service is for disease monitoring, not bird removal, and then goes straight into the form with no screening questions. Tests whether stronger guidance alone sets expectations. Includes the version 3 assessment fixes.',
+    journey: require('./v4/journey'),
+    decision: require('./v4/decision')
+  },
+  {
     id: 'v3',
     number: '3.0',
     date: '20 August 2026',
-    current: true,
-    summary: 'Built on version 2, aligned to the 2023 service assessment. Location now takes a validated postcode (and validates what3words format), and the outcome page explains that reporters will only be contacted if needed and are not usually told the test results. Reference numbers, real address lookup, and the privacy/accessibility/cookies footer are noted as production-build work.',
+    current: false,
+    summary: 'Usability test A. Standard start-page guidance, then screening questions that triage out people who do not need the form — including an intent question (report for disease monitoring vs ask for a bird to be removed). Includes the assessment fixes: validated postcode, what3words format check, and the outcome contact wording.',
     journey: require('./v3/journey'),
     decision: require('./v3/decision')
   },
