@@ -1,0 +1,61 @@
+{% extends "layouts/question.html" %}
+
+{% set pageName = "Check your answers before sending your report" %}
+{% set backLink = "/contact" %}
+
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% block form %}
+
+<h1 class="govuk-heading-l">Check your answers before sending your report</h1>
+
+{% set change = "?return=check" %}
+
+{% set countryText = { "england": "England", "scotland": "Scotland", "wales": "Wales", "northern-ireland": "Northern Ireland" } %}
+{% set accessibleText = { "yes": "Yes", "no": "No", "not-sure": "I'm not sure" } %}
+{% set conditionText = { "good": "Good condition or mostly intact", "mixed": "A mix of conditions", "decomposed": "Decomposed or breaking down" } %}
+{% set methodText = {
+  "map": "Selected on a map",
+  "address": "Address and postcode",
+  "lat-long": "Latitude and longitude",
+  "os-grid": "Ordnance Survey grid reference",
+  "what3words": "what3words",
+  "describe": "Description"
+} %}
+
+{% set locationHtml %}
+  {%- if data.location -%}
+    {{ methodText[data.location.method] or "Not provided" }}
+    {%- if data.location.map %}<br>{{ data.location.map }}{% endif -%}
+    {%- if data.location.addressPostcode %}<br>{{ data.location.addressPostcode }}{% endif -%}
+    {%- if data.location.latLong %}<br>{{ data.location.latLong }}{% endif -%}
+    {%- if data.location.osGrid %}<br>{{ data.location.osGrid }}{% endif -%}
+    {%- if data.location.what3words %}<br>{{ data.location.what3words }}{% endif -%}
+    {%- if data.location.description %}<br>{{ data.location.description }}{% endif -%}
+  {%- else -%}Not provided{%- endif -%}
+{% endset %}
+
+{{ govukSummaryList({
+  rows: [
+    { key: { text: "Where" }, value: { text: countryText[data.country] or "Not provided" }, actions: { items: [ { href: basePath + "/country" + change, text: "Change", visuallyHiddenText: "where you saw the bird" } ] } },
+    { key: { text: "Type of bird" }, value: { text: speciesLabel(data.species) }, actions: { items: [ { href: basePath + "/bird-type-and-number" + change, text: "Change", visuallyHiddenText: "type of bird" } ] } },
+    { key: { text: "Number of birds" }, value: { text: data.count if data.count !== undefined else "Not provided" }, actions: { items: [ { href: basePath + "/bird-type-and-number" + change, text: "Change", visuallyHiddenText: "number of birds" } ] } },
+    { key: { text: "Date seen" }, value: { text: (data.dateSeen.day ~ "/" ~ data.dateSeen.month ~ "/" ~ data.dateSeen.year) if data.dateSeen else "Not provided" }, actions: { items: [ { href: basePath + "/date-seen" + change, text: "Change", visuallyHiddenText: "date seen" } ] } },
+    { key: { text: "Reached safely" }, value: { text: accessibleText[data.accessible] or "Not provided" }, actions: { items: [ { href: basePath + "/accessible" + change, text: "Change", visuallyHiddenText: "whether the bird can be reached safely" } ] } },
+    { key: { text: "Condition" }, value: { text: conditionText[data.condition] or "Not provided" }, actions: { items: [ { href: basePath + "/condition" + change, text: "Change", visuallyHiddenText: "condition" } ] } },
+    { key: { text: "Location" }, value: { html: locationHtml }, actions: { items: [ { href: basePath + "/location" + change, text: "Change", visuallyHiddenText: "location" } ] } },
+    { key: { text: "Photo" }, value: { text: data.photo if data.photo else "No photo added" }, actions: { items: [ { href: basePath + "/photo" + change, text: "Change", visuallyHiddenText: "photo" } ] } },
+    { key: { text: "Other details" }, value: { text: data.locationDetails if data.locationDetails else "None" }, actions: { items: [ { href: basePath + "/location-details" + change, text: "Change", visuallyHiddenText: "other details" } ] } },
+    { key: { text: "Name" }, value: { text: data.name if data.name else "Not provided" }, actions: { items: [ { href: basePath + "/contact" + change, text: "Change", visuallyHiddenText: "name" } ] } },
+    { key: { text: "Telephone" }, value: { text: data.phone if data.phone else "Not provided" }, actions: { items: [ { href: basePath + "/contact" + change, text: "Change", visuallyHiddenText: "telephone" } ] } },
+    { key: { text: "Email" }, value: { text: data.email if data.email else "Not provided" }, actions: { items: [ { href: basePath + "/contact" + change, text: "Change", visuallyHiddenText: "email" } ] } }
+  ]
+}) }}
+
+<h2 class="govuk-heading-m">Now send your report</h2>
+
+<form method="post" novalidate>
+  {{ govukButton({ text: "Accept and send report" }) }}
+</form>
+
+{% endblock %}

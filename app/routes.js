@@ -100,8 +100,11 @@ function mountVersion (version) {
   router.get(basePath + '/check', withVersion, function (req, res) {
     res.render(version.id + '/check')
   })
-  router.post(basePath + '/check', function (req, res) {
-    res.redirect(basePath + '/outcome')
+  // Where 'check' goes next is version-driven: most versions send it straight to
+  // the outcome, but a version can route it elsewhere (for example to a contact
+  // page) via its nextStep().
+  router.post(basePath + '/check', withVersion, function (req, res) {
+    res.redirect(basePath + '/' + journey.nextStep('check', res.locals.data))
   })
   router.get(basePath + '/outcome', withVersion, function (req, res) {
     res.render(version.id + '/outcome', {

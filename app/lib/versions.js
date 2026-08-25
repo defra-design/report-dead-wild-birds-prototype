@@ -18,6 +18,15 @@
 
 const VERSIONS = [
   {
+    id: 'v5',
+    number: '5.0',
+    date: '24 August 2026',
+    current: true,
+    summary: 'Built from the content design pages, in the team\'s page order: guidance start, is-the-bird-dead screener, country (with Northern Ireland signposting), bird type and number, date seen, accessibility, condition, location, photo, other information, contact, check answers, and the collect / do-not-collect end page. Accessibility "No" and decomposed skip straight to the end page. Scaffold — collection thresholds and location reveals still to be detailed.',
+    journey: require('./v5/journey'),
+    decision: require('./v5/decision')
+  },
+  {
     id: 'v4',
     number: '4.0',
     date: '20 August 2026',

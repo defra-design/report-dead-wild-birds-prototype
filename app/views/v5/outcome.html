@@ -1,0 +1,75 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName = "Thank you for your report" %}
+
+{% from "govuk/components/panel/macro.njk" import govukPanel %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    {{ govukPanel({
+      titleText: "Thank you for your report",
+      html: "Your reference number<br><strong>" + referenceNumber + "</strong>"
+    }) }}
+
+    <p class="govuk-body">Your report helps us understand how diseases like bird flu are spreading.</p>
+
+    {% if outcome.collect %}
+
+      {# WSF submission — the bird may be collected. #}
+      <h2 class="govuk-heading-m">What happens next</h2>
+
+      <p class="govuk-body">We’ll use your report to decide if we need to collect the bird for testing.</p>
+
+      <p class="govuk-body">If we collect the bird:</p>
+
+      <ul class="govuk-list govuk-list--bullet">
+        <li>we’ll usually collect the bird within 48 hours, but it can take up to 4 days</li>
+        <li>we may contact you to confirm the location</li>
+        <li>if we test the bird, we’ll email you the results within 2 to 4 weeks</li>
+      </ul>
+
+      <p class="govuk-body">If we do not collect the bird within 4 working days, or you cannot wait for collection, read the guidance on <a class="govuk-link" href="https://www.gov.uk/guidance/dead-wild-birds" rel="noreferrer noopener" target="_blank">how to dispose of dead wild birds or ask for them to be removed</a>.</p>
+
+    {% else %}
+
+      {# REP submission — the bird will not be collected. The message depends on
+         why (see decide() in app/lib/v5/decision.js). #}
+      <h2 class="govuk-heading-m">What happens next</h2>
+
+      {% if outcome.reason == "not-accessible" %}
+        <p class="govuk-body">You told us the bird cannot be reached safely, without tools or equipment. This means we are not able to collect it.</p>
+      {% elif outcome.reason == "decomposed" %}
+        <p class="govuk-body">You told us the bird is decomposed or breaking down, so it is not suitable for testing.</p>
+      {% else %}
+        <p class="govuk-body">We use reports and surveillance information to decide which birds to collect for testing.</p>
+        <p class="govuk-body">Based on the information available, we do not need to collect this bird.</p>
+        <p class="govuk-body">Find out about <a class="govuk-link" href="https://www.gov.uk/guidance/dead-wild-birds" rel="noreferrer noopener" target="_blank">surveillance collection thresholds for dead wild birds</a>.</p>
+      {% endif %}
+
+      <p class="govuk-body">You do not need to do anything.</p>
+
+      <p class="govuk-body">If you want to dispose of the bird or ask for it to be removed, read the guidance on <a class="govuk-link" href="https://www.gov.uk/guidance/dead-wild-birds" rel="noreferrer noopener" target="_blank">removing and disposing of dead wild birds</a>.</p>
+
+    {% endif %}
+
+    <h2 class="govuk-heading-m">Why your report is important</h2>
+
+    <p class="govuk-body">Your report helps us understand where wild birds are dying and which species are affected.</p>
+
+    <p class="govuk-body">This information supports our wild bird surveillance programme and helps us investigate new and emerging threats to wild birds.</p>
+
+    <p class="govuk-body"><a class="govuk-link" href="https://www.gov.uk/guidance/report-dead-wild-birds" rel="noreferrer noopener" target="_blank">Find out about our wild bird surveillance programme</a>.</p>
+
+    <h2 class="govuk-heading-m">Risks to humans from bird flu</h2>
+
+    <p class="govuk-body">The risk of bird flu passing from infected dead birds to humans is low. You can read <a class="govuk-link" href="https://www.gov.uk/guidance/avian-influenza-bird-flu" rel="noreferrer noopener" target="_blank">NHS guidance on the risks to humans from bird flu</a>.</p>
+
+    <p class="govuk-body">If you’re concerned about symptoms, phone the NHS on 111.</p>
+
+    <p class="govuk-body govuk-!-margin-top-6"><a class="govuk-link" href="{{ basePath }}/start-again">Report another dead wild bird</a></p>
+
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "layouts/question.html" %}
+
+{% set pageName = "Where did you see the bird?" %}
+{% set backLink = "/reporting-dead-bird" %}
+
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% block form %}
+<form method="post" novalidate>
+
+  {{ govukRadios({
+    name: "country",
+    fieldset: {
+      legend: {
+        text: "Where did you see the bird?",
+        isPageHeading: true,
+        classes: "govuk-fieldset__legend--l"
+      }
+    },
+    errorMessage: { text: errors.country } if errors.country,
+    items: [
+      { value: "england", text: "England", checked: data.country == "england" },
+      { value: "scotland", text: "Scotland", checked: data.country == "scotland" },
+      { value: "wales", text: "Wales", checked: data.country == "wales" },
+      { value: "northern-ireland", text: "Northern Ireland", checked: data.country == "northern-ireland" }
+    ]
+  }) }}
+
+  {{ govukButton({ text: "Continue" }) }}
+
+</form>
+{% endblock %}

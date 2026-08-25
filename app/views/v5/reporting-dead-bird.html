@@ -1,0 +1,31 @@
+{% extends "layouts/question.html" %}
+
+{% set pageName = "Is the bird dead?" %}
+{% set backLink = "/start" %}
+
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% block form %}
+<form method="post" novalidate>
+
+  {{ govukRadios({
+    name: "reportingDead",
+    fieldset: {
+      legend: {
+        text: "Is the bird dead?",
+        isPageHeading: true,
+        classes: "govuk-fieldset__legend--l"
+      }
+    },
+    hint: { text: "This service is only for reporting dead wild birds." },
+    errorMessage: { text: errors.reportingDead } if errors.reportingDead,
+    items: [
+      { value: "yes", text: "Yes", checked: data.reportingDead == "yes" },
+      { value: "no", text: "No, the bird is sick or injured", checked: data.reportingDead == "no" }
+    ]
+  }) }}
+
+  {{ govukButton({ text: "Continue" }) }}
+
+</form>
+{% endblock %}

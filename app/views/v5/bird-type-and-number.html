@@ -1,0 +1,60 @@
+{% extends "layouts/question.html" %}
+
+{% set pageName = "What type of bird is it and how many did you find?" %}
+{% set backLink = "/country" %}
+
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+
+{% block form %}
+
+<h1 class="govuk-heading-l">What type of bird is it and how many did you find?</h1>
+
+<form method="post" novalidate>
+
+  {# Species + number captured together. The number is checked against the
+     collection threshold for that species in app/lib/v5/decision.js.
+     Scaffold: single type + count. Multiple types with a count each is a
+     later detail. #}
+  {{ govukRadios({
+    name: "species",
+    fieldset: {
+      legend: { text: "What type of bird is it?", classes: "govuk-fieldset__legend--m" }
+    },
+    errorMessage: { text: errors.species } if errors.species,
+    items: [
+      { value: "bird-of-prey", text: "Birds of prey", hint: { text: "Such as owls, hawks or buzzards." }, checked: data.species == "bird-of-prey" },
+      { value: "corvid", text: "Corvids", hint: { text: "Such as crows, ravens, rooks, magpies, jackdaws and jays." }, checked: data.species == "corvid" },
+      { value: "duck", text: "Ducks", checked: data.species == "duck" },
+      { value: "gamebird", text: "Gamebirds", hint: { text: "Such as pheasants, partridges and grouse." }, checked: data.species == "gamebird" },
+      { value: "goose", text: "Geese", checked: data.species == "goose" },
+      { value: "gull", text: "Gulls", hint: { text: "Includes all gulls and kittiwakes." }, checked: data.species == "gull" },
+      { value: "seabird", text: "Seabirds", hint: { text: "Such as puffins, gannets, guillemots and cormorants." }, checked: data.species == "seabird" },
+      { value: "wader", text: "Waders", hint: { text: "Such as avocets, curlews, oystercatchers and plovers." }, checked: data.species == "wader" },
+      { value: "gull-seabird-wader-unknown", text: "Unknown gulls, seabirds and waders", checked: data.species == "gull-seabird-wader-unknown" },
+      { value: "heron-egret", text: "Herons and egrets", hint: { text: "Includes cranes, bitterns, spoonbills and storks." }, checked: data.species == "heron-egret" },
+      { value: "pigeon-dove", text: "Pigeons and doves", checked: data.species == "pigeon-dove" },
+      { value: "rail-crake", text: "Rails and crakes", hint: { text: "Such as moorhens and coots." }, checked: data.species == "rail-crake" },
+      { value: "songbird-garden", text: "Songbirds and garden birds", hint: { text: "Such as sparrows, tits, blackbirds, finches, starlings and robins." }, checked: data.species == "songbird-garden" },
+      { value: "swan", text: "Swans", checked: data.species == "swan" },
+      { value: "other", text: "Other wild birds", checked: data.species == "other" },
+      { divider: "or" },
+      { value: "unknown", text: "I'm not sure what type of bird it is", checked: data.species == "unknown" }
+    ]
+  }) }}
+
+  {{ govukInput({
+    label: { text: "How many of this type of bird did you find?", classes: "govuk-label--m" },
+    id: "count",
+    name: "count",
+    classes: "govuk-input--width-5",
+    inputmode: "numeric",
+    spellcheck: false,
+    errorMessage: { text: errors.count } if errors.count,
+    value: data.count
+  }) }}
+
+  {{ govukButton({ text: "Continue" }) }}
+
+</form>
+{% endblock %}

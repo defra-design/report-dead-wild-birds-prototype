@@ -1,0 +1,33 @@
+{% extends "layouts/question.html" %}
+
+{% set pageName = "What date did you see the bird?" %}
+{% set backLink = "/bird-type-and-number" %}
+
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+
+{% block form %}
+<form method="post" novalidate>
+
+  {{ govukDateInput({
+    id: "date-seen",
+    namePrefix: "date",
+    fieldset: {
+      legend: {
+        text: "What date did you see the bird?",
+        isPageHeading: true,
+        classes: "govuk-fieldset__legend--l"
+      }
+    },
+    hint: { text: "For example, 27 8 2026." },
+    errorMessage: { text: errors["date-seen"] } if errors["date-seen"],
+    items: [
+      { name: "day", classes: "govuk-input--width-2", value: data.dateSeen.day if data.dateSeen },
+      { name: "month", classes: "govuk-input--width-2", value: data.dateSeen.month if data.dateSeen },
+      { name: "year", classes: "govuk-input--width-4", value: data.dateSeen.year if data.dateSeen }
+    ]
+  }) }}
+
+  {{ govukButton({ text: "Continue" }) }}
+
+</form>
+{% endblock %}
