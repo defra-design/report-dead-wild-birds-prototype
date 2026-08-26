@@ -41,14 +41,6 @@
     <p class="govuk-body"><a class="govuk-link" href="#">I want to enter the address lines manually</a></p>
   {% endset %}
 
-  {% set latLongReveal %}
-    {{ govukInput({ label: { text: "Latitude and longitude coordinates" }, id: "latLong", name: "latLong", classes: "govuk-input--width-20", value: data.location.latLong if data.location }) }}
-  {% endset %}
-
-  {% set osGridReveal %}
-    {{ govukInput({ label: { text: "Ordnance Survey grid reference" }, id: "osGrid", name: "osGrid", classes: "govuk-input--width-10", value: data.location.osGrid if data.location }) }}
-  {% endset %}
-
   {% set what3wordsReveal %}
     {{ govukInput({ label: { text: "what3words location" }, id: "what3words", name: "what3words", classes: "govuk-input--width-20", value: data.location.what3words if data.location }) }}
   {% endset %}
@@ -71,8 +63,6 @@
     items: [
       { value: "map", text: "Select on a map", checked: data.location.method == "map" if data.location, conditional: { html: mapReveal } },
       { value: "address", text: "Address and postcode", checked: data.location.method == "address" if data.location, conditional: { html: addressReveal } },
-      { value: "lat-long", text: "Enter the latitude and longitude coordinates", checked: data.location.method == "lat-long" if data.location, conditional: { html: latLongReveal } },
-      { value: "os-grid", text: "Ordnance Survey grid reference", checked: data.location.method == "os-grid" if data.location, conditional: { html: osGridReveal } },
       { value: "what3words", text: "Enter a what3words location", hint: { text: "Use the what3words website to get a 3-word reference to a 3m square." }, checked: data.location.method == "what3words" if data.location, conditional: { html: what3wordsReveal } },
       { value: "describe", text: "Describe the location", hint: { text: "Only use this option if you cannot provide the location another way." }, checked: data.location.method == "describe" if data.location, conditional: { html: describeReveal } }
     ]

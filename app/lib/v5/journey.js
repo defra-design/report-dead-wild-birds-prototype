@@ -116,8 +116,6 @@ const VALIDATORS = {
       method: body.locationMethod,
       map: (body.lat && body.lng) ? (body.lat + ', ' + body.lng) : '',
       postcode: (body.postcode || '').trim(),
-      latLong: (body.latLong || '').trim(),
-      osGrid: (body.osGrid || '').trim(),
       what3words: (body.what3words || '').trim(),
       description: (body.locationDescription || '').trim()
     }
