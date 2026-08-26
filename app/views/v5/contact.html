@@ -30,6 +30,7 @@
     id: "name",
     name: "name",
     autocomplete: "name",
+    classes: "govuk-input--width-20",
     hint: { text: "We need to know we’re speaking to the right person if we contact you." },
     errorMessage: { text: errors.name } if errors.name,
     value: data.name
@@ -56,6 +57,7 @@
     type: "email",
     autocomplete: "email",
     spellcheck: false,
+    classes: "govuk-input--width-30",
     errorMessage: { text: errors.email } if errors.email,
     value: data.email
   }) }}
