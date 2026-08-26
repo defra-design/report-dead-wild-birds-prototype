@@ -34,19 +34,15 @@
 
     {% else %}
 
-      {# REP submission — the bird will not be collected. The message depends on
-         why (see decide() in app/lib/v5/decision.js). #}
+      {# REP submission — the bird will not be collected. Generic wording from the
+         content doc (the reason is not shown to the reporter for now). #}
       <h2 class="govuk-heading-m">What happens next</h2>
 
-      {% if outcome.reason == "not-accessible" %}
-        <p class="govuk-body">You told us the bird cannot be reached safely, without tools or equipment. This means we are not able to collect it.</p>
-      {% elif outcome.reason == "decomposed" %}
-        <p class="govuk-body">You told us the bird is decomposed or breaking down, so it is not suitable for testing.</p>
-      {% else %}
-        <p class="govuk-body">We use reports and surveillance information to decide which birds to collect for testing.</p>
-        <p class="govuk-body">Based on the information available, we do not need to collect this bird.</p>
-        <p class="govuk-body">Find out about <a class="govuk-link" href="https://www.gov.uk/guidance/dead-wild-birds" rel="noreferrer noopener" target="_blank">surveillance collection thresholds for dead wild birds</a>.</p>
-      {% endif %}
+      <p class="govuk-body">We use reports and surveillance information to decide which birds to collect for testing.</p>
+
+      <p class="govuk-body">Based on the information available, we do not need to collect this bird.</p>
+
+      <p class="govuk-body">Find out about <a class="govuk-link" href="https://www.gov.uk/guidance/dead-wild-birds" rel="noreferrer noopener" target="_blank">surveillance collection thresholds for dead wild birds</a>.</p>
 
       <p class="govuk-body">You do not need to do anything.</p>
 
