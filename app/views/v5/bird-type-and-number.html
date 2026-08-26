@@ -15,7 +15,7 @@
     inputmode: "numeric",
     spellcheck: false,
     hint: { text: bird.hint } if bird.hint,
-    value: data.counts[bird.key] | default(0, true) if data.counts else 0
+    value: data.counts[bird.key] if (data.counts and data.counts[bird.key]) else ""
   }) }}
 {% endmacro %}
 
