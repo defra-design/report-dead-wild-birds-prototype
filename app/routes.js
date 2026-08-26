@@ -107,9 +107,10 @@ function mountVersion (version) {
     res.redirect(basePath + '/' + journey.nextStep('check', res.locals.data))
   })
   router.get(basePath + '/outcome', withVersion, function (req, res) {
+    const outcome = decision.decide(res.locals.data)
     res.render(version.id + '/outcome', {
-      outcome: decision.decide(res.locals.data),
-      referenceNumber: referenceNumber(res.locals.data)
+      outcome: outcome,
+      referenceNumber: referenceNumber(res.locals.data, outcome.collect)
     })
   })
 
@@ -157,13 +158,15 @@ function errorSummary (errors) {
 
 // A stable, made-up reference number for the prototype. The same answers always
 // produce the same reference, which makes screenshots and testing easier.
-function referenceNumber (data) {
+// It is prefixed WSF- for a collection and REP- for a report-only (no collection).
+function referenceNumber (data, collect) {
   const fingerprint = JSON.stringify(data)
   let hash = 0
   for (let i = 0; i < fingerprint.length; i++) {
     hash = (Math.imul(31, hash) + fingerprint.charCodeAt(i)) | 0
   }
-  return 'WSF-' + (Math.abs(hash) % 900000 + 100000)
+  const prefix = collect ? 'WSF-' : 'REP-'
+  return prefix + (Math.abs(hash) % 900000 + 100000)
 }
 
 module.exports = router
