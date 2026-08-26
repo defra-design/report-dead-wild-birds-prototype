@@ -28,7 +28,17 @@
   {% endset %}
 
   {% set addressReveal %}
-    {{ govukInput({ label: { text: "Address and postcode" }, id: "addressPostcode", name: "addressPostcode", value: data.location.addressPostcode if data.location }) }}
+    <p class="govuk-body">Enter the postcode where the dead birds are located:</p>
+    {{ govukInput({
+      label: { text: "Postcode", classes: "govuk-label--s" },
+      id: "postcode",
+      name: "postcode",
+      classes: "govuk-input--width-10",
+      autocomplete: "postal-code",
+      value: data.location.postcode if data.location
+    }) }}
+    {{ govukButton({ text: "Find address", classes: "govuk-button--secondary", type: "button" }) }}
+    <p class="govuk-body"><a class="govuk-link" href="#">I want to enter the address lines manually</a></p>
   {% endset %}
 
   {% set latLongReveal %}

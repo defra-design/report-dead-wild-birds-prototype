@@ -34,7 +34,7 @@
   {%- if data.location -%}
     {{ methodText[data.location.method] or "Not provided" }}
     {%- if data.location.map %}<br>{{ data.location.map }}{% endif -%}
-    {%- if data.location.addressPostcode %}<br>{{ data.location.addressPostcode }}{% endif -%}
+    {%- if data.location.postcode %}<br>{{ data.location.postcode }}{% endif -%}
     {%- if data.location.latLong %}<br>{{ data.location.latLong }}{% endif -%}
     {%- if data.location.osGrid %}<br>{{ data.location.osGrid }}{% endif -%}
     {%- if data.location.what3words %}<br>{{ data.location.what3words }}{% endif -%}
