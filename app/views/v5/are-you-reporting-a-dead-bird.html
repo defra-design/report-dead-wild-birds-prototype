@@ -3,30 +3,44 @@
 {% set pageName = "Are you reporting a dead bird?" %}
 {% set backLink = "/start" %}
 
-{% from "govuk/components/radios/macro.njk" import govukRadios %}
-
 {% block form %}
 
+{# The question is the page heading. "Choose one:" is the radio group's fieldset
+   legend. The hint sits above the legend (matching the content) but is still
+   associated with the fieldset through aria-describedby, so screen reader users
+   hear it when they enter the group. #}
 <h1 class="govuk-heading-l">Are you reporting a dead bird?</h1>
 
-<p class="govuk-hint">This service is only for reporting dead wild birds.</p>
+<p id="reportingDead-hint" class="govuk-hint">This service is only for reporting dead wild birds.</p>
 
 <form method="post" novalidate>
 
-  {{ govukRadios({
-    name: "reportingDead",
-    fieldset: {
-      legend: {
-        text: "Choose one:",
-        classes: "govuk-fieldset__legend--s"
-      }
-    },
-    errorMessage: { text: errors.reportingDead } if errors.reportingDead,
-    items: [
-      { value: "yes", text: "Yes", checked: data.reportingDead == "yes" },
-      { value: "no", text: "No, the bird is sick or injured", checked: data.reportingDead == "no" }
-    ]
-  }) }}
+  <div class="govuk-form-group{% if errors.reportingDead %} govuk-form-group--error{% endif %}">
+    <fieldset class="govuk-fieldset" aria-describedby="reportingDead-hint{% if errors.reportingDead %} reportingDead-error{% endif %}">
+
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+        Choose one:
+      </legend>
+
+      {% if errors.reportingDead %}
+        <p id="reportingDead-error" class="govuk-error-message">
+          <span class="govuk-visually-hidden">Error:</span> {{ errors.reportingDead }}
+        </p>
+      {% endif %}
+
+      <div class="govuk-radios" data-module="govuk-radios">
+        <div class="govuk-radios__item">
+          <input class="govuk-radios__input" id="reportingDead" name="reportingDead" type="radio" value="yes"{% if data.reportingDead == "yes" %} checked{% endif %}>
+          <label class="govuk-label govuk-radios__label" for="reportingDead">Yes</label>
+        </div>
+        <div class="govuk-radios__item">
+          <input class="govuk-radios__input" id="reportingDead-2" name="reportingDead" type="radio" value="no"{% if data.reportingDead == "no" %} checked{% endif %}>
+          <label class="govuk-label govuk-radios__label" for="reportingDead-2">No, the bird is sick or injured</label>
+        </div>
+      </div>
+
+    </fieldset>
+  </div>
 
   {{ govukButton({ text: "Continue" }) }}
 
