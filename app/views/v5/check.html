@@ -11,6 +11,8 @@
 
 {% set change = "?return=check" %}
 
+{% set monthNames = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"] %}
+
 {% set accessibleText = { "yes": "Yes", "no": "No", "not-sure": "I'm not sure" } %}
 {% set conditionText = { "good": "Good condition or mostly intact", "mixed": "Mix of carcass conditions", "decomposed": "Decomposed or breaking down" } %}
 
@@ -40,7 +42,7 @@
 {{ govukSummaryList({
   rows: [
     { key: { text: "Birds found" }, value: { html: countsHtml }, actions: { items: [ { href: basePath + "/bird-type-and-number" + change, text: "Change", visuallyHiddenText: "the birds you found" } ] } },
-    { key: { text: "Date seen" }, value: { text: (data.dateSeen.day ~ "/" ~ data.dateSeen.month ~ "/" ~ data.dateSeen.year) if data.dateSeen else "Not provided" }, actions: { items: [ { href: basePath + "/date-seen" + change, text: "Change", visuallyHiddenText: "date seen" } ] } },
+    { key: { text: "Date seen" }, value: { text: (data.dateSeen.day ~ " " ~ monthNames[data.dateSeen.month] ~ " " ~ data.dateSeen.year) if data.dateSeen else "Not provided" }, actions: { items: [ { href: basePath + "/date-seen" + change, text: "Change", visuallyHiddenText: "date seen" } ] } },
     { key: { text: "Reached safely" }, value: { text: accessibleText[data.accessible] or "Not provided" }, actions: { items: [ { href: basePath + "/accessible" + change, text: "Change", visuallyHiddenText: "whether the bird can be reached safely" } ] } },
     { key: { text: "Condition" }, value: { text: conditionText[data.condition] or "Not provided" }, actions: { items: [ { href: basePath + "/condition" + change, text: "Change", visuallyHiddenText: "condition" } ] } },
     { key: { text: "Location" }, value: { html: locationHtml }, actions: { items: [ { href: basePath + "/location" + change, text: "Change", visuallyHiddenText: "location" } ] } },
