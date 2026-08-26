@@ -5,22 +5,25 @@
 
 {% block form %}
 
-{# The question is the page heading. "Choose one:" is the radio group's fieldset
-   legend. The hint sits above the legend (matching the content) but is still
-   associated with the fieldset through aria-describedby, so screen reader users
-   hear it when they enter the group. #}
-<h1 class="govuk-heading-l">Are you reporting a dead bird?</h1>
-
-<p id="reportingDead-hint" class="govuk-hint">This service is only for reporting dead wild birds.</p>
+{# Accessibility: the QUESTION is the fieldset legend (and the page heading), so
+   it is what screen readers announce as the name of the answer group — however
+   the user reaches the radios. "Choose one:" stays visible and, along with the
+   hint and any error, is linked to the group with aria-describedby. #}
 
 <form method="post" novalidate>
 
   <div class="govuk-form-group{% if errors.reportingDead %} govuk-form-group--error{% endif %}">
-    <fieldset class="govuk-fieldset" aria-describedby="reportingDead-hint{% if errors.reportingDead %} reportingDead-error{% endif %}">
+    <fieldset class="govuk-fieldset" aria-describedby="reportingDead-hint reportingDead-choose{% if errors.reportingDead %} reportingDead-error{% endif %}">
 
-      <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-        Choose one:
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+        <h1 class="govuk-fieldset__heading">Are you reporting a dead bird?</h1>
       </legend>
+
+      <div id="reportingDead-hint" class="govuk-hint">
+        This service is only for reporting dead wild birds.
+      </div>
+
+      <p id="reportingDead-choose" class="govuk-body">Choose one:</p>
 
       {% if errors.reportingDead %}
         <p id="reportingDead-error" class="govuk-error-message">
