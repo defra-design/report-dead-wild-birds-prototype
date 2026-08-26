@@ -1,6 +1,6 @@
 {% extends "layouts/question.html" %}
 
-{% set pageName = "Describe the dead wild birds" %}
+{% set pageName = "What condition is the bird in?" %}
 {% set backLink = "/accessible" %}
 
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
@@ -12,7 +12,7 @@
     name: "condition",
     fieldset: {
       legend: {
-        text: "Describe the dead wild birds",
+        text: "What condition is the bird in?",
         isPageHeading: true,
         classes: "govuk-fieldset__legend--l"
       }
@@ -22,13 +22,14 @@
     items: [
       {
         value: "good",
-        text: "Carcass in good condition or mostly intact",
+        text: "Good condition or mostly intact",
+        hint: { text: "The bird may have died recently. Its body is whole, or nearly whole." },
         checked: data.condition == "good"
       },
       {
         value: "decomposed",
-        text: "Carcass decomposed",
-        hint: { text: "or if it is only, or close to only, bones or feathers present" },
+        text: "Decomposed or breaking down",
+        hint: { text: "The bird may not be whole or have a strong smell. There may be only bones or feathers present." },
         checked: data.condition == "decomposed"
       },
       {
