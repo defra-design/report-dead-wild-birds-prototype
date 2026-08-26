@@ -15,6 +15,10 @@ page by app/views/layouts/main.html. Hide it for a session with ?debug=off.
 
   <h2 class="app-debug__title">Debug — decision state</h2>
 
+  {% if basePath %}
+    <p class="app-debug__note app-debug__clear"><a href="{{ basePath }}/start-again">↻ Clear answers and start this version again</a></p>
+  {% endif %}
+
   {% if debug.verdict %}
     <p class="app-debug__verdict app-debug__verdict--{{ "collect" if debug.verdict.collect else "no-collect" }}">
       {{ debug.verdict.summary }}
