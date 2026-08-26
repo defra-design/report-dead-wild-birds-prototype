@@ -24,8 +24,7 @@
 {% set methodText = {
   "map": "Selected on a map",
   "address": "Address and postcode",
-  "what3words": "what3words",
-  "describe": "Description"
+  "what3words": "what3words"
 } %}
 
 {% set locationHtml %}
@@ -34,7 +33,7 @@
     {%- if data.location.map %}<br>{{ data.location.map }}{% endif -%}
     {%- if data.location.postcode %}<br>{{ data.location.postcode }}{% endif -%}
     {%- if data.location.what3words %}<br>{{ data.location.what3words }}{% endif -%}
-    {%- if data.location.description %}<br>{{ data.location.description }}{% endif -%}
+    {%- if data.location.info %}<br>{{ data.location.info }}{% endif -%}
   {%- else -%}Not provided{%- endif -%}
 {% endset %}
 

@@ -45,10 +45,6 @@
     {{ govukInput({ label: { text: "what3words location" }, id: "what3words", name: "what3words", classes: "govuk-input--width-20", value: data.location.what3words if data.location }) }}
   {% endset %}
 
-  {% set describeReveal %}
-    {{ govukCharacterCount({ id: "locationDescription", name: "locationDescription", maxlength: 500, label: { text: "Enter a description" }, value: data.location.description if data.location }) }}
-  {% endset %}
-
   {{ govukRadios({
     name: "locationMethod",
     fieldset: {
@@ -63,9 +59,16 @@
     items: [
       { value: "map", text: "Select on a map", checked: data.location.method == "map" if data.location, conditional: { html: mapReveal } },
       { value: "address", text: "Address and postcode", checked: data.location.method == "address" if data.location, conditional: { html: addressReveal } },
-      { value: "what3words", text: "Enter a what3words location", hint: { text: "Use the what3words website to get a 3-word reference to a 3m square." }, checked: data.location.method == "what3words" if data.location, conditional: { html: what3wordsReveal } },
-      { value: "describe", text: "Describe the location", hint: { text: "Only use this option if you cannot provide the location another way." }, checked: data.location.method == "describe" if data.location, conditional: { html: describeReveal } }
+      { value: "what3words", text: "Enter a what3words location", hint: { text: "Use the what3words website to get a 3-word reference to a 3m square." }, checked: data.location.method == "what3words" if data.location, conditional: { html: what3wordsReveal } }
     ]
+  }) }}
+
+  {{ govukCharacterCount({
+    id: "locationInfo",
+    name: "locationInfo",
+    maxlength: 500,
+    label: { text: "Tell us any other information about the location, such as landmarks or buildings (optional)", classes: "govuk-label--s" },
+    value: data.location.info if data.location
   }) }}
 
   {{ govukButton({ text: "Continue" }) }}
