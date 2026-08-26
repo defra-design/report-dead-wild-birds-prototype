@@ -6,7 +6,7 @@
 //   1  start
 //   2  reporting-dead-bird   (screener: "No, sick/injured" -> guidance)
 //   3  country               (England/Scotland/Wales continue; N. Ireland -> guidance)
-//   4  bird-type-and-number  (species + how many; checked against thresholds)
+//   4  bird-type-and-number  (a number for each bird type; checked against thresholds)
 //   5  date-seen             (captured only; does not affect triage)
 //   6  accessible            ("No" -> straight to the end page, cannot collect)
 //   7  condition             (good/mixed collect; "decomposed" -> end page)
@@ -35,6 +35,14 @@ const STEPS = [
   'check'
 ]
 
+// Bird types that have a "how many" number field on the bird-type-and-number
+// page. The gulls/seabirds/waders group is handled separately (see validator).
+const COUNT_KEYS = [
+  'bird-of-prey', 'corvid', 'duck', 'gamebird', 'goose',
+  'gull', 'seabird', 'wader',
+  'heron-egret', 'pigeon-dove', 'rail-crake', 'songbird-garden', 'swan', 'other'
+]
+
 function isBlank (value) {
   return value === undefined || value === null || String(value).trim() === ''
 }
@@ -54,12 +62,32 @@ const VALIDATORS = {
 
   'bird-type-and-number': function (body, data) {
     const errors = []
-    if (isBlank(body.species)) errors.push({ field: 'species', message: 'Select the type of bird' })
-    else data.species = body.species
 
-    if (isBlank(body.count)) errors.push({ field: 'count', message: 'Enter how many of this type of bird you found' })
-    else if (!/^\d+$/.test(String(body.count).trim())) errors.push({ field: 'count', message: 'Number of birds must be a whole number' })
-    else data.count = parseInt(body.count, 10)
+    // A number for each bird type. Blank counts as 0.
+    const counts = {}
+    let total = 0
+    COUNT_KEYS.forEach(function (key) {
+      const raw = body['count-' + key]
+      const n = parseInt(raw, 10)
+      counts[key] = (isNaN(n) || n < 0) ? 0 : n
+      total += counts[key]
+    })
+
+    // Gulls, seabirds and waders group: either give numbers (captured above) or
+    // record that the reporter is not sure which they found.
+    data.gullsChoice = body.gullsChoice || ''
+    if (data.gullsChoice === 'unknown') {
+      counts['gull-seabird-wader-unknown'] = 1
+      total += 1
+      // The "give numbers" fields are not relevant if they are not sure.
+      counts.gull = 0; counts.seabird = 0; counts.wader = 0
+    }
+
+    data.counts = counts
+
+    if (total === 0) {
+      errors.push({ field: 'count-bird-of-prey', message: 'Enter how many dead wild birds you found' })
+    }
 
     return errors
   },
@@ -85,7 +113,7 @@ const VALIDATORS = {
   },
 
   condition: function (body, data) {
-    if (isBlank(body.condition)) return [{ field: 'condition', message: 'Select the condition of the bird' }]
+    if (isBlank(body.condition)) return [{ field: 'condition', message: 'Select a description of the dead wild birds' }]
     data.condition = body.condition
     return []
   },

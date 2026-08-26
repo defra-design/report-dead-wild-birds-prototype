@@ -44,9 +44,17 @@ function thresholdFor (species) {
   return SPECIES[species] ? SPECIES[species].threshold : DEFAULT_THRESHOLD
 }
 
-function countValue (data) {
-  const n = parseInt(data.count, 10)
-  return isNaN(n) ? 0 : n
+function totalCount (data) {
+  const counts = data.counts || {}
+  return Object.keys(counts).reduce(function (sum, k) { return sum + (counts[k] || 0) }, 0)
+}
+
+// True if any single bird type meets its own collection threshold.
+function meetsThreshold (data) {
+  const counts = data.counts || {}
+  return Object.keys(counts).some(function (k) {
+    return counts[k] >= thresholdFor(k)
+  })
 }
 
 function outcome (collect, reason, summary) {
@@ -58,25 +66,23 @@ function outcome (collect, reason, summary) {
 //
 function decide (data) {
   if (data.accessible === 'no') {
-    return outcome(false, 'not-accessible', 'We are not able to collect this bird')
+    return outcome(false, 'not-accessible', 'We are not able to collect these birds')
   }
   if (data.condition === 'decomposed') {
-    return outcome(false, 'decomposed', 'We do not need to collect this bird')
+    return outcome(false, 'decomposed', 'We do not need to collect these birds')
   }
-
-  const threshold = thresholdFor(data.species)
-  if (countValue(data) >= threshold) {
-    return outcome(true, 'threshold-met', 'We may collect this bird for testing')
+  if (meetsThreshold(data)) {
+    return outcome(true, 'threshold-met', 'We may collect these birds for testing')
   }
-  return outcome(false, 'below-threshold', 'We do not need to collect this bird')
+  return outcome(false, 'below-threshold', 'We do not need to collect these birds')
 }
 
 //
 // Live explanation for the debug panel.
 //
 function explain (data) {
-  const threshold = data.species ? thresholdFor(data.species) : null
-  const count = countValue(data)
+  const total = totalCount(data)
+  const hasCounts = data.counts && total > 0
 
   function gate (answer, failingValue) {
     if (!answer) return 'pending'
@@ -84,19 +90,18 @@ function explain (data) {
   }
 
   const checks = [
+    { rule: 'Some birds counted', detail: 'total > 0', value: hasCounts ? total : '—', status: hasCounts ? 'pass' : 'pending' },
     { rule: 'Accessible', detail: 'accessible !== "no"', value: data.accessible || '—', status: gate(data.accessible, 'no') },
     { rule: 'Not decomposed', detail: 'condition !== "decomposed"', value: data.condition || '—', status: gate(data.condition, 'decomposed') },
     {
-      rule: 'Meets threshold',
-      detail: threshold ? ('count (' + count + ') >= threshold (' + threshold + ')') : 'needs species + count',
-      value: (data.species && data.count) ? (count + ' vs ' + threshold) : '—',
-      status: (!data.species || data.count === undefined) ? 'pending' : (count >= threshold ? 'pass' : 'fail')
+      rule: 'A type meets its threshold',
+      detail: 'any species count >= its threshold',
+      value: hasCounts ? (meetsThreshold(data) ? 'yes' : 'no') : '—',
+      status: !hasCounts ? 'pending' : (meetsThreshold(data) ? 'pass' : 'fail')
     }
   ]
 
-  const complete = ['accessible', 'condition', 'species'].every(function (k) {
-    return data[k] !== undefined && data[k] !== null && data[k] !== ''
-  }) && data.count !== undefined
+  const complete = hasCounts && data.accessible !== undefined && data.condition !== undefined
 
   return {
     checks: checks,
@@ -105,8 +110,8 @@ function explain (data) {
     species: SPECIES,
     highRiskList: [],
     massMortalityThreshold: null,
-    countValue: count,
-    threshold: threshold,
+    countValue: total,
+    threshold: null,
     highRisk: false,
     massMortality: false
   }
