@@ -139,11 +139,15 @@ const VALIDATORS = {
     if (isBlank(body.name)) errors.push({ field: 'name', message: 'Enter your name' })
     else data.name = body.name.trim()
 
-    if (isBlank(body.phone)) errors.push({ field: 'phone', message: 'Enter a telephone number' })
-    else data.phone = body.phone.trim()
-
-    // Email is optional per the doc.
-    data.email = (body.email || '').trim()
+    // At least one contact method is required, but neither is mandatory on its
+    // own. If both are blank, the error is attached to the telephone field.
+    const phone = (body.phone || '').trim()
+    const email = (body.email || '').trim()
+    if (!phone && !email) {
+      errors.push({ field: 'phone', message: 'Enter a telephone number or email address' })
+    }
+    data.phone = phone
+    data.email = email
     return errors
   }
 }

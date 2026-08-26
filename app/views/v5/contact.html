@@ -21,6 +21,8 @@
 
 <p class="govuk-body">If you’re under 18, ask a parent or guardian to provide their contact details.</p>
 
+<p class="govuk-body"><strong>Provide your name and at least one way for us to contact you (telephone number or email address).</strong></p>
+
 <form method="post" novalidate>
 
   {{ govukInput({
@@ -33,6 +35,9 @@
     value: data.name
   }) }}
 
+  {# At least one of telephone or email is required. Neither is labelled
+     "optional": the instruction above sets the expectation, and the "enter at
+     least one" error is attached to the telephone field if both are left blank. #}
   {{ govukInput({
     label: { text: "Telephone number", classes: "govuk-label--s" },
     id: "phone",
@@ -45,12 +50,13 @@
   }) }}
 
   {{ govukInput({
-    label: { text: "Email address (optional)", classes: "govuk-label--s" },
+    label: { text: "Email address", classes: "govuk-label--s" },
     id: "email",
     name: "email",
     type: "email",
     autocomplete: "email",
     spellcheck: false,
+    errorMessage: { text: errors.email } if errors.email,
     value: data.email
   }) }}
 
