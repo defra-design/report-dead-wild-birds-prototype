@@ -4,7 +4,7 @@
 // Content comes from the content design doc; the page order is the team's:
 //
 //   1  start
-//   2  reporting-dead-bird   (screener: "No, sick/injured" -> guidance)
+//   2  are-you-reporting-a-dead-bird   (screener: "No, sick/injured" -> guidance)
 //   3  country               (England/Scotland/Wales continue; N. Ireland -> guidance)
 //   4  bird-type-and-number  (a number for each bird type; checked against thresholds)
 //   5  date-seen             (captured only; does not affect triage)
@@ -22,7 +22,7 @@
 //
 
 const STEPS = [
-  'reporting-dead-bird',
+  'are-you-reporting-a-dead-bird',
   'country',
   'bird-type-and-number',
   'date-seen',
@@ -48,8 +48,8 @@ function isBlank (value) {
 }
 
 const VALIDATORS = {
-  'reporting-dead-bird': function (body, data) {
-    if (isBlank(body.reportingDead)) return [{ field: 'reportingDead', message: 'Select yes if the bird is dead' }]
+  'are-you-reporting-a-dead-bird': function (body, data) {
+    if (isBlank(body.reportingDead)) return [{ field: 'reportingDead', message: 'Select yes if you are reporting a dead bird' }]
     data.reportingDead = body.reportingDead
     return []
   },
@@ -167,7 +167,7 @@ const VALIDATORS = {
 //   - check                          -> end page (final submit)
 //
 function nextStep (currentStep, data) {
-  if (currentStep === 'reporting-dead-bird' && data.reportingDead === 'no') return 'sick-or-injured'
+  if (currentStep === 'are-you-reporting-a-dead-bird' && data.reportingDead === 'no') return 'sick-or-injured'
   if (currentStep === 'country' && data.country === 'northern-ireland') return 'northern-ireland'
   if (currentStep === 'accessible' && data.accessible === 'no') return 'outcome'
   if (currentStep === 'condition' && data.condition === 'decomposed') return 'outcome'
