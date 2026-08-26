@@ -6,18 +6,21 @@
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 
 {% block form %}
+
+<h1 class="govuk-heading-l">Are you reporting a dead bird?</h1>
+
+<p class="govuk-hint">This service is only for reporting dead wild birds.</p>
+
 <form method="post" novalidate>
 
   {{ govukRadios({
     name: "reportingDead",
     fieldset: {
       legend: {
-        text: "Are you reporting a dead bird?",
-        isPageHeading: true,
-        classes: "govuk-fieldset__legend--l"
+        text: "Choose one:",
+        classes: "govuk-fieldset__legend--s"
       }
     },
-    hint: { html: "This service is only for reporting dead wild birds.<br>Choose one:" },
     errorMessage: { text: errors.reportingDead } if errors.reportingDead,
     items: [
       { value: "yes", text: "Yes", checked: data.reportingDead == "yes" },
