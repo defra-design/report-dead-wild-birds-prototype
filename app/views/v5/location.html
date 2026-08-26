@@ -1,6 +1,6 @@
 {% extends "layouts/question.html" %}
 
-{% set pageName = "Tell us where you saw the bird" %}
+{% set pageName = "Select one option to tell us where you saw the bird" %}
 {% set backLink = "/are-you-reporting-a-dead-bird" %}
 
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
@@ -49,7 +49,7 @@
     name: "locationMethod",
     fieldset: {
       legend: {
-        text: "Tell us where you saw the bird",
+        text: "Select one option to tell us where you saw the bird",
         isPageHeading: true,
         classes: "govuk-fieldset__legend--l"
       }
