@@ -1,6 +1,6 @@
 {% extends "layouts/question.html" %}
 
-{% set pageName = "Tell us approximately how many dead wild birds you found" %}
+{% set pageName = "Tell us how many dead wild birds you found" %}
 {% set backLink = "/location" %}
 
 {% from "govuk/components/input/macro.njk" import govukInput %}
@@ -21,7 +21,7 @@
 
 {% block form %}
 
-<h1 class="govuk-heading-l">Tell us approximately how many dead wild birds you found</h1>
+<h1 class="govuk-heading-l">Tell us how many dead wild birds you found</h1>
 
 <form method="post" novalidate>
 
@@ -30,10 +30,10 @@
   {% endif %}
 
   {% for bird in [
-    { key: "bird-of-prey", label: "Birds of prey", hint: "Such as owls, hawks or buzzards" },
-    { key: "corvid", label: "Corvids", hint: "Such as crows, ravens, rooks, magpies, jackdaws and jays" },
+    { key: "bird-of-prey", label: "Birds of prey", hint: "Such as owls, hawks or buzzards." },
+    { key: "corvid", label: "Corvids", hint: "Such as crows, ravens, rooks, magpies, jackdaws and jays." },
     { key: "duck", label: "Ducks" },
-    { key: "gamebird", label: "Gamebirds", hint: "Such as pheasants, partridges and grouse" },
+    { key: "gamebird", label: "Gamebirds", hint: "Such as pheasants, partridges and grouse." },
     { key: "goose", label: "Geese" }
   ] %}{{ birdCount(bird) }}{% endfor %}
 
@@ -41,9 +41,9 @@
      sure which you found. #}
   {% set gullsNumbers %}
     {% for bird in [
-      { key: "gull", label: "Gulls", hint: "Includes all gulls and kittiwakes" },
-      { key: "seabird", label: "Seabirds", hint: "Such as puffins, gannets, guillemots and cormorants" },
-      { key: "wader", label: "Waders", hint: "Such as avocets, curlews, oystercatchers and plovers" }
+      { key: "gull", label: "Gulls", hint: "Includes all gulls and kittiwakes." },
+      { key: "seabird", label: "Seabirds", hint: "Such as puffins, gannets, guillemots and cormorants." },
+      { key: "wader", label: "Waders", hint: "Such as avocets, curlews, oystercatchers and plovers." }
     ] %}{{ birdCount(bird) }}{% endfor %}
   {% endset %}
 
@@ -66,12 +66,12 @@
   }) }}
 
   {% for bird in [
-    { key: "heron-egret", label: "Herons and egrets", hint: "Includes cranes, bitterns, spoonbills and storks" },
+    { key: "heron-egret", label: "Herons and egrets", hint: "Includes cranes, bitterns, spoonbills and storks." },
     { key: "pigeon-dove", label: "Pigeons and doves" },
-    { key: "rail-crake", label: "Rails and crakes", hint: "Such as moorhens and coots" },
-    { key: "songbird-garden", label: "Songbirds and garden birds", hint: "Such as sparrows, tits, blackbirds, finches, starlings and robins" },
+    { key: "rail-crake", label: "Rails and crakes", hint: "Such as moorhens and coots." },
+    { key: "songbird-garden", label: "Songbirds and garden birds", hint: "Such as sparrows, tits, blackbirds, finches, starlings and robins." },
     { key: "swan", label: "Swans" },
-    { key: "other", label: "Other wild birds", hint: "Or if you're not sure what type" }
+    { key: "other", label: "Other wild birds", hint: "Or if you're not sure what type of bird it is." }
   ] %}{{ birdCount(bird) }}{% endfor %}
 
   {{ govukButton({ text: "Continue" }) }}
