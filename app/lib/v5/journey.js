@@ -5,17 +5,16 @@
 //
 //   1  start
 //   2  are-you-reporting-a-dead-bird   (screener: "No, sick/injured" -> guidance)
-//   3  country               (England/Scotland/Wales continue; N. Ireland -> guidance)
+//   3  location              (country is derived from this, so it is not asked)
 //   4  bird-type-and-number  (a number for each bird type; checked against thresholds)
 //   5  date-seen             (captured only; does not affect triage)
 //   6  accessible            ("No" -> straight to the end page, cannot collect)
 //   7  condition             (good/mixed collect; "decomposed" -> end page)
-//   8  location
-//   9  photo
-//   10 location-details      (any other information)
-//   11 contact
-//   12 check
-//   13 outcome (end page)
+//   8  photo
+//   9  location-details      (any other information)
+//   10 contact
+//   11 check
+//   12 outcome (end page)
 //
 // This is a scaffold: validation is light and the collection thresholds in
 // decision.js are placeholders, to be detailed page by page.
@@ -23,12 +22,11 @@
 
 const STEPS = [
   'are-you-reporting-a-dead-bird',
-  'country',
+  'location',
   'bird-type-and-number',
   'date-seen',
   'accessible',
   'condition',
-  'location',
   'photo',
   'location-details',
   'contact',
@@ -51,12 +49,6 @@ const VALIDATORS = {
   'are-you-reporting-a-dead-bird': function (body, data) {
     if (isBlank(body.reportingDead)) return [{ field: 'reportingDead', message: 'Select yes if you are reporting a dead bird' }]
     data.reportingDead = body.reportingDead
-    return []
-  },
-
-  country: function (body, data) {
-    if (isBlank(body.country)) return [{ field: 'country', message: 'Select where you saw the bird' }]
-    data.country = body.country
     return []
   },
 
@@ -168,7 +160,6 @@ const VALIDATORS = {
 //
 function nextStep (currentStep, data) {
   if (currentStep === 'are-you-reporting-a-dead-bird' && data.reportingDead === 'no') return 'sick-or-injured'
-  if (currentStep === 'country' && data.country === 'northern-ireland') return 'northern-ireland'
   if (currentStep === 'accessible' && data.accessible === 'no') return 'outcome'
   if (currentStep === 'condition' && data.condition === 'decomposed') return 'outcome'
   if (currentStep === 'check') return 'outcome'

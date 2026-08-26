@@ -11,7 +11,6 @@
 
 {% set change = "?return=check" %}
 
-{% set countryText = { "england": "England", "scotland": "Scotland", "wales": "Wales", "northern-ireland": "Northern Ireland" } %}
 {% set accessibleText = { "yes": "Yes", "no": "No", "not-sure": "I'm not sure" } %}
 {% set conditionText = { "good": "Carcass in good condition or mostly intact", "mixed": "Mix of carcass conditions", "decomposed": "Carcass decomposed" } %}
 
@@ -45,7 +44,6 @@
 
 {{ govukSummaryList({
   rows: [
-    { key: { text: "Where" }, value: { text: countryText[data.country] or "Not provided" }, actions: { items: [ { href: basePath + "/country" + change, text: "Change", visuallyHiddenText: "where you saw the bird" } ] } },
     { key: { text: "Birds found" }, value: { html: countsHtml }, actions: { items: [ { href: basePath + "/bird-type-and-number" + change, text: "Change", visuallyHiddenText: "the birds you found" } ] } },
     { key: { text: "Date seen" }, value: { text: (data.dateSeen.day ~ "/" ~ data.dateSeen.month ~ "/" ~ data.dateSeen.year) if data.dateSeen else "Not provided" }, actions: { items: [ { href: basePath + "/date-seen" + change, text: "Change", visuallyHiddenText: "date seen" } ] } },
     { key: { text: "Reached safely" }, value: { text: accessibleText[data.accessible] or "Not provided" }, actions: { items: [ { href: basePath + "/accessible" + change, text: "Change", visuallyHiddenText: "whether the bird can be reached safely" } ] } },
