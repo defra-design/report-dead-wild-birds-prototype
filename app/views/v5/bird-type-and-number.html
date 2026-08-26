@@ -1,0 +1,80 @@
+{% extends "layouts/question.html" %}
+
+{% set pageName = "Tell us how many dead wild birds you found" %}
+{% set backLink = "/location" %}
+
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% macro birdCount(bird) %}
+  {{ govukInput({
+    label: { text: bird.label, classes: "govuk-label--s" },
+    id: "count-" + bird.key,
+    name: "count-" + bird.key,
+    classes: "govuk-input--width-4",
+    inputmode: "numeric",
+    spellcheck: false,
+    hint: { text: bird.hint } if bird.hint,
+    value: data.counts[bird.key] if (data.counts and data.counts[bird.key]) else ""
+  }) }}
+{% endmacro %}
+
+{% block form %}
+
+<h1 class="govuk-heading-l">Tell us how many dead wild birds you found</h1>
+
+<form method="post" novalidate>
+
+  {% if errors["count-bird-of-prey"] %}
+    <p class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> {{ errors["count-bird-of-prey"] }}</p>
+  {% endif %}
+
+  {% for bird in [
+    { key: "bird-of-prey", label: "Birds of prey", hint: "Such as owls, hawks or buzzards." },
+    { key: "corvid", label: "Corvids", hint: "Such as crows, ravens, rooks, magpies, jackdaws and jays." },
+    { key: "duck", label: "Ducks" },
+    { key: "gamebird", label: "Gamebirds", hint: "Such as pheasants, partridges and grouse." },
+    { key: "goose", label: "Geese" }
+  ] %}{{ birdCount(bird) }}{% endfor %}
+
+  {# Gulls, seabirds and waders: either give numbers of each, or say you are not
+     sure which you found. #}
+  {% set gullsNumbers %}
+    {% for bird in [
+      { key: "gull", label: "Gulls", hint: "Includes all gulls and kittiwakes." },
+      { key: "seabird", label: "Seabirds", hint: "Such as puffins, gannets, guillemots and cormorants." },
+      { key: "wader", label: "Waders", hint: "Such as avocets, curlews, oystercatchers and plovers." }
+    ] %}{{ birdCount(bird) }}{% endfor %}
+  {% endset %}
+
+  {{ govukRadios({
+    name: "gullsChoice",
+    fieldset: { legend: { text: "Gulls, seabirds and waders", classes: "govuk-fieldset__legend--s" } },
+    items: [
+      {
+        value: "numbers",
+        text: "I can provide numbers of each of gulls, seabirds and waders",
+        checked: data.gullsChoice == "numbers",
+        conditional: { html: gullsNumbers }
+      },
+      {
+        value: "unknown",
+        text: "I'm not sure what type of gull, seabird or wader I have found",
+        checked: data.gullsChoice == "unknown"
+      }
+    ]
+  }) }}
+
+  {% for bird in [
+    { key: "heron-egret", label: "Herons and egrets", hint: "Includes cranes, bitterns, spoonbills and storks." },
+    { key: "pigeon-dove", label: "Pigeons and doves" },
+    { key: "rail-crake", label: "Rails and crakes", hint: "Such as moorhens and coots." },
+    { key: "songbird-garden", label: "Songbirds and garden birds", hint: "Such as sparrows, tits, blackbirds, finches, starlings and robins." },
+    { key: "swan", label: "Swans" },
+    { key: "other", label: "Other wild birds", hint: "Or if you're not sure what type of bird it is." }
+  ] %}{{ birdCount(bird) }}{% endfor %}
+
+  {{ govukButton({ text: "Continue" }) }}
+
+</form>
+{% endblock %}

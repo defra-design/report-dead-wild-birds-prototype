@@ -1,0 +1,50 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName = "Report dead wild birds" %}
+
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-xl">Report dead wild birds</h1>
+
+    <h2 class="govuk-heading-m">How to report dead wild birds.</h2>
+
+    <p class="govuk-body">Use this service to report dead wild birds that may have died from disease, including bird flu.</p>
+
+    <p class="govuk-body">Your report helps us understand how diseases are spreading.</p>
+
+    <p class="govuk-body">We may collect and test reported birds for bird flu or other diseases.</p>
+
+    <p class="govuk-body">If you’re under 18, ask a parent or guardian to fill in this form.</p>
+
+    {{ govukButton({
+      text: "Start now",
+      href: basePath + "/are-you-reporting-a-dead-bird",
+      isStartButton: true
+    }) }}
+
+    <p class="govuk-body">You can also report dead wild birds by phone: 03459 33 55 77 (<a class="govuk-link" href="https://www.gov.uk/call-charges" rel="noreferrer noopener" target="_blank">find out about call charges</a>).</p>
+
+    {{ govukWarningText({
+      text: "Do not touch dead birds",
+      iconFallbackText: "Warning"
+    }) }}
+
+    <p class="govuk-body">If you want to know how to dispose of dead wild birds or ask for them to be removed, read the guidance on <a class="govuk-link" href="https://www.gov.uk/guidance/dead-wild-birds" rel="noreferrer noopener" target="_blank">removing and disposing of dead wild birds</a>.</p>
+
+    <p class="govuk-body">If you have found a dead wild bird and suspect it has died as a result of:</p>
+
+    <ul class="govuk-list govuk-list--bullet">
+      <li>wildlife crime, you must <a class="govuk-link" href="https://www.gov.uk/guidance/reporting-suspected-wildlife-crime" rel="noreferrer noopener" target="_blank">report them to the police</a></li>
+      <li>poisoning from pesticides or rodenticides, call the <a class="govuk-link" href="https://www.gov.uk/guidance/wildlife-incident-investigation-scheme-report-death-of-wildlife" rel="noreferrer noopener" target="_blank">Wildlife Incident Investigation Scheme (WISS)</a> on 0800 321 600 (calls are free)</li>
+    </ul>
+
+    <p class="govuk-body">If you’ve found a sick or injured bird, follow the guidance for <a class="govuk-link" href="https://www.gov.uk/guidance/dead-or-injured-wild-animals" rel="noreferrer noopener" target="_blank">reporting other dead, sick or injured animals</a>.</p>
+
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,79 @@
+{% extends "layouts/question.html" %}
+
+{% set pageName = "Where is the bird?" %}
+{% set backLink = "/how-many" %}
+
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
+{% from "govuk/components/error-message/macro.njk" import govukErrorMessage %}
+
+{% block form %}
+
+<h1 class="govuk-heading-l">Where is the bird?</h1>
+
+{# The exact location is what lets a collector find the bird. People can pinpoint
+   it with a map pin, an address or postcode, or both, and add anything else in
+   the details box. At least one of pin or address is needed. #}
+<p class="govuk-body">Giving an exact location is the most important thing you can do. Most birds that are not found were reported with a vague location.</p>
+
+<form method="post" novalidate>
+
+  <div class="govuk-form-group {%- if errors.location %} govuk-form-group--error{% endif %}" id="location">
+    <label class="govuk-label govuk-label--m" for="map">Drop a pin on the map</label>
+    <div id="map-hint" class="govuk-hint">Move the map and select the exact spot where the bird is. Zoom in as far as you can.</div>
+
+    {% if errors.location %}
+      {{ govukErrorMessage({ text: errors.location }) }}
+    {% endif %}
+
+    {# A stand-in for a real map. It behaves like one for testing the journey:
+       selecting a point stores coordinates. Replace with an Ordnance Survey or
+       OS Maps component before any public testing. #}
+    <div class="app-map" id="map" role="application" aria-describedby="map-hint" tabindex="0">
+      <div class="app-map__water"></div>
+      <div class="app-map__road app-map__road--vertical"></div>
+      <div class="app-map__road app-map__road--horizontal"></div>
+      <svg class="app-map__pin" id="map-pin" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
+        <path d="M12 0C7 0 3 4 3 9c0 6.5 9 15 9 15s9-8.5 9-15c0-5-4-9-9-9zm0 12.5A3.5 3.5 0 1 1 12 5.5a3.5 3.5 0 0 1 0 7z"/>
+      </svg>
+      <p class="app-map__readout" id="map-readout">No location selected yet</p>
+    </div>
+
+    <input type="hidden" name="lat" id="lat" value="{{ data.location.lat if data.location }}">
+    <input type="hidden" name="lng" id="lng" value="{{ data.location.lng if data.location }}">
+  </div>
+
+  {{ govukInput({
+    label: { text: "Postcode", classes: "govuk-label--m" },
+    id: "postcode",
+    name: "postcode",
+    classes: "govuk-input--width-10",
+    autocomplete: "postal-code",
+    hint: { text: "Enter this if you cannot use the map, or to add to the pin. Add the street or landmark in the details box below." },
+    errorMessage: { text: errors.postcode } if errors.postcode,
+    value: data.location.postcode if data.location
+  }) }}
+
+  {{ govukInput({
+    label: { text: "what3words address (optional)", classes: "govuk-label--s" },
+    id: "what3words",
+    name: "what3words",
+    classes: "govuk-input--width-20",
+    hint: { text: "If you know it, for example ///filled.count.soap. This gives collectors a 3-metre location." },
+    errorMessage: { text: errors.what3words } if errors.what3words,
+    value: data.location.what3words if data.location
+  }) }}
+
+  {{ govukCharacterCount({
+    id: "locationDetails",
+    name: "locationDetails",
+    maxlength: 300,
+    label: { text: "Any other details about the location (optional)", classes: "govuk-label--s" },
+    hint: { text: "For example landmarks, which side of the path, or how to find the exact spot." },
+    value: data.location.details if data.location
+  }) }}
+
+  {{ govukButton({ text: "Continue" }) }}
+
+</form>
+{% endblock %}

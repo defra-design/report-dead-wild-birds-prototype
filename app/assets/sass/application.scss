@@ -217,6 +217,26 @@ $app-debug-key: #8ac7ff;
   font-size: 12px;
 }
 
+// Prominent "clear answers" action at the top of the panel.
+.app-debug__clear {
+  margin: 0 0 12px;
+
+  a {
+    display: inline-block;
+    padding: 6px 10px;
+    border: 1px solid govuk-colour("yellow");
+    border-radius: 3px;
+    color: govuk-colour("yellow");
+    font-size: 13px;
+    text-decoration: none;
+
+    &:hover {
+      background: govuk-colour("yellow");
+      color: govuk-colour("black");
+    }
+  }
+}
+
 .app-debug__details {
   margin-top: 14px;
 
@@ -264,5 +284,22 @@ $app-debug-key: #8ac7ff;
   .app-debug,
   .app-debug-toggle {
     display: none;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Non-collection outcome panel
+// ---------------------------------------------------------------------------
+// The green confirmation panel is reserved for outcomes where the bird may be
+// collected. A non-collection outcome uses this neutral blue panel instead, so
+// it does not read as a success/collection.
+
+.app-panel--received {
+  background-color: govuk-colour("blue");
+
+  &,
+  .govuk-panel__title,
+  .govuk-panel__body {
+    color: govuk-colour("white");
   }
 }

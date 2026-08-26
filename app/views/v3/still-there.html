@@ -1,0 +1,31 @@
+{% extends "layouts/question.html" %}
+
+{% set pageName = "Is the bird still at the location?" %}
+{% set backLink = "/dead" %}
+
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% block form %}
+<form method="post" novalidate>
+
+  {{ govukRadios({
+    name: "stillThere",
+    fieldset: {
+      legend: {
+        text: "Is the bird still at the location?",
+        isPageHeading: true,
+        classes: "govuk-fieldset__legend--l"
+      }
+    },
+    hint: { text: "We can only collect a bird that is still where you found it." },
+    errorMessage: { text: errors.stillThere } if errors.stillThere,
+    items: [
+      { value: "yes", text: "Yes", checked: data.stillThere == "yes" },
+      { value: "no", text: "No, it has gone or been moved", checked: data.stillThere == "no" }
+    ]
+  }) }}
+
+  {{ govukButton({ text: "Continue" }) }}
+
+</form>
+{% endblock %}

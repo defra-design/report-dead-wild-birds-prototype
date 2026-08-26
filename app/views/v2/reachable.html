@@ -1,0 +1,69 @@
+{% extends "layouts/question.html" %}
+
+{% set pageName = "Can the bird be reached safely?" %}
+{% set backLink = "/photo" %}
+
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+
+{% block form %}
+
+<h1 class="govuk-heading-l">Can the bird be reached safely?</h1>
+
+{# "Reachable" is easy to read differently from how a collector would, so the
+   page spells out what collectors can and cannot do. There is deliberately no
+   "I'm not sure" option. #}
+{{ govukWarningText({
+  text: "Our collectors reach birds on foot from the ground. They do not use boats, ladders, kayaks or other specialist equipment.",
+  iconFallbackText: "Warning"
+}) }}
+
+<p class="govuk-body">Answer <strong>No</strong> if the bird is:</p>
+
+<ul class="govuk-list govuk-list--bullet">
+  <li>in water, or can only be reached by boat</li>
+  <li>on a roof, in a tree, or up high</li>
+  <li>behind a barrier, fence or locked area</li>
+  <li>on a railway line, motorway or other dangerous place</li>
+</ul>
+
+<form method="post" novalidate>
+
+  {{ govukRadios({
+    name: "reachable",
+    fieldset: {
+      legend: {
+        text: "Can the bird be reached safely from the ground, without special equipment?",
+        classes: "govuk-fieldset__legend--m"
+      }
+    },
+    errorMessage: { text: errors.reachable } if errors.reachable,
+    items: [
+      { value: "yes", text: "Yes", checked: data.reachable == "yes" },
+      { value: "no", text: "No", checked: data.reachable == "no" }
+    ]
+  }) }}
+
+  {{ govukCheckboxes({
+    name: "nearWater",
+    classes: "govuk-checkboxes--small",
+    fieldset: {
+      legend: {
+        text: "Is the bird in or near water?",
+        classes: "govuk-fieldset__legend--s"
+      }
+    },
+    items: [
+      {
+        value: "yes",
+        text: "The bird is in or near water (for example a lake, canal, river or the sea)",
+        checked: data.nearWater == "yes"
+      }
+    ]
+  }) }}
+
+  {{ govukButton({ text: "Continue" }) }}
+
+</form>
+{% endblock %}

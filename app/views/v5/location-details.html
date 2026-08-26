@@ -1,0 +1,27 @@
+{% extends "layouts/question.html" %}
+
+{% set pageName = "Tell us anything else that could help us find or access the bird" %}
+{% set backLink = "/photo" %}
+
+{% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
+
+{% block form %}
+<form method="post" novalidate>
+
+  {{ govukCharacterCount({
+    id: "locationDetails",
+    name: "locationDetails",
+    maxlength: 500,
+    label: {
+      text: "Tell us anything else that could help us find or access the bird (optional)",
+      isPageHeading: true,
+      classes: "govuk-label--l"
+    },
+    hint: { text: "For example, landmarks, nearby buildings, contact details, gate codes or opening times." },
+    value: data.locationDetails
+  }) }}
+
+  {{ govukButton({ text: "Continue" }) }}
+
+</form>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName = "This service does not remove dead birds" %}
+{% set backLink = "/intent" %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-l">This service does not remove or collect dead birds</h1>
+
+    <p class="govuk-body">This service is for <strong>monitoring disease</strong> in wild birds, such as bird flu. It is not a service for having dead birds taken away. We only collect a small number of birds for testing.</p>
+
+    <h2 class="govuk-heading-m">How to get a dead bird removed</h2>
+
+    <ul class="govuk-list govuk-list--bullet">
+      <li>on your own property, you can dispose of it yourself — do not touch it with your bare hands</li>
+      <li>on a road, pavement or public land, contact your <a class="govuk-link" href="https://www.gov.uk/find-local-council" rel="noreferrer noopener" target="_blank">local council (opens in new tab)</a></li>
+    </ul>
+
+    <p class="govuk-body">Read the guidance on <a class="govuk-link" href="https://www.gov.uk/guidance/dead-wild-birds" rel="noreferrer noopener" target="_blank">disposing of dead wild birds safely (opens in new tab)</a>.</p>
+
+    <h2 class="govuk-heading-m">Still want to help monitor disease?</h2>
+
+    <p class="govuk-body">Even if a bird will not be collected, telling us about it still helps us track disease. <a class="govuk-link" href="{{ basePath }}/start-again">Report a dead wild bird</a>.</p>
+
+  </div>
+</div>
+{% endblock %}

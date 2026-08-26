@@ -12,3 +12,6 @@ usage-data-config.json
 .idea
 .vscode
 .claude
+
+# Local-only analysis (OFFICIAL-SENSITIVE source material) — never commit
+local-notes/

@@ -5,7 +5,11 @@ https://prototype-kit.service.gov.uk/docs/how-to-use-layouts
 This is the layout every page in the prototype uses. It adds the phase banner,
 an optional Back link, and the debug panel that shows the live decision state.
 
-To show a Back link, set backLink in the page, for example:
+Pages belong to a version (see app/lib/versions.js). `basePath` is that
+version's URL prefix, for example "/v2". Internal links are written as
+basePath + "/page" so the same template works under any version.
+
+To show a Back link, set backLink to a path within the version, for example:
   {% set backLink = "/species" %}
 #}
 
@@ -17,11 +21,14 @@ To show a Back link, set backLink in the page, for example:
 {% block beforeContent %}
   {{ govukPhaseBanner({
     tag: { text: "Prototype" },
-    text: "This is a prototype used for testing and design. It is not a live service."
+    html: 'This is a prototype used for testing and design. It is not a live service. <a class="govuk-link" href="/">Switch version</a>.'
   }) }}
 
-  {% if backLink %}
-    {{ govukBackLink({ text: "Back", href: backLink }) }}
+  {# When editing an answer from Check your answers, Back returns there. #}
+  {% if returnToCheck %}
+    {{ govukBackLink({ text: "Back", href: basePath + "/check" }) }}
+  {% elif backLink %}
+    {{ govukBackLink({ text: "Back", href: basePath + backLink }) }}
   {% endif %}
 {% endblock %}
 

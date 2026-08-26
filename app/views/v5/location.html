@@ -1,0 +1,77 @@
+{% extends "layouts/question.html" %}
+
+{% set pageName = "Select one option to tell us where you saw the bird" %}
+{% set backLink = "/are-you-reporting-a-dead-bird" %}
+
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
+
+{% block form %}
+<form method="post" novalidate>
+
+  {# Choose one location method. Each choice reveals its own input.
+     Scaffold: the map is the stand-in used elsewhere; the other reveals are
+     plain fields for now, to be detailed later. #}
+  {% set mapReveal %}
+    <div class="app-map" id="map" role="application" tabindex="0">
+      <div class="app-map__water"></div>
+      <div class="app-map__road app-map__road--vertical"></div>
+      <div class="app-map__road app-map__road--horizontal"></div>
+      <svg class="app-map__pin" id="map-pin" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
+        <path d="M12 0C7 0 3 4 3 9c0 6.5 9 15 9 15s9-8.5 9-15c0-5-4-9-9-9zm0 12.5A3.5 3.5 0 1 1 12 5.5a3.5 3.5 0 0 1 0 7z"/>
+      </svg>
+      <p class="app-map__readout" id="map-readout">No location selected yet</p>
+    </div>
+    <input type="hidden" name="lat" id="lat" value="{{ data.location.map.split(', ')[0] if data.location and data.location.map }}">
+    <input type="hidden" name="lng" id="lng" value="{{ data.location.map.split(', ')[1] if data.location and data.location.map }}">
+  {% endset %}
+
+  {% set addressReveal %}
+    <p class="govuk-body">Enter the postcode where the dead birds are located:</p>
+    {{ govukInput({
+      label: { text: "Postcode", classes: "govuk-label--s" },
+      id: "postcode",
+      name: "postcode",
+      classes: "govuk-input--width-10",
+      autocomplete: "postal-code",
+      value: data.location.postcode if data.location
+    }) }}
+    {{ govukButton({ text: "Find address", classes: "govuk-button--secondary govuk-!-margin-top-2", type: "button" }) }}
+    <p class="govuk-body"><a class="govuk-link" href="#">I want to enter the address lines manually</a></p>
+  {% endset %}
+
+  {% set what3wordsReveal %}
+    {{ govukInput({ label: { text: "what3words location" }, id: "what3words", name: "what3words", classes: "govuk-input--width-20", value: data.location.what3words if data.location }) }}
+  {% endset %}
+
+  {{ govukRadios({
+    name: "locationMethod",
+    fieldset: {
+      legend: {
+        text: "Select one option to tell us where you saw the bird",
+        isPageHeading: true,
+        classes: "govuk-fieldset__legend--l"
+      }
+    },
+    hint: { text: "Try to provide a precise location to help us find the bird." },
+    errorMessage: { text: errors.locationMethod } if errors.locationMethod,
+    items: [
+      { value: "map", text: "Select on a map", checked: data.location.method == "map" if data.location, conditional: { html: mapReveal } },
+      { value: "address", text: "Address and postcode", checked: data.location.method == "address" if data.location, conditional: { html: addressReveal } },
+      { value: "what3words", text: "Enter a what3words location", hint: { text: "Use the what3words website to get a 3-word reference to a 3m square." }, checked: data.location.method == "what3words" if data.location, conditional: { html: what3wordsReveal } }
+    ]
+  }) }}
+
+  {{ govukCharacterCount({
+    id: "locationInfo",
+    name: "locationInfo",
+    maxlength: 500,
+    label: { text: "Tell us any other information about the location, such as landmarks or buildings (optional)", classes: "govuk-label--s" },
+    value: data.location.info if data.location
+  }) }}
+
+  {{ govukButton({ text: "Continue" }) }}
+
+</form>
+{% endblock %}

@@ -1,0 +1,99 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName = "Report sent" %}
+
+{% from "govuk/components/panel/macro.njk" import govukPanel %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    {# The reporter is told the outcome straight away, and why. A green
+       confirmation panel is used only when the bird may be collected. A
+       non-collection outcome uses a neutral blue panel so it does not read as
+       "a collection is happening". #}
+    {% if outcome.collect %}
+      {{ govukPanel({
+        titleText: "Report sent",
+        html: "Your reference number<br><strong>" + referenceNumber + "</strong>"
+      }) }}
+    {% else %}
+      <div class="govuk-panel app-panel app-panel--received">
+        <h1 class="govuk-panel__title">Report received</h1>
+        <div class="govuk-panel__body">Your reference number<br><strong>{{ referenceNumber }}</strong></div>
+      </div>
+    {% endif %}
+
+    <h2 class="govuk-heading-m">{{ outcome.summary }}</h2>
+
+    {% if outcome.collect %}
+
+      {% if outcome.priority %}
+        <p class="govuk-body">This report has been flagged as a <strong>priority</strong> for collection and testing.</p>
+      {% endif %}
+
+      <p class="govuk-body">Based on your answers, we may send someone to collect this bird for bird flu testing. We aim to collect suitable birds as quickly as possible, because birds are harder to find and test the longer they are left.</p>
+
+      <ul class="govuk-list govuk-list--bullet">
+        {% for reason in outcome.reasons %}
+          <li>{{ reason }}</li>
+        {% endfor %}
+      </ul>
+
+      {% set contactLine %}
+        {%- if data.email -%}we have emailed a copy of your report to <strong>{{ data.email }}</strong>
+        {%- elif data.phone -%}we may contact you on <strong>{{ data.phone }}</strong> if we need to
+        {%- else -%}we have recorded your report{%- endif -%}
+      {% endset %}
+
+      {% set nextStepsHtml %}
+        <p class="govuk-body">What happens next:</p>
+        <ul class="govuk-list govuk-list--bullet">
+          <li>{{ contactLine | safe }}</li>
+          <li>a collector may contact you if they need help finding the bird</li>
+          <li>we will only contact you again if we need to — you will not usually be told the test results</li>
+          <li>please leave the bird where it is, but keep people and pets away from it</li>
+        </ul>
+      {% endset %}
+
+      {{ govukInsetText({ html: nextStepsHtml }) }}
+
+    {% else %}
+
+      <p class="govuk-body">Based on your answers, this bird will not be collected for testing. This is because:</p>
+
+      <ul class="govuk-list govuk-list--bullet">
+        {% for reason in outcome.reasons %}
+          <li>{{ reason }}</li>
+        {% endfor %}
+      </ul>
+
+      {# Explains why the report still matters, and what to do with the bird. #}
+      {{ govukInsetText({
+        text: "Your report still matters. Every report helps us build a picture of where and how disease is spreading in wild birds, even when we do not collect the bird. Thank you for taking the time to tell us."
+      }) }}
+
+      <h2 class="govuk-heading-m">How to dispose of the bird safely</h2>
+
+      <p class="govuk-body">If the bird is on your property, you can dispose of it. Do not touch it with your bare hands.</p>
+
+      <ul class="govuk-list govuk-list--bullet">
+        <li>use disposable gloves, or a plastic bag turned inside out over your hand</li>
+        <li>place the bird in a plastic bag, then in a second bag</li>
+        <li>tie the bags and put them in your normal household waste (outside bin)</li>
+        <li>wash your hands thoroughly afterwards</li>
+      </ul>
+
+      <p class="govuk-body">Read the full guidance on <a class="govuk-link" href="https://www.gov.uk/guidance/dead-wild-birds" rel="noreferrer noopener" target="_blank">removing and disposing of dead wild birds (opens in new tab)</a>.</p>
+
+    {% endif %}
+
+    <h2 class="govuk-heading-m">What did you think of this service?</h2>
+    <p class="govuk-body"><a class="govuk-link" href="{{ basePath }}/start-again">Tell us what you thought</a> (takes 30 seconds). Your feedback helps us improve the service.</p>
+
+    <p class="govuk-body govuk-!-margin-top-6"><a class="govuk-link" href="{{ basePath }}/start-again">Report another dead wild bird</a></p>
+
+  </div>
+</div>
+{% endblock %}
