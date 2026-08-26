@@ -1,6 +1,6 @@
 {% extends "layouts/question.html" %}
 
-{% set pageName = "Is the bird dead?" %}
+{% set pageName = "Are you reporting a dead bird?" %}
 {% set backLink = "/start" %}
 
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
@@ -12,7 +12,7 @@
     name: "reportingDead",
     fieldset: {
       legend: {
-        text: "Is the bird dead?",
+        text: "Are you reporting a dead bird?",
         isPageHeading: true,
         classes: "govuk-fieldset__legend--l"
       }
