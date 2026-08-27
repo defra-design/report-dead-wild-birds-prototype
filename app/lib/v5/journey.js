@@ -47,7 +47,7 @@ function isBlank (value) {
 
 const VALIDATORS = {
   'are-you-reporting-a-dead-bird': function (body, data) {
-    if (isBlank(body.reportingDead)) return [{ field: 'reportingDead', message: 'Select yes if you are reporting a dead bird' }]
+    if (isBlank(body.reportingDead)) return [{ field: 'reportingDead', message: 'Reason for reporting must be provided.' }]
     data.reportingDead = body.reportingDead
     return []
   },
@@ -78,7 +78,7 @@ const VALIDATORS = {
     data.counts = counts
 
     if (total === 0) {
-      errors.push({ field: 'count-bird-of-prey', message: 'Enter how many dead wild birds you found' })
+      errors.push({ field: 'count-bird-of-prey', message: 'Number of birds must be provided.' })
     }
 
     return errors
@@ -88,30 +88,41 @@ const VALIDATORS = {
     // Captured for information only. It does not affect the collection decision.
     const d = body['date-day']; const m = body['date-month']; const y = body['date-year']
     if (isBlank(d) && isBlank(m) && isBlank(y)) {
-      return [{ field: 'date-seen', message: 'Enter the date you saw the bird' }]
+      return [{ field: 'date-seen', message: 'Date must be provided.' }]
     }
     const day = parseInt(d, 10); const month = parseInt(m, 10); const year = parseInt(y, 10)
     if (!day || !month || !year || month < 1 || month > 12 || day < 1 || day > 31) {
-      return [{ field: 'date-seen', message: 'Enter a real date' }]
+      return [{ field: 'date-seen', message: 'Date must be a real date.' }]
+    }
+    // Reject impossible calendar dates, e.g. 31 February.
+    const seen = new Date(year, month - 1, day)
+    if (seen.getFullYear() !== year || seen.getMonth() !== month - 1 || seen.getDate() !== day) {
+      return [{ field: 'date-seen', message: 'Date must be a real date.' }]
+    }
+    // You cannot have seen the bird in the future. Compare whole days only.
+    const now = new Date()
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+    if (seen > today) {
+      return [{ field: 'date-seen', message: 'Date must be today or in the past.' }]
     }
     data.dateSeen = { day: day, month: month, year: year }
     return []
   },
 
   accessible: function (body, data) {
-    if (isBlank(body.accessible)) return [{ field: 'accessible', message: 'Select whether the bird can be reached safely' }]
+    if (isBlank(body.accessible)) return [{ field: 'accessible', message: 'Select one option.' }]
     data.accessible = body.accessible
     return []
   },
 
   condition: function (body, data) {
-    if (isBlank(body.condition)) return [{ field: 'condition', message: 'Select a description of the dead wild birds' }]
+    if (isBlank(body.condition)) return [{ field: 'condition', message: 'Condition must be provided.' }]
     data.condition = body.condition
     return []
   },
 
   location: function (body, data) {
-    if (isBlank(body.locationMethod)) return [{ field: 'locationMethod', message: 'Choose how you want to give the location' }]
+    if (isBlank(body.locationMethod)) return [{ field: 'locationMethod', message: 'Location must be provided.' }]
     data.location = {
       method: body.locationMethod,
       map: (body.lat && body.lng) ? (body.lat + ', ' + body.lng) : '',
@@ -136,7 +147,7 @@ const VALIDATORS = {
 
   contact: function (body, data) {
     const errors = []
-    if (isBlank(body.name)) errors.push({ field: 'name', message: 'Enter your name' })
+    if (isBlank(body.name)) errors.push({ field: 'name', message: 'Name must be provided.' })
     else data.name = body.name.trim()
 
     // At least one contact method is required, but neither is mandatory on its
@@ -144,7 +155,7 @@ const VALIDATORS = {
     const phone = (body.phone || '').trim()
     const email = (body.email || '').trim()
     if (!phone && !email) {
-      errors.push({ field: 'phone', message: 'Enter a telephone number or email address' })
+      errors.push({ field: 'phone', message: 'Telephone number or email address must be provided.' })
     }
     data.phone = phone
     data.email = email
