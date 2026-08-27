@@ -5,13 +5,15 @@
 //   - collect (WSF): the bird may be collected for testing
 //   - do not collect (REP): report only
 //
-// A report is collected only when:
+// A report is collected when EITHER:
+//   - it is a mass mortality (the total number of birds across all species
+//     meets the mass mortality threshold) — this overrides condition and
+//     reachability, OR
 //   - the bird can be reached safely (accessible), AND
-//   - the condition is good or mixed (not decomposed), AND
-//   - the number of that species meets the collection threshold
+//     the condition is good or mixed (not decomposed), AND
+//     the number of that species meets its own collection threshold
 //
-// The thresholds below are PLACEHOLDERS to be replaced with the real surveillance
-// collection thresholds. Change them in one place here.
+// Change the thresholds in one place below.
 //
 
 // Species options from the doc (type of bird). key -> { label, hint, threshold }.
@@ -36,6 +38,10 @@ const SPECIES = {
 
 const DEFAULT_THRESHOLD = 3
 
+// A mass mortality is 5 or more dead wild birds in total, across all species.
+// It overrides the condition and reachability gates (see decide()).
+const MASS_MORTALITY_THRESHOLD = 5
+
 function speciesLabel (key) {
   return (SPECIES[key] && SPECIES[key].label) || 'Not provided'
 }
@@ -57,6 +63,11 @@ function meetsThreshold (data) {
   })
 }
 
+// True if the total across all species is a mass mortality.
+function massMortality (data) {
+  return totalCount(data) >= MASS_MORTALITY_THRESHOLD
+}
+
 function outcome (collect, reason, summary) {
   return { collect: collect, reason: reason, summary: summary }
 }
@@ -65,6 +76,10 @@ function outcome (collect, reason, summary) {
 // Decide the outcome. Returns { collect, reason, summary }.
 //
 function decide (data) {
+  // Mass mortality is collected regardless of condition or reachability.
+  if (massMortality(data)) {
+    return outcome(true, 'mass-mortality', 'We may collect these birds for testing')
+  }
   if (data.accessible === 'no') {
     return outcome(false, 'not-accessible', 'We are not able to collect these birds')
   }
@@ -89,8 +104,16 @@ function explain (data) {
     return answer === failingValue ? 'fail' : 'pass'
   }
 
+  const isMassMortality = massMortality(data)
+
   const checks = [
     { rule: 'Some birds counted', detail: 'total > 0', value: hasCounts ? total : '—', status: hasCounts ? 'pass' : 'pending' },
+    {
+      rule: 'Mass mortality (override)',
+      detail: 'total >= ' + MASS_MORTALITY_THRESHOLD,
+      value: hasCounts ? (isMassMortality ? 'yes' : 'no') : '—',
+      status: !hasCounts ? 'pending' : (isMassMortality ? 'pass' : 'fail')
+    },
     { rule: 'Accessible', detail: 'accessible !== "no"', value: data.accessible || '—', status: gate(data.accessible, 'no') },
     { rule: 'Not decomposed', detail: 'condition !== "decomposed"', value: data.condition || '—', status: gate(data.condition, 'decomposed') },
     {
@@ -101,19 +124,21 @@ function explain (data) {
     }
   ]
 
-  const complete = hasCounts && data.accessible !== undefined && data.condition !== undefined
+  // A mass mortality reaches a verdict on the counts alone; other outcomes need
+  // the reachability and condition answers too.
+  const complete = hasCounts && (isMassMortality || (data.accessible !== undefined && data.condition !== undefined))
 
   return {
     checks: checks,
     complete: complete,
-    verdict: complete ? { collect: decide(data).collect, summary: decide(data).summary, priority: false } : null,
+    verdict: complete ? { collect: decide(data).collect, summary: decide(data).summary, priority: isMassMortality } : null,
     species: SPECIES,
     highRiskList: [],
-    massMortalityThreshold: null,
+    massMortalityThreshold: MASS_MORTALITY_THRESHOLD,
     countValue: total,
     threshold: null,
     highRisk: false,
-    massMortality: false
+    massMortality: isMassMortality
   }
 }
 
@@ -122,5 +147,6 @@ module.exports = {
   explain: explain,
   speciesLabel: speciesLabel,
   thresholdFor: thresholdFor,
+  massMortality: massMortality,
   SPECIES: SPECIES
 }
