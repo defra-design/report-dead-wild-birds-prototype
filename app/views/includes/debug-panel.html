@@ -71,7 +71,7 @@ page by app/views/layouts/main.html. Hide it for a session with ?debug=off.
 
   <details class="app-debug__details">
     <summary>Threshold config ({{ debug.species | length }} species)</summary>
-    <p class="app-debug__note">Set in app/lib/decision.js — mass mortality is more than {{ debug.massMortalityThreshold }} birds.</p>
+    <p class="app-debug__note">Set in app/lib/decision.js — mass mortality is {{ debug.massMortalityThreshold }} or more birds in total.</p>
     <table class="app-debug__table">
       <thead>
         <tr><th>species</th><th>threshold</th><th>risk</th></tr>

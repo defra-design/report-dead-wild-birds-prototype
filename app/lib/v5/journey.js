@@ -20,6 +20,8 @@
 // decision.js are placeholders, to be detailed page by page.
 //
 
+const decision = require('./decision')
+
 const STEPS = [
   'are-you-reporting-a-dead-bird',
   'location',
@@ -173,8 +175,11 @@ const VALIDATORS = {
 //
 function nextStep (currentStep, data) {
   if (currentStep === 'are-you-reporting-a-dead-bird' && data.reportingDead === 'no') return 'sick-or-injured'
-  if (currentStep === 'accessible' && data.accessible === 'no') return 'outcome'
-  if (currentStep === 'condition' && data.condition === 'decomposed') return 'outcome'
+  // A mass mortality is collected regardless of reachability or condition, so
+  // it does not exit early — it carries on to capture contact and location.
+  const isMassMortality = decision.massMortality(data)
+  if (currentStep === 'accessible' && data.accessible === 'no' && !isMassMortality) return 'outcome'
+  if (currentStep === 'condition' && data.condition === 'decomposed' && !isMassMortality) return 'outcome'
   if (currentStep === 'check') return 'outcome'
   return STEPS[STEPS.indexOf(currentStep) + 1]
 }
