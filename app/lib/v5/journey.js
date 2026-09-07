@@ -36,10 +36,11 @@ const STEPS = [
 ]
 
 // Bird types that have a "how many" number field on the bird-type-and-number
-// page. The gulls/seabirds/waders group is handled separately (see validator).
+// page. Gulls, seabirds and waders are three separate counts, plus an "unknown"
+// count for reporters who cannot tell which of the three they found.
 const COUNT_KEYS = [
   'bird-of-prey', 'corvid', 'duck', 'gamebird', 'goose',
-  'gull', 'seabird', 'wader',
+  'gull', 'seabird', 'wader', 'gull-seabird-wader-unknown',
   'heron-egret', 'pigeon-dove', 'rail-crake', 'songbird-garden', 'swan', 'other'
 ]
 
@@ -47,9 +48,27 @@ function isBlank (value) {
   return value === undefined || value === null || String(value).trim() === ''
 }
 
+// Joins the missing date parts for the error message, e.g. ['day','year'] ->
+// "day and year", ['month'] -> "month".
+function listParts (parts) {
+  if (parts.length === 1) return parts[0]
+  return parts.slice(0, -1).join(', ') + ' and ' + parts[parts.length - 1]
+}
+
+// Light-touch format checks for the prototype (not full validation).
+function isValidEmail (value) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
+}
+
+function isValidPhone (value) {
+  // Allow digits, spaces, and the usual separators; needs 8–15 digits.
+  const digits = value.replace(/[\s()-]/g, '').replace(/^\+/, '')
+  return /^[0-9]{8,15}$/.test(digits)
+}
+
 const VALIDATORS = {
   'are-you-reporting-a-dead-bird': function (body, data) {
-    if (isBlank(body.reportingDead)) return [{ field: 'reportingDead', message: 'Reason for reporting must be provided.' }]
+    if (isBlank(body.reportingDead)) return [{ field: 'reportingDead', message: 'Select the reason for your report.' }]
     data.reportingDead = body.reportingDead
     return []
   },
@@ -67,20 +86,10 @@ const VALIDATORS = {
       total += counts[key]
     })
 
-    // Gulls, seabirds and waders group: either give numbers (captured above) or
-    // record that the reporter is not sure which they found.
-    data.gullsChoice = body.gullsChoice || ''
-    if (data.gullsChoice === 'unknown') {
-      counts['gull-seabird-wader-unknown'] = 1
-      total += 1
-      // The "give numbers" fields are not relevant if they are not sure.
-      counts.gull = 0; counts.seabird = 0; counts.wader = 0
-    }
-
     data.counts = counts
 
     if (total === 0) {
-      errors.push({ field: 'count-bird-of-prey', message: 'Number of birds must be provided.' })
+      errors.push({ field: 'count-bird-of-prey', message: 'Enter the number of birds you found for each species.' })
     }
 
     return errors
@@ -89,48 +98,78 @@ const VALIDATORS = {
   'date-seen': function (body, data) {
     // Captured for information only. It does not affect the collection decision.
     const d = body['date-day']; const m = body['date-month']; const y = body['date-year']
-    if (isBlank(d) && isBlank(m) && isBlank(y)) {
-      return [{ field: 'date-seen', message: 'Date must be provided.' }]
+
+    // Which of the three boxes are empty. All empty is a different message from
+    // one or two empty (which names the missing parts).
+    const missing = []
+    if (isBlank(d)) missing.push('day')
+    if (isBlank(m)) missing.push('month')
+    if (isBlank(y)) missing.push('year')
+    if (missing.length === 3) {
+      return [{ field: 'date-seen', message: 'Enter the date you saw the bird.' }]
     }
+    if (missing.length) {
+      return [{ field: 'date-seen', message: 'The date you saw the bird must include a ' + listParts(missing) + '.' }]
+    }
+
     const day = parseInt(d, 10); const month = parseInt(m, 10); const year = parseInt(y, 10)
     if (!day || !month || !year || month < 1 || month > 12 || day < 1 || day > 31) {
-      return [{ field: 'date-seen', message: 'Date must be a real date.' }]
+      return [{ field: 'date-seen', message: 'The date you saw the bird must be a real date.' }]
     }
     // Reject impossible calendar dates, e.g. 31 February.
     const seen = new Date(year, month - 1, day)
     if (seen.getFullYear() !== year || seen.getMonth() !== month - 1 || seen.getDate() !== day) {
-      return [{ field: 'date-seen', message: 'Date must be a real date.' }]
+      return [{ field: 'date-seen', message: 'The date you saw the bird must be a real date.' }]
     }
     // You cannot have seen the bird in the future. Compare whole days only.
     const now = new Date()
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
     if (seen > today) {
-      return [{ field: 'date-seen', message: 'Date must be today or in the past.' }]
+      return [{ field: 'date-seen', message: 'The date you saw the bird must be today or in the past.' }]
     }
     data.dateSeen = { day: day, month: month, year: year }
     return []
   },
 
   accessible: function (body, data) {
-    if (isBlank(body.accessible)) return [{ field: 'accessible', message: 'Select one option.' }]
+    if (isBlank(body.accessible)) return [{ field: 'accessible', message: 'Select if the bird can be reached safely.' }]
     data.accessible = body.accessible
     return []
   },
 
   condition: function (body, data) {
-    if (isBlank(body.condition)) return [{ field: 'condition', message: 'Condition must be provided.' }]
+    if (isBlank(body.condition)) return [{ field: 'condition', message: 'Select the condition of the bird.' }]
     data.condition = body.condition
     return []
   },
 
   location: function (body, data) {
-    if (isBlank(body.locationMethod)) return [{ field: 'locationMethod', message: 'Location must be provided.' }]
+    const method = body.locationMethod
+    if (isBlank(method)) return [{ field: 'locationMethod', message: 'Tell us where you saw the bird.' }]
+
+    // The chosen method must have its detail filled in. (Manual address lines
+    // and real postcode/what3words format checks are a later, backend job.)
+    if (method === 'map' && (isBlank(body.lat) || isBlank(body.lng))) {
+      return [{ field: 'locationMethod', message: 'Select where you saw the bird on the map.' }]
+    }
+    if (method === 'address' && isBlank(body.postcode)) {
+      return [{ field: 'locationMethod', message: 'Enter a full UK postcode' }]
+    }
+    if (method === 'what3words' && isBlank(body.what3words)) {
+      return [{ field: 'locationMethod', message: 'Enter a what3words location.' }]
+    }
+
+    const info = (body.locationInfo || '').trim()
+    if (info.length > 500) {
+      return [{ field: 'locationInfo', message: 'Description must be 500 characters or less.' }]
+    }
+
     data.location = {
-      method: body.locationMethod,
+      method: method,
       map: (body.lat && body.lng) ? (body.lat + ', ' + body.lng) : '',
       postcode: (body.postcode || '').trim(),
       what3words: (body.what3words || '').trim(),
-      info: (body.locationInfo || '').trim()
+      info: info
     }
     return []
   },
@@ -142,8 +181,12 @@ const VALIDATORS = {
   },
 
   'location-details': function (body, data) {
-    // Optional free text.
-    data.locationDetails = (body.locationDetails || '').trim()
+    // Optional free text, but capped at 500 characters.
+    const details = (body.locationDetails || '').trim()
+    if (details.length > 500) {
+      return [{ field: 'locationDetails', message: 'Description must be 500 characters or less.' }]
+    }
+    data.locationDetails = details
     return []
   },
 
@@ -152,12 +195,22 @@ const VALIDATORS = {
     if (isBlank(body.name)) errors.push({ field: 'name', message: 'Name must be provided.' })
     else data.name = body.name.trim()
 
-    // At least one contact method is required, but neither is mandatory on its
-    // own. If both are blank, the error is attached to the telephone field.
     const phone = (body.phone || '').trim()
     const email = (body.email || '').trim()
+
+    // At least one contact method is required, but neither is mandatory on its
+    // own. When both are blank the requirement belongs to the group, so the
+    // error sits on the group (see contact.html) and spans both fields.
     if (!phone && !email) {
-      errors.push({ field: 'phone', message: 'Telephone number or email address must be provided.' })
+      errors.push({ field: 'contact', message: 'Telephone number or email address must be provided.' })
+    } else {
+      // Whatever was given must be in a sensible format. These are field-level.
+      if (email && !isValidEmail(email)) {
+        errors.push({ field: 'email', message: 'Enter an email address in the correct format, like name@example.com' })
+      }
+      if (phone && !isValidPhone(phone)) {
+        errors.push({ field: 'phone', message: 'Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 808 157 0192' })
+      }
     }
     data.phone = phone
     data.email = email
