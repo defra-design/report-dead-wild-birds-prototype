@@ -4,7 +4,6 @@
 {% set backLink = "/location" %}
 
 {% from "govuk/components/input/macro.njk" import govukInput %}
-{% from "govuk/components/radios/macro.njk" import govukRadios %}
 
 {% macro birdCount(bird) %}
   {{ govukInput({
@@ -37,33 +36,15 @@
     { key: "goose", label: "Geese" }
   ] %}{{ birdCount(bird) }}{% endfor %}
 
-  {# Gulls, seabirds and waders: either give numbers of each, or say you are not
-     sure which you found. #}
-  {% set gullsNumbers %}
-    {% for bird in [
-      { key: "gull", label: "Gulls", hint: "Includes all gulls and kittiwakes." },
-      { key: "seabird", label: "Seabirds", hint: "Such as puffins, gannets, guillemots and cormorants." },
-      { key: "wader", label: "Waders", hint: "Such as avocets, curlews, oystercatchers and plovers." }
-    ] %}{{ birdCount(bird) }}{% endfor %}
-  {% endset %}
-
-  {{ govukRadios({
-    name: "gullsChoice",
-    fieldset: { legend: { text: "Gulls, seabirds and waders", classes: "govuk-fieldset__legend--s" } },
-    items: [
-      {
-        value: "numbers",
-        text: "I can provide numbers of each of gulls, seabirds and waders",
-        checked: data.gullsChoice == "numbers",
-        conditional: { html: gullsNumbers }
-      },
-      {
-        value: "unknown",
-        text: "I'm not sure what type of gull, seabird or wader I have found",
-        checked: data.gullsChoice == "unknown"
-      }
-    ]
-  }) }}
+  {# Gulls, seabirds and waders are counted separately, with an "unknown" count
+     for reporters who cannot tell which of the three they found. #}
+  <h2 class="govuk-heading-s govuk-!-margin-bottom-2">Gulls, seabirds and waders</h2>
+  {% for bird in [
+    { key: "gull", label: "Gulls", hint: "Includes all gulls and kittiwakes." },
+    { key: "seabird", label: "Seabirds", hint: "Such as puffins, gannets, guillemots and cormorants." },
+    { key: "wader", label: "Waders", hint: "Such as avocets, curlews, oystercatchers and plovers." },
+    { key: "gull-seabird-wader-unknown", label: "Unknown gulls, seabirds and waders" }
+  ] %}{{ birdCount(bird) }}{% endfor %}
 
   {% for bird in [
     { key: "heron-egret", label: "Herons and egrets", hint: "Includes cranes, bitterns, spoonbills and storks." },

@@ -68,6 +68,7 @@
     name: "locationInfo",
     maxlength: 500,
     label: { text: "Tell us any other information about the location, such as landmarks or buildings (optional)", classes: "govuk-label--s" },
+    errorMessage: { text: errors.locationInfo } if errors.locationInfo,
     value: data.location.info if data.location
   }) }}
 
