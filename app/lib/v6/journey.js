@@ -228,7 +228,7 @@ const VALIDATORS = {
 //   1. not a dead bird              -> sick or injured guidance          (no ref)
 //   2. seen more than 4 days ago    -> too old guidance                  (no ref)
 //   3. Northern Ireland             -> Northern Ireland guidance         (no ref)
-//   4. below the collection threshold -> outcome (below threshold)       (REP)
+//   4. below the collection threshold -> below threshold guidance        (no ref)
 //   5. cannot be reached safely     -> outcome (not accessible)          (REP)
 //   6. decomposed                   -> outcome (decomposed)              (REP)
 //   - check                         -> outcome (collection, or final verdict)
@@ -244,7 +244,7 @@ function nextStep (currentStep, data) {
   if (currentStep === 'location' && decision.northernIreland(data)) return 'northern-ireland'
 
   const isMassMortality = decision.massMortality(data)
-  if (currentStep === 'bird-type-and-number' && !isMassMortality && !decision.meetsThreshold(data)) return 'outcome'
+  if (currentStep === 'bird-type-and-number' && !isMassMortality && !decision.meetsThreshold(data)) return 'below-threshold'
   if (currentStep === 'accessible' && data.accessible === 'no' && !isMassMortality) return 'outcome'
   if (currentStep === 'condition' && data.condition === 'decomposed' && !isMassMortality) return 'outcome'
   if (currentStep === 'check') return 'outcome'

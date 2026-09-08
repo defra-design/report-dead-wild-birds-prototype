@@ -150,10 +150,11 @@ function explain (data) {
     }
   ]
 
-  // Some verdicts are reached early: too old (from the date alone) or a mass
-  // mortality (from the counts alone). Otherwise the reachability and condition
-  // answers are needed too.
-  const complete = isTooOld || (hasCounts && (isMassMortality || (data.accessible !== undefined && data.condition !== undefined)))
+  // Some verdicts are reached early: too old (from the date alone), below the
+  // threshold or a mass mortality (from the counts alone). Otherwise the
+  // reachability and condition answers are needed too.
+  const belowThreshold = hasCounts && !isMassMortality && !meetsThreshold(data)
+  const complete = isTooOld || belowThreshold || (hasCounts && (isMassMortality || (data.accessible !== undefined && data.condition !== undefined)))
 
   // "Too old" routes out before the collection decision, so show it directly.
   let verdict = null

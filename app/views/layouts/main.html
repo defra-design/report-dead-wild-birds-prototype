@@ -33,6 +33,9 @@ To show a Back link, set backLink to a path within the version, for example:
 {% endblock %}
 
 {% block pageScripts %}
+  {# Discreet, prototype-only controls placed after the footer. #}
+  {% block belowFooter %}{% endblock %}
+
   {% if showDebug %}
     {% include "includes/debug-panel.html" %}
   {% endif %}

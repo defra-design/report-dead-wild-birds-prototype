@@ -6,10 +6,9 @@
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
-{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
 
 {% block form %}
-<form method="post" novalidate>
+<form method="post" novalidate id="location-form">
 
   {# Choose one location method. Each choice reveals its own input.
      Scaffold: the map is the stand-in used elsewhere; the other reveals are
@@ -73,25 +72,21 @@
     value: data.location.info if data.location
   }) }}
 
-  {# Prototype-only test control. A real service would work out the country from
-     the location itself; this lets a tester force the Northern Ireland exit. #}
-  <div class="app-test-control">
-    <p class="app-test-control__label">Prototype testing only</p>
-    {{ govukCheckboxes({
-      name: "simulateNI",
-      classes: "govuk-checkboxes--small",
-      items: [
-        {
-          value: "yes",
-          text: "Simulate a Northern Ireland location",
-          hint: { text: "Shows the Northern Ireland exit page after this step." },
-          checked: data.location.northernIreland if data.location
-        }
-      ]
-    }) }}
-  </div>
-
   {{ govukButton({ text: "Continue" }) }}
 
 </form>
+{% endblock %}
+
+{# Prototype-only test control, kept discreet and placed below the footer. It
+   still submits with the location form above via the form="location-form"
+   attribute. A real service would derive the country from the location. #}
+{% block belowFooter %}
+<div class="app-test-control">
+  <div class="govuk-width-container">
+    <label class="app-test-control__toggle">
+      <input type="checkbox" name="simulateNI" value="yes" form="location-form"{% if data.location and data.location.northernIreland %} checked{% endif %}>
+      <span>Prototype test — simulate a Northern Ireland location</span>
+    </label>
+  </div>
+</div>
 {% endblock %}
