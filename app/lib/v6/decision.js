@@ -65,7 +65,7 @@ function totalCount (data) {
 // blackbird is enough. "I'm not sure" is treated as yes, to be on the safe side.
 function effectiveThreshold (key, data) {
   const maybeBlackbird = data.blackbirds === 'yes' || data.blackbirds === 'not-sure'
-  if (key === 'songbird-garden' && data.location && data.location.scotland && maybeBlackbird) {
+  if (key === 'songbird-garden' && data.country === 'scotland' && maybeBlackbird) {
     return 1
   }
   return thresholdFor(key)
@@ -79,11 +79,11 @@ function meetsThreshold (data) {
   })
 }
 
-// True if the location is in Scotland and songbirds/garden birds were reported,
+// True if the country is Scotland and songbirds/garden birds were reported,
 // so the blackbird follow-up question should be asked.
 function scotlandSongbird (data) {
   const counts = data.counts || {}
-  return !!(data.location && data.location.scotland) && (counts['songbird-garden'] || 0) >= 1
+  return data.country === 'scotland' && (counts['songbird-garden'] || 0) >= 1
 }
 
 // True if the total across all species is a mass mortality.
@@ -101,10 +101,11 @@ function tooOld (data) {
   return hours > MAX_AGE_HOURS
 }
 
-// True if the reporter's location is in Northern Ireland. The prototype sets
-// this from a test toggle on the location page; a real service would derive it.
+// True if the reporter selected Northern Ireland on the country question. (The
+// country question is an interim testing step — a real service would derive the
+// country from the location.)
 function northernIreland (data) {
-  return !!(data.location && data.location.northernIreland)
+  return data.country === 'northern-ireland'
 }
 
 function outcome (collect, reason, summary) {
@@ -151,7 +152,7 @@ function explain (data) {
 
   const checks = [
     { rule: 'Seen within 48 hours', detail: 'hours since seen <= ' + MAX_AGE_HOURS, value: data.dateSeen ? (isTooOld ? 'too old' : 'ok') : '—', status: !data.dateSeen ? 'pending' : (isTooOld ? 'fail' : 'pass') },
-    { rule: 'Not Northern Ireland', detail: 'location not in NI', value: data.location ? (isNI ? 'NI' : 'ok') : '—', status: !data.location ? 'pending' : (isNI ? 'fail' : 'pass') },
+    { rule: 'Not Northern Ireland', detail: 'country is not NI', value: data.country ? (isNI ? 'NI' : 'ok') : '—', status: !data.country ? 'pending' : (isNI ? 'fail' : 'pass') },
     { rule: 'Some birds counted', detail: 'total > 0', value: hasCounts ? total : '—', status: hasCounts ? 'pass' : 'pending' },
     {
       rule: 'Mass mortality (override)',

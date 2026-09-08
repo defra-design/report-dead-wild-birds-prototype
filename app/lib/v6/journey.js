@@ -25,6 +25,7 @@ const decision = require('./decision')
 const STEPS = [
   'are-you-reporting-a-dead-bird',
   'date-seen',
+  'country',
   'location',
   'bird-type-and-number',
   'blackbirds',
@@ -144,6 +145,12 @@ const VALIDATORS = {
     return []
   },
 
+  country: function (body, data) {
+    if (isBlank(body.country)) return [{ field: 'country', message: 'Select the country where you found the bird' }]
+    data.country = body.country
+    return []
+  },
+
   location: function (body, data) {
     const method = body.locationMethod
     if (isBlank(method)) return [{ field: 'locationMethod', message: 'Tell us where you saw the bird.' }]
@@ -170,12 +177,7 @@ const VALIDATORS = {
       map: (body.lat && body.lng) ? (body.lat + ', ' + body.lng) : '',
       postcode: (body.postcode || '').trim(),
       what3words: (body.what3words || '').trim(),
-      info: info,
-      // Prototype-only test controls: pretend this location is in Northern
-      // Ireland (to walk the NI exit) or Scotland (for the blackbird rule). A
-      // real service would derive the country from the location itself.
-      northernIreland: body.simulateNI === 'yes',
-      scotland: body.simulateScotland === 'yes'
+      info: info
     }
     return []
   },
@@ -210,19 +212,14 @@ const VALIDATORS = {
     const phone = (body.phone || '').trim()
     const email = (body.email || '').trim()
 
-    // At least one contact method is required, but neither is mandatory on its
-    // own. When both are blank the requirement belongs to the group, so the
-    // error sits on the group (see contact.html) and spans both fields.
-    if (!phone && !email) {
-      errors.push({ field: 'contact', message: 'Telephone number or email address must be provided.' })
-    } else {
-      // Whatever was given must be in a sensible format. These are field-level.
-      if (email && !isValidEmail(email)) {
-        errors.push({ field: 'email', message: 'Enter an email address in the correct format, like name@example.com' })
-      }
-      if (phone && !isValidPhone(phone)) {
-        errors.push({ field: 'phone', message: 'Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 808 157 0192' })
-      }
+    // Email is required; telephone is optional.
+    if (!email) {
+      errors.push({ field: 'email', message: 'Enter an email address' })
+    } else if (!isValidEmail(email)) {
+      errors.push({ field: 'email', message: 'Enter an email address in the correct format, like name@example.com' })
+    }
+    if (phone && !isValidPhone(phone)) {
+      errors.push({ field: 'phone', message: 'Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 808 157 0192' })
     }
     data.phone = phone
     data.email = email
@@ -235,7 +232,7 @@ const VALIDATORS = {
 // to a contextual end page, in journey order:
 //   1. not a dead bird              -> sick or injured guidance          (no ref)
 //   2. seen more than 48 hours ago  -> too old guidance                  (no ref)
-//   3. Northern Ireland             -> Northern Ireland guidance         (no ref)
+//   3. Northern Ireland (country)   -> Northern Ireland guidance         (no ref)
 //   4. below the collection threshold -> below threshold guidance        (no ref)
 //   5. cannot be reached safely     -> not reachable guidance            (no ref)
 //   6. decomposed                   -> bird condition guidance           (no ref)
@@ -252,7 +249,7 @@ const VALIDATORS = {
 function nextStep (currentStep, data) {
   if (currentStep === 'are-you-reporting-a-dead-bird' && data.reportingDead === 'no') return 'sick-or-injured'
   if (currentStep === 'date-seen' && decision.tooOld(data)) return 'too-old'
-  if (currentStep === 'location' && decision.northernIreland(data)) return 'northern-ireland'
+  if (currentStep === 'country' && data.country === 'northern-ireland') return 'northern-ireland'
 
   const isMassMortality = decision.massMortality(data)
 

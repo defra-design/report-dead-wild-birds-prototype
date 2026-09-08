@@ -88,7 +88,8 @@ function setUpDebugPanel () {
   const toggle = document.getElementById('app-debug-toggle')
   if (!panel || !toggle) return
 
-  let isOpen = window.localStorage.getItem('dwbDebugOpen') !== 'false'
+  // Collapsed by default; only open if the tester has explicitly opened it.
+  let isOpen = window.localStorage.getItem('dwbDebugOpen') === 'true'
 
   function render () {
     panel.hidden = !isOpen
