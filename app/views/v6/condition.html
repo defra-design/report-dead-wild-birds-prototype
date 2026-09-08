@@ -17,7 +17,6 @@
         classes: "govuk-fieldset__legend--l"
       }
     },
-    hint: { text: "If you are reporting more than one bird, describe the bird that's in the best condition." },
     errorMessage: { text: errors.condition } if errors.condition,
     items: [
       {
@@ -34,8 +33,8 @@
       },
       {
         value: "mixed",
-        text: "Mix of carcass conditions",
-        hint: { text: "or if you're not sure" },
+        text: "Birds in different conditions",
+        hint: { text: "If you are reporting more than one bird and they are not all in the same condition." },
         checked: data.condition == "mixed"
       }
     ]
