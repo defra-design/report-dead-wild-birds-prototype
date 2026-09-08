@@ -41,12 +41,10 @@
          contextual to the reason the decision engine returned. #}
       <h2 class="govuk-heading-m">What happens next</h2>
 
-      {% if outcome.reason == "not-accessible" %}
-        <p class="govuk-body">You told us this bird cannot be reached safely. We only collect birds that can be reached without special equipment or putting anyone at risk, so we do not need to collect it.</p>
-      {% elif outcome.reason == "decomposed" %}
+      {% if outcome.reason == "decomposed" %}
         <p class="govuk-body">You told us this bird is decomposed or breaking down. Birds in this condition cannot be tested reliably, so we do not need to collect it.</p>
       {% else %}
-        <p class="govuk-body">We use surveillance thresholds to decide which birds to collect for testing. Based on the type and number of birds you reported, we do not need to collect them. You can <a class="govuk-link" href="https://www.gov.uk/government/publications/surveillance-collection-thresholds-for-dead-wild-birds" rel="noreferrer noopener" target="_blank">find out about surveillance collection thresholds for dead wild birds</a>.</p>
+        <p class="govuk-body">Based on the information available, we do not need to collect this bird.</p>
       {% endif %}
 
       <p class="govuk-body">Your report is still valuable — we use every report to track where and how disease is spreading. You do not need to do anything else.</p>

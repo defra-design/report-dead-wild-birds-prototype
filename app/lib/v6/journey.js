@@ -229,7 +229,7 @@ const VALIDATORS = {
 //   2. seen more than 4 days ago    -> too old guidance                  (no ref)
 //   3. Northern Ireland             -> Northern Ireland guidance         (no ref)
 //   4. below the collection threshold -> below threshold guidance        (no ref)
-//   5. cannot be reached safely     -> outcome (not accessible)          (REP)
+//   5. cannot be reached safely     -> not reachable guidance            (no ref)
 //   6. decomposed                   -> outcome (decomposed)              (REP)
 //   - check                         -> outcome (collection, or final verdict)
 //
@@ -245,7 +245,7 @@ function nextStep (currentStep, data) {
 
   const isMassMortality = decision.massMortality(data)
   if (currentStep === 'bird-type-and-number' && !isMassMortality && !decision.meetsThreshold(data)) return 'below-threshold'
-  if (currentStep === 'accessible' && data.accessible === 'no' && !isMassMortality) return 'outcome'
+  if (currentStep === 'accessible' && data.accessible === 'no' && !isMassMortality) return 'not-reachable'
   if (currentStep === 'condition' && data.condition === 'decomposed' && !isMassMortality) return 'outcome'
   if (currentStep === 'check') return 'outcome'
   return STEPS[STEPS.indexOf(currentStep) + 1]

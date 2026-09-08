@@ -154,7 +154,8 @@ function explain (data) {
   // threshold or a mass mortality (from the counts alone). Otherwise the
   // reachability and condition answers are needed too.
   const belowThreshold = hasCounts && !isMassMortality && !meetsThreshold(data)
-  const complete = isTooOld || belowThreshold || (hasCounts && (isMassMortality || (data.accessible !== undefined && data.condition !== undefined)))
+  const notReachable = data.accessible === 'no' && !isMassMortality
+  const complete = isTooOld || belowThreshold || notReachable || (hasCounts && (isMassMortality || (data.accessible !== undefined && data.condition !== undefined)))
 
   // "Too old" routes out before the collection decision, so show it directly.
   let verdict = null
