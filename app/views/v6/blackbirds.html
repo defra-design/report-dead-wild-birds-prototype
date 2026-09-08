@@ -1,0 +1,31 @@
+{% extends "layouts/question.html" %}
+
+{% set pageName = "Are the birds you found blackbirds?" %}
+{% set backLink = "/bird-type-and-number" %}
+
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% block form %}
+<form method="post" novalidate>
+
+  {{ govukRadios({
+    name: "blackbirds",
+    fieldset: {
+      legend: {
+        text: "Are the birds you found blackbirds?",
+        isPageHeading: true,
+        classes: "govuk-fieldset__legend--l"
+      }
+    },
+    hint: { text: "You told us you found songbirds or garden birds. In Scotland, a single dead blackbird can be collected for testing." },
+    errorMessage: { text: errors.blackbirds } if errors.blackbirds,
+    items: [
+      { value: "yes", text: "Yes", checked: data.blackbirds == "yes" },
+      { value: "no", text: "No", checked: data.blackbirds == "no" }
+    ]
+  }) }}
+
+  {{ govukButton({ text: "Continue" }) }}
+
+</form>
+{% endblock %}

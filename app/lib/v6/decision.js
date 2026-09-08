@@ -60,12 +60,28 @@ function totalCount (data) {
   return Object.keys(counts).reduce(function (sum, k) { return sum + (counts[k] || 0) }, 0)
 }
 
-// True if any single bird type meets its own collection threshold.
+// The threshold for a bird type, given the answers so far. In Scotland, if the
+// songbirds/garden birds reported are blackbirds, a single blackbird is enough.
+function effectiveThreshold (key, data) {
+  if (key === 'songbird-garden' && data.location && data.location.scotland && data.blackbirds === 'yes') {
+    return 1
+  }
+  return thresholdFor(key)
+}
+
+// True if any single bird type meets its (effective) collection threshold.
 function meetsThreshold (data) {
   const counts = data.counts || {}
   return Object.keys(counts).some(function (k) {
-    return counts[k] >= thresholdFor(k)
+    return counts[k] >= effectiveThreshold(k, data)
   })
+}
+
+// True if the location is in Scotland and songbirds/garden birds were reported,
+// so the blackbird follow-up question should be asked.
+function scotlandSongbird (data) {
+  const counts = data.counts || {}
+  return !!(data.location && data.location.scotland) && (counts['songbird-garden'] || 0) >= 1
 }
 
 // True if the total across all species is a mass mortality.
@@ -187,6 +203,7 @@ module.exports = {
   thresholdFor: thresholdFor,
   massMortality: massMortality,
   meetsThreshold: meetsThreshold,
+  scotlandSongbird: scotlandSongbird,
   tooOld: tooOld,
   northernIreland: northernIreland,
   SPECIES: SPECIES

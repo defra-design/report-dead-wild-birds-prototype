@@ -23,7 +23,7 @@ const VERSIONS = [
     name: 'Alpha Prototype',
     date: '8 September 2026',
     current: true,
-    summary: 'Alpha Prototype. Reordered to screener, date seen, location, bird type and number, reachability, condition, then photo, other information, contact and check answers. Six contextual exit pages, each shown as soon as its answer rules out collection: sick or injured bird, seen more than 48 hours ago, a Northern Ireland location (prototype test toggle), below the collection threshold, cannot be reached safely, or decomposed. A mass mortality (5+ birds) still overrides reachability and condition. All six exits are reference-less guidance pages; only a collection reaches the outcome page and gives a WSF reference. Content applied from the latest content design doc.',
+    summary: 'Alpha Prototype. Reordered to screener, date seen, location, bird type and number, reachability, condition, then photo, other information, contact and check answers. Six contextual exit pages, each shown as soon as its answer rules out collection: sick or injured bird, seen more than 48 hours ago, a Northern Ireland location (prototype test toggle), below the collection threshold, cannot be reached safely, or decomposed. A mass mortality (5+ birds) still overrides reachability and condition. In Scotland (a prototype test toggle), a follow-up question asks whether reported songbirds are blackbirds; if so, a single blackbird meets the collection threshold. All six exits are reference-less guidance pages; only a collection reaches the outcome page and gives a WSF reference. Content applied from the latest content design doc.',
     journey: require('./v6/journey'),
     decision: require('./v6/decision')
   },

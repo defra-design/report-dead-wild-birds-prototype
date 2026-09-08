@@ -329,4 +329,8 @@ $app-debug-key: #8ac7ff;
     flex: 0 0 auto;
     margin: 0;
   }
+
+  & + & {
+    margin-top: govuk-spacing(1);
+  }
 }

@@ -39,11 +39,19 @@
   {%- else -%}Not provided{%- endif -%}
 {% endset %}
 
+{% set blackbirdRows = [] %}
+{% if data.blackbirds %}
+  {% set blackbirdRows = [
+    { key: { text: "Blackbirds" }, value: { text: "Yes" if data.blackbirds == "yes" else "No" }, actions: { items: [ { href: basePath + "/blackbirds" + change, text: "Change", visuallyHiddenText: "whether the birds are blackbirds" } ] } }
+  ] %}
+{% endif %}
+
 {{ govukSummaryList({
   rows: [
     { key: { text: "Date seen" }, value: { text: (data.dateSeen.day ~ " " ~ monthNames[data.dateSeen.month] ~ " " ~ data.dateSeen.year) if data.dateSeen else "Not provided" }, actions: { items: [ { href: basePath + "/date-seen" + change, text: "Change", visuallyHiddenText: "date seen" } ] } },
     { key: { text: "Location" }, value: { html: locationHtml }, actions: { items: [ { href: basePath + "/location" + change, text: "Change", visuallyHiddenText: "location" } ] } },
-    { key: { text: "Birds found" }, value: { html: countsHtml }, actions: { items: [ { href: basePath + "/bird-type-and-number" + change, text: "Change", visuallyHiddenText: "the birds you found" } ] } },
+    { key: { text: "Birds found" }, value: { html: countsHtml }, actions: { items: [ { href: basePath + "/bird-type-and-number" + change, text: "Change", visuallyHiddenText: "the birds you found" } ] } }
+  ].concat(blackbirdRows).concat([
     { key: { text: "Reached safely" }, value: { text: accessibleText[data.accessible] or "Not provided" }, actions: { items: [ { href: basePath + "/accessible" + change, text: "Change", visuallyHiddenText: "whether the bird can be reached safely" } ] } },
     { key: { text: "Condition" }, value: { text: conditionText[data.condition] or "Not provided" }, actions: { items: [ { href: basePath + "/condition" + change, text: "Change", visuallyHiddenText: "condition" } ] } },
     { key: { text: "Photo" }, value: { text: data.photo if data.photo else "No photo added" }, actions: { items: [ { href: basePath + "/photo" + change, text: "Change", visuallyHiddenText: "photo" } ] } },
@@ -51,7 +59,7 @@
     { key: { text: "Name" }, value: { text: data.name if data.name else "Not provided" }, actions: { items: [ { href: basePath + "/contact" + change, text: "Change", visuallyHiddenText: "name" } ] } },
     { key: { text: "Telephone" }, value: { text: data.phone if data.phone else "Not provided" }, actions: { items: [ { href: basePath + "/contact" + change, text: "Change", visuallyHiddenText: "telephone" } ] } },
     { key: { text: "Email" }, value: { text: data.email if data.email else "Not provided" }, actions: { items: [ { href: basePath + "/contact" + change, text: "Change", visuallyHiddenText: "email" } ] } }
-  ]
+  ])
 }) }}
 
 <h2 class="govuk-heading-m">Now send your report</h2>

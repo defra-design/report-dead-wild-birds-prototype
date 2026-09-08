@@ -27,6 +27,7 @@ const STEPS = [
   'date-seen',
   'location',
   'bird-type-and-number',
+  'blackbirds',
   'accessible',
   'condition',
   'photo',
@@ -170,11 +171,18 @@ const VALIDATORS = {
       postcode: (body.postcode || '').trim(),
       what3words: (body.what3words || '').trim(),
       info: info,
-      // Prototype-only test control: pretend this location is in Northern
-      // Ireland so the Northern Ireland exit can be walked through. A real
-      // service would derive the country from the location itself.
-      northernIreland: body.simulateNI === 'yes'
+      // Prototype-only test controls: pretend this location is in Northern
+      // Ireland (to walk the NI exit) or Scotland (for the blackbird rule). A
+      // real service would derive the country from the location itself.
+      northernIreland: body.simulateNI === 'yes',
+      scotland: body.simulateScotland === 'yes'
     }
+    return []
+  },
+
+  blackbirds: function (body, data) {
+    if (isBlank(body.blackbirds)) return [{ field: 'blackbirds', message: 'Select yes if the birds you found are blackbirds' }]
+    data.blackbirds = body.blackbirds
     return []
   },
 
@@ -247,7 +255,20 @@ function nextStep (currentStep, data) {
   if (currentStep === 'location' && decision.northernIreland(data)) return 'northern-ireland'
 
   const isMassMortality = decision.massMortality(data)
-  if (currentStep === 'bird-type-and-number' && !isMassMortality && !decision.meetsThreshold(data)) return 'below-threshold'
+
+  // After the bird counts: in Scotland, if songbirds were reported, ask the
+  // blackbird follow-up before deciding the threshold (a single blackbird is
+  // collectable in Scotland). The threshold check then happens after it.
+  if (currentStep === 'bird-type-and-number') {
+    if (decision.scotlandSongbird(data)) return 'blackbirds'
+    if (!isMassMortality && !decision.meetsThreshold(data)) return 'below-threshold'
+    return 'accessible'
+  }
+  if (currentStep === 'blackbirds') {
+    if (!isMassMortality && !decision.meetsThreshold(data)) return 'below-threshold'
+    return 'accessible'
+  }
+
   if (currentStep === 'accessible' && data.accessible === 'no' && !isMassMortality) return 'not-reachable'
   if (currentStep === 'condition' && data.condition === 'decomposed' && !isMassMortality) return 'bird-condition'
   if (currentStep === 'check') return 'outcome'

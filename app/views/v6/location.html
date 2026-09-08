@@ -87,6 +87,10 @@
       <input type="checkbox" name="simulateNI" value="yes" form="location-form"{% if data.location and data.location.northernIreland %} checked{% endif %}>
       <span>Prototype test — simulate a Northern Ireland location</span>
     </label>
+    <label class="app-test-control__toggle">
+      <input type="checkbox" name="simulateScotland" value="yes" form="location-form"{% if data.location and data.location.scotland %} checked{% endif %}>
+      <span>Prototype test — simulate a Scotland location</span>
+    </label>
   </div>
 </div>
 {% endblock %}
