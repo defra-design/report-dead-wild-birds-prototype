@@ -230,8 +230,11 @@ const VALIDATORS = {
 //   3. Northern Ireland             -> Northern Ireland guidance         (no ref)
 //   4. below the collection threshold -> below threshold guidance        (no ref)
 //   5. cannot be reached safely     -> not reachable guidance            (no ref)
-//   6. decomposed                   -> outcome (decomposed)              (REP)
-//   - check                         -> outcome (collection, or final verdict)
+//   6. decomposed                   -> bird condition guidance           (no ref)
+//   - check                         -> outcome (collection)
+//
+// Every "no collection" gate now routes to its own reference-less guidance
+// page, so the outcome page below is reached only for a collection (WSF).
 //
 // A mass mortality (5+ birds in total) is collected regardless of reachability
 // or condition, so it does not trigger exits 4-6 — it carries on through the
@@ -246,7 +249,7 @@ function nextStep (currentStep, data) {
   const isMassMortality = decision.massMortality(data)
   if (currentStep === 'bird-type-and-number' && !isMassMortality && !decision.meetsThreshold(data)) return 'below-threshold'
   if (currentStep === 'accessible' && data.accessible === 'no' && !isMassMortality) return 'not-reachable'
-  if (currentStep === 'condition' && data.condition === 'decomposed' && !isMassMortality) return 'outcome'
+  if (currentStep === 'condition' && data.condition === 'decomposed' && !isMassMortality) return 'bird-condition'
   if (currentStep === 'check') return 'outcome'
   return STEPS[STEPS.indexOf(currentStep) + 1]
 }
