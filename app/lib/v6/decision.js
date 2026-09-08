@@ -96,11 +96,8 @@ function outcome (collect, reason, summary) {
 // Decide the outcome. Returns { collect, reason, summary }.
 //
 function decide (data) {
-  // Too old to be useful, whatever else is true (and mass mortality is not yet
-  // known at that point in the journey anyway).
-  if (tooOld(data)) {
-    return outcome(false, 'too-old', 'We do not need to collect these birds')
-  }
+  // Note: "too old" and "Northern Ireland" are routing exits handled before the
+  // outcome page (see journey.nextStep), so they are not decided here.
   // Mass mortality is collected regardless of condition or reachability.
   if (massMortality(data)) {
     return outcome(true, 'mass-mortality', 'We may collect these birds for testing')
@@ -158,10 +155,18 @@ function explain (data) {
   // answers are needed too.
   const complete = isTooOld || (hasCounts && (isMassMortality || (data.accessible !== undefined && data.condition !== undefined)))
 
+  // "Too old" routes out before the collection decision, so show it directly.
+  let verdict = null
+  if (isTooOld) {
+    verdict = { collect: false, summary: 'Routed to the ‘too old’ exit — no collection', priority: false }
+  } else if (complete) {
+    verdict = { collect: decide(data).collect, summary: decide(data).summary, priority: isMassMortality }
+  }
+
   return {
     checks: checks,
     complete: complete,
-    verdict: complete ? { collect: decide(data).collect, summary: decide(data).summary, priority: isMassMortality } : null,
+    verdict: verdict,
     species: SPECIES,
     highRiskList: [],
     massMortalityThreshold: MASS_MORTALITY_THRESHOLD,

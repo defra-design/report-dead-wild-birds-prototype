@@ -226,7 +226,7 @@ const VALIDATORS = {
 // Next page. Each gate that means "no collection" sends the reporter straight
 // to a contextual end page, in journey order:
 //   1. not a dead bird              -> sick or injured guidance          (no ref)
-//   2. seen more than 4 days ago    -> outcome (too old)                 (REP)
+//   2. seen more than 4 days ago    -> too old guidance                  (no ref)
 //   3. Northern Ireland             -> Northern Ireland guidance         (no ref)
 //   4. below the collection threshold -> outcome (below threshold)       (REP)
 //   5. cannot be reached safely     -> outcome (not accessible)          (REP)
@@ -240,7 +240,7 @@ const VALIDATORS = {
 //
 function nextStep (currentStep, data) {
   if (currentStep === 'are-you-reporting-a-dead-bird' && data.reportingDead === 'no') return 'sick-or-injured'
-  if (currentStep === 'date-seen' && decision.tooOld(data)) return 'outcome'
+  if (currentStep === 'date-seen' && decision.tooOld(data)) return 'too-old'
   if (currentStep === 'location' && decision.northernIreland(data)) return 'northern-ireland'
 
   const isMassMortality = decision.massMortality(data)

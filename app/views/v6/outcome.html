@@ -41,9 +41,7 @@
          contextual to the reason the decision engine returned. #}
       <h2 class="govuk-heading-m">What happens next</h2>
 
-      {% if outcome.reason == "too-old" %}
-        <p class="govuk-body">You told us this bird was found more than 4 days ago. Birds that have been dead for several days are less useful for testing, so we do not need to collect it.</p>
-      {% elif outcome.reason == "not-accessible" %}
+      {% if outcome.reason == "not-accessible" %}
         <p class="govuk-body">You told us this bird cannot be reached safely. We only collect birds that can be reached without special equipment or putting anyone at risk, so we do not need to collect it.</p>
       {% elif outcome.reason == "decomposed" %}
         <p class="govuk-body">You told us this bird is decomposed or breaking down. Birds in this condition cannot be tested reliably, so we do not need to collect it.</p>
