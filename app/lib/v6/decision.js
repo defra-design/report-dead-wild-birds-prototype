@@ -60,10 +60,12 @@ function totalCount (data) {
   return Object.keys(counts).reduce(function (sum, k) { return sum + (counts[k] || 0) }, 0)
 }
 
-// The threshold for a bird type, given the answers so far. In Scotland, if the
-// songbirds/garden birds reported are blackbirds, a single blackbird is enough.
+// The threshold for a bird type, given the answers so far. In Scotland, if any
+// of the songbirds/garden birds reported were (or might be) blackbirds, a single
+// blackbird is enough. "I'm not sure" is treated as yes, to be on the safe side.
 function effectiveThreshold (key, data) {
-  if (key === 'songbird-garden' && data.location && data.location.scotland && data.blackbirds === 'yes') {
+  const maybeBlackbird = data.blackbirds === 'yes' || data.blackbirds === 'not-sure'
+  if (key === 'songbird-garden' && data.location && data.location.scotland && maybeBlackbird) {
     return 1
   }
   return thresholdFor(key)

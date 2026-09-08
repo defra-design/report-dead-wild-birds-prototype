@@ -181,7 +181,7 @@ const VALIDATORS = {
   },
 
   blackbirds: function (body, data) {
-    if (isBlank(body.blackbirds)) return [{ field: 'blackbirds', message: 'Select yes if the birds you found are blackbirds' }]
+    if (isBlank(body.blackbirds)) return [{ field: 'blackbirds', message: 'Select whether any of the dead birds were blackbirds' }]
     data.blackbirds = body.blackbirds
     return []
   },

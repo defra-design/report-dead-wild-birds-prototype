@@ -39,10 +39,11 @@
   {%- else -%}Not provided{%- endif -%}
 {% endset %}
 
+{% set blackbirdsText = { "yes": "Yes", "no": "No", "not-sure": "I'm not sure" } %}
 {% set blackbirdRows = [] %}
 {% if data.blackbirds %}
   {% set blackbirdRows = [
-    { key: { text: "Blackbirds" }, value: { text: "Yes" if data.blackbirds == "yes" else "No" }, actions: { items: [ { href: basePath + "/blackbirds" + change, text: "Change", visuallyHiddenText: "whether the birds are blackbirds" } ] } }
+    { key: { text: "Blackbirds" }, value: { text: blackbirdsText[data.blackbirds] or "Not provided" }, actions: { items: [ { href: basePath + "/blackbirds" + change, text: "Change", visuallyHiddenText: "whether any of the birds were blackbirds" } ] } }
   ] %}
 {% endif %}
 
