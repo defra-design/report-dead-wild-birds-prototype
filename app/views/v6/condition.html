@@ -1,0 +1,47 @@
+{% extends "layouts/question.html" %}
+
+{% set pageName = "What condition is the bird in?" %}
+{% set backLink = "/accessible" %}
+
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% block form %}
+<form method="post" novalidate>
+
+  {{ govukRadios({
+    name: "condition",
+    fieldset: {
+      legend: {
+        text: "What condition is the bird in?",
+        isPageHeading: true,
+        classes: "govuk-fieldset__legend--l"
+      }
+    },
+    hint: { text: "If you are reporting more than one bird, describe the bird that's in the best condition." },
+    errorMessage: { text: errors.condition } if errors.condition,
+    items: [
+      {
+        value: "good",
+        text: "Good condition or mostly intact",
+        hint: { text: "The bird may have died recently. Its body is whole, or nearly whole." },
+        checked: data.condition == "good"
+      },
+      {
+        value: "decomposed",
+        text: "Decomposed or breaking down",
+        hint: { text: "The bird may not be whole or have a strong smell. There may be only bones or feathers present." },
+        checked: data.condition == "decomposed"
+      },
+      {
+        value: "mixed",
+        text: "Mix of carcass conditions",
+        hint: { text: "or if you're not sure" },
+        checked: data.condition == "mixed"
+      }
+    ]
+  }) }}
+
+  {{ govukButton({ text: "Continue" }) }}
+
+</form>
+{% endblock %}

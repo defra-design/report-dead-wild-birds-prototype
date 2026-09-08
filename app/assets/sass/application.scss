@@ -303,3 +303,34 @@ $app-debug-key: #8ac7ff;
     color: govuk-colour("white");
   }
 }
+
+// ---------------------------------------------------------------------------
+// Prototype-only test control (e.g. simulate a Northern Ireland location)
+// ---------------------------------------------------------------------------
+// Deliberately quiet: a thin strip below the footer, low-contrast, so testers
+// can find it but it does not read as part of the real service.
+
+.app-test-control {
+  border-top: 1px solid govuk-colour("mid-grey");
+  background-color: govuk-colour("light-grey");
+  padding: govuk-spacing(2) 0;
+}
+
+.app-test-control__toggle {
+  display: flex;
+  align-items: center;
+  gap: govuk-spacing(2);
+  font-size: 0.75rem;
+  line-height: 1.3;
+  color: govuk-colour("dark-grey");
+  cursor: pointer;
+
+  input {
+    flex: 0 0 auto;
+    margin: 0;
+  }
+
+  & + & {
+    margin-top: govuk-spacing(1);
+  }
+}

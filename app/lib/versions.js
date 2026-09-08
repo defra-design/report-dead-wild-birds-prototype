@@ -18,10 +18,20 @@
 
 const VERSIONS = [
   {
+    id: 'v6',
+    number: '6.0',
+    name: 'Alpha Prototype',
+    date: '8 September 2026',
+    current: true,
+    summary: 'Alpha Prototype. Reordered to screener, date seen, location, bird type and number, reachability, condition, then photo, other information, contact and check answers. Six contextual exit pages, each shown as soon as its answer rules out collection: sick or injured bird, seen more than 48 hours ago, a Northern Ireland location (prototype test toggle), below the collection threshold, cannot be reached safely, or decomposed. A mass mortality (5+ birds) still overrides reachability and condition. In Scotland (a prototype test toggle), a follow-up question asks whether reported songbirds are blackbirds; if so, a single blackbird meets the collection threshold. All six exits are reference-less guidance pages; only a collection reaches the outcome page and gives a WSF reference. Content applied from the latest content design doc.',
+    journey: require('./v6/journey'),
+    decision: require('./v6/decision')
+  },
+  {
     id: 'v5',
     number: '5.0',
     date: '24 August 2026',
-    current: true,
+    current: false,
     summary: 'Built from the content design pages, in the team\'s page order: guidance start, is-the-bird-dead screener, country (with Northern Ireland signposting), bird type and number, date seen, accessibility, condition, location, photo, other information, contact, check answers, and the collect / do-not-collect end page. Accessibility "No" and decomposed skip straight to the end page. Scaffold — collection thresholds and location reveals still to be detailed.',
     journey: require('./v5/journey'),
     decision: require('./v5/decision')
