@@ -8,10 +8,12 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
 
+    {% set panelStatus = "We may collect these birds for testing." if birdCount > 1 else "We may collect this bird for testing." %}
+
     {{ govukPanel({
       titleText: "Thank you for your report",
       classes: "" if outcome.collect else "app-panel--received",
-      html: "Your reference number<br><strong>" + referenceNumber + "</strong>"
+      html: ('<span class="govuk-!-font-size-24">' + panelStatus + '</span><br><br>' if outcome.collect else "") + "Your reference number<br><strong>" + referenceNumber + "</strong>"
     }) }}
 
     <p class="govuk-body">Your report helps us understand how diseases like bird flu are spreading.</p>

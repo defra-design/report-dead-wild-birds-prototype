@@ -21,7 +21,7 @@
 
 <p class="govuk-body">If you’re under 18, ask a parent or guardian to provide their contact details.</p>
 
-<p class="govuk-body"><strong>Provide your name and a way for us to contact you (telephone number and/or email address).</strong></p>
+<p class="govuk-body"><strong>Provide your name and email address. A telephone number is optional.</strong></p>
 
 <form method="post" novalidate>
 
@@ -36,46 +36,28 @@
     value: data.name
   }) }}
 
-  {# Telephone and email are a "one or the other" group. The requirement (at
-     least one) belongs to the group, not to a single field, so they sit in a
-     fieldset and the error is shown at the group level — the red marker then
-     spans both fields, not just telephone. #}
-  <div class="govuk-form-group{% if errors.contact %} govuk-form-group--error{% endif %}">
-    <fieldset class="govuk-fieldset" id="contact"{% if errors.contact %} aria-describedby="contact-error"{% endif %}>
+  {{ govukInput({
+    label: { text: "Email address", classes: "govuk-label--s" },
+    id: "email",
+    name: "email",
+    type: "email",
+    autocomplete: "email",
+    spellcheck: false,
+    classes: "govuk-!-width-two-thirds",
+    errorMessage: { text: errors.email } if errors.email,
+    value: data.email
+  }) }}
 
-      <legend class="govuk-fieldset__legend govuk-visually-hidden">How can we contact you?</legend>
-
-      {% if errors.contact %}
-        <p id="contact-error" class="govuk-error-message">
-          <span class="govuk-visually-hidden">Error:</span> {{ errors.contact }}
-        </p>
-      {% endif %}
-
-      {{ govukInput({
-        label: { text: "Telephone number", classes: "govuk-label--s" },
-        id: "phone",
-        name: "phone",
-        type: "tel",
-        autocomplete: "tel",
-        classes: "govuk-!-width-one-half",
-        errorMessage: { text: errors.phone } if errors.phone,
-        value: data.phone
-      }) }}
-
-      {{ govukInput({
-        label: { text: "Email address", classes: "govuk-label--s" },
-        id: "email",
-        name: "email",
-        type: "email",
-        autocomplete: "email",
-        spellcheck: false,
-        classes: "govuk-!-width-two-thirds",
-        errorMessage: { text: errors.email } if errors.email,
-        value: data.email
-      }) }}
-
-    </fieldset>
-  </div>
+  {{ govukInput({
+    label: { text: "Telephone number (optional)", classes: "govuk-label--s" },
+    id: "phone",
+    name: "phone",
+    type: "tel",
+    autocomplete: "tel",
+    classes: "govuk-!-width-one-half",
+    errorMessage: { text: errors.phone } if errors.phone,
+    value: data.phone
+  }) }}
 
   {{ govukButton({ text: "Continue" }) }}
 

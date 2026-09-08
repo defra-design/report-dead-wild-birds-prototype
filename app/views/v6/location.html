@@ -1,14 +1,14 @@
 {% extends "layouts/question.html" %}
 
 {% set pageName = "Select one option to tell us where you saw the bird" %}
-{% set backLink = "/date-seen" %}
+{% set backLink = "/country" %}
 
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
 
 {% block form %}
-<form method="post" novalidate id="location-form">
+<form method="post" novalidate>
 
   {# Choose one location method. Each choice reveals its own input.
      Scaffold: the map is the stand-in used elsewhere; the other reveals are
@@ -75,22 +75,4 @@
   {{ govukButton({ text: "Continue" }) }}
 
 </form>
-{% endblock %}
-
-{# Prototype-only test control, kept discreet and placed below the footer. It
-   still submits with the location form above via the form="location-form"
-   attribute. A real service would derive the country from the location. #}
-{% block belowFooter %}
-<div class="app-test-control">
-  <div class="govuk-width-container">
-    <label class="app-test-control__toggle">
-      <input type="checkbox" name="simulateNI" value="yes" form="location-form"{% if data.location and data.location.northernIreland %} checked{% endif %}>
-      <span>Prototype test — simulate a Northern Ireland location</span>
-    </label>
-    <label class="app-test-control__toggle">
-      <input type="checkbox" name="simulateScotland" value="yes" form="location-form"{% if data.location and data.location.scotland %} checked{% endif %}>
-      <span>Prototype test — simulate a Scotland location</span>
-    </label>
-  </div>
-</div>
 {% endblock %}

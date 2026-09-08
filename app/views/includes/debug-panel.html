@@ -9,9 +9,9 @@ It is built from decision.explain() in app/lib/decision.js, and added to every
 page by app/views/layouts/main.html. Hide it for a session with ?debug=off.
 #}
 
-<button type="button" class="app-debug-toggle" id="app-debug-toggle" aria-expanded="true" aria-controls="app-debug">Debug</button>
+<button type="button" class="app-debug-toggle" id="app-debug-toggle" aria-expanded="false" aria-controls="app-debug">Debug</button>
 
-<aside class="app-debug" id="app-debug" aria-label="Prototype debug panel">
+<aside class="app-debug" id="app-debug" aria-label="Prototype debug panel" hidden>
 
   <h2 class="app-debug__title">Debug — decision state</h2>
 

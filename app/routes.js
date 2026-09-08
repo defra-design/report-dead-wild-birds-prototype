@@ -108,8 +108,11 @@ function mountVersion (version) {
   })
   router.get(basePath + '/outcome', withVersion, function (req, res) {
     const outcome = decision.decide(res.locals.data)
+    const counts = res.locals.data.counts || {}
+    const birdCount = Object.keys(counts).reduce(function (sum, k) { return sum + (counts[k] || 0) }, 0)
     res.render(version.id + '/outcome', {
       outcome: outcome,
+      birdCount: birdCount,
       referenceNumber: referenceNumber(res.locals.data, outcome.collect)
     })
   })
