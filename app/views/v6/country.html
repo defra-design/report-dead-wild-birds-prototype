@@ -9,10 +9,6 @@
 {% block form %}
 <form method="post" novalidate>
 
-  {{ govukInsetText({
-    text: "This question is only here for testing. In the live service we will work out the country from the location you give, so it will be removed."
-  }) }}
-
   {{ govukRadios({
     name: "country",
     fieldset: {
@@ -34,4 +30,8 @@
   {{ govukButton({ text: "Continue" }) }}
 
 </form>
+
+{{ govukInsetText({
+  text: "This question is only here for testing. In the live service we will work out the country from the location you give, so it will be removed."
+}) }}
 {% endblock %}
