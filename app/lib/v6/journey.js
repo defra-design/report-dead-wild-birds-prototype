@@ -226,7 +226,7 @@ const VALIDATORS = {
 // Next page. Each gate that means "no collection" sends the reporter straight
 // to a contextual end page, in journey order:
 //   1. not a dead bird              -> sick or injured guidance          (no ref)
-//   2. seen more than 4 days ago    -> too old guidance                  (no ref)
+//   2. seen more than 48 hours ago  -> too old guidance                  (no ref)
 //   3. Northern Ireland             -> Northern Ireland guidance         (no ref)
 //   4. below the collection threshold -> below threshold guidance        (no ref)
 //   5. cannot be reached safely     -> not reachable guidance            (no ref)

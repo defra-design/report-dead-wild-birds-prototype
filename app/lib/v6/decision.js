@@ -42,8 +42,10 @@ const DEFAULT_THRESHOLD = 3
 // It overrides the condition and reachability gates (see decide()).
 const MASS_MORTALITY_THRESHOLD = 5
 
-// A bird seen more than this many days ago is too old to be useful for testing.
-const MAX_AGE_DAYS = 4
+// A bird seen more than this many hours ago is too old to be useful for
+// testing. The form captures a date only, so this is measured from the start
+// of that day — in practice, a bird seen 2 or more days ago is too old.
+const MAX_AGE_HOURS = 48
 
 function speciesLabel (key) {
   return (SPECIES[key] && SPECIES[key].label) || 'Not provided'
@@ -71,15 +73,14 @@ function massMortality (data) {
   return totalCount(data) >= MASS_MORTALITY_THRESHOLD
 }
 
-// True if the bird was seen more than MAX_AGE_DAYS calendar days ago.
+// True if the bird was seen more than MAX_AGE_HOURS ago (measured from the
+// start of the date given).
 function tooOld (data) {
   if (!data.dateSeen) return false
   const s = data.dateSeen
   const seen = new Date(s.year, s.month - 1, s.day)
-  const now = new Date()
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
-  const days = Math.round((today - seen) / 86400000)
-  return days > MAX_AGE_DAYS
+  const hours = (new Date() - seen) / 3600000
+  return hours > MAX_AGE_HOURS
 }
 
 // True if the reporter's location is in Northern Ireland. The prototype sets
@@ -131,7 +132,7 @@ function explain (data) {
   const isNI = northernIreland(data)
 
   const checks = [
-    { rule: 'Seen 4 days ago or less', detail: 'days since seen <= ' + MAX_AGE_DAYS, value: data.dateSeen ? (isTooOld ? 'too old' : 'ok') : '—', status: !data.dateSeen ? 'pending' : (isTooOld ? 'fail' : 'pass') },
+    { rule: 'Seen within 48 hours', detail: 'hours since seen <= ' + MAX_AGE_HOURS, value: data.dateSeen ? (isTooOld ? 'too old' : 'ok') : '—', status: !data.dateSeen ? 'pending' : (isTooOld ? 'fail' : 'pass') },
     { rule: 'Not Northern Ireland', detail: 'location not in NI', value: data.location ? (isNI ? 'NI' : 'ok') : '—', status: !data.location ? 'pending' : (isNI ? 'fail' : 'pass') },
     { rule: 'Some birds counted', detail: 'total > 0', value: hasCounts ? total : '—', status: hasCounts ? 'pass' : 'pending' },
     {
