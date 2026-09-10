@@ -42,7 +42,16 @@
   {% endset %}
 
   {% set what3wordsReveal %}
-    {{ govukInput({ label: { text: "what3words location" }, id: "what3words", name: "what3words", classes: "govuk-input--width-20", value: data.location.what3words if data.location }) }}
+    <p class="govuk-body"><a class="govuk-link" href="https://what3words.com" rel="noreferrer noopener" target="_blank">what3words</a></p>
+    {{ govukInput({
+      label: { text: "Enter what3words:", classes: "govuk-label--s" },
+      id: "what3words",
+      name: "what3words",
+      classes: "govuk-input--width-20",
+      hint: { html: "For example: spare.coach.loops<br><br>Do not enter /// before the 3 words" },
+      prefix: { text: "///" },
+      value: data.location.what3words if data.location
+    }) }}
   {% endset %}
 
   {% set describeReveal %}
