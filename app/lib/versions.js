@@ -23,7 +23,13 @@ const VERSIONS = [
     name: 'Alpha Prototype',
     date: '10 September 2026',
     current: true,
-    summary: 'Alpha Prototype with the content designer\'s revisions. Same journey as v6 (screener, date seen, country, location, bird numbers, reachability, condition, photo, contact, check) with the "other information" free text folded into the location page and "Describe the location" restored as a location option. Start page reframed to a single "you should only use this service to report" list. Exit pages use the content designer\'s descriptive headings and drop the poultry-keeper section. Northern Ireland is kept as a country option and exit. Email required, telephone optional.',
+    changes: [
+      'Start page reframed to a single list of who should use the service',
+      '"Describe the location" added back as a location option',
+      '"Other information" folded into the location page',
+      'Clearer exit-page headings, with extra guidance sections trimmed',
+      'Email address required, telephone optional'
+    ],
     journey: require('./v7/journey'),
     decision: require('./v7/decision')
   },
@@ -33,7 +39,15 @@ const VERSIONS = [
     name: 'Alpha Prototype (v6)',
     date: '8 September 2026',
     current: false,
-    summary: 'Alpha Prototype. Order: screener, date seen, country, location, bird type and number, reachability, condition, then photo, other information, contact and check answers. Country (England, Scotland, Wales, Northern Ireland) is an interim testing question that will be removed once the country is derived from the location. Six contextual exit pages, each shown as soon as its answer rules out collection: sick or injured bird, seen more than 48 hours ago, Northern Ireland selected, below the collection threshold, cannot be reached safely, or decomposed. A mass mortality (5+ birds) still overrides reachability and condition. In Scotland, a follow-up question asks whether reported songbirds are blackbirds; if so, a single blackbird meets the collection threshold. Email is required; telephone is optional. All six exits are reference-less guidance pages; only a collection reaches the outcome page and gives a WSF reference. Content applied from the latest content design doc.',
+    changes: [
+      'Journey reordered: screener, date, country, location, numbers, reachability, condition',
+      'Country question added (England, Scotland, Wales, Northern Ireland)',
+      'Six contextual exit pages, each shown as soon as collection is ruled out',
+      'Birds seen more than 48 hours ago are not collected',
+      'In Scotland, a single blackbird can meet the collection threshold',
+      'Mass mortality (5 or more birds) overrides reachability and condition',
+      'Debug panel collapsed by default'
+    ],
     journey: require('./v6/journey'),
     decision: require('./v6/decision')
   },
@@ -42,7 +56,12 @@ const VERSIONS = [
     number: '5.0',
     date: '24 August 2026',
     current: false,
-    summary: 'Built from the content design pages, in the team\'s page order: guidance start, is-the-bird-dead screener, country (with Northern Ireland signposting), bird type and number, date seen, accessibility, condition, location, photo, other information, contact, check answers, and the collect / do-not-collect end page. Accessibility "No" and decomposed skip straight to the end page. Scaffold — collection thresholds and location reveals still to be detailed.',
+    changes: [
+      'Rebuilt from the latest content pages in the agreed page order',
+      'Bird species and numbers checked against collection thresholds',
+      'Separate collect and do-not-collect end pages',
+      '"Cannot be reached safely" and "decomposed" skip to the end'
+    ],
     journey: require('./v5/journey'),
     decision: require('./v5/decision')
   },
@@ -51,7 +70,11 @@ const VERSIONS = [
     number: '4.0',
     date: '20 August 2026',
     current: false,
-    summary: 'Usability test B. A fuller start page that explains the service is for disease monitoring, not bird removal, and then goes straight into the form with no screening questions. Tests whether stronger guidance alone sets expectations. Includes the version 3 assessment fixes.',
+    changes: [
+      'Fuller start-page guidance explaining the service is for disease monitoring, not bird removal',
+      'No screening questions — goes straight into the form',
+      'Postcode and what3words validation'
+    ],
     journey: require('./v4/journey'),
     decision: require('./v4/decision')
   },
@@ -60,7 +83,12 @@ const VERSIONS = [
     number: '3.0',
     date: '20 August 2026',
     current: false,
-    summary: 'Usability test A. Standard start-page guidance, then screening questions that triage out people who do not need the form — including an intent question (report for disease monitoring vs ask for a bird to be removed). Includes the assessment fixes: validated postcode, what3words format check, and the outcome contact wording.',
+    changes: [
+      'Standard start-page guidance',
+      'Screening questions to filter out reports that do not need the form',
+      'Intent question: report for disease monitoring or ask for a bird to be removed',
+      'Postcode and what3words validation'
+    ],
     journey: require('./v3/journey'),
     decision: require('./v3/decision')
   },
@@ -69,7 +97,14 @@ const VERSIONS = [
     number: '2.0',
     date: '4 August 2026',
     current: false,
-    summary: 'Country moved first (with Northern Ireland signposting), species before number of birds, when-seen simplified to recency bands, time since seen no longer affects the collection decision, address and postcode added to location, email or phone accepted, and Check your answers no longer restarts the form.',
+    changes: [
+      'Country asked first',
+      'Species asked before the number of birds',
+      '"When seen" simplified to recency bands, no longer affecting collection',
+      'Address and postcode added to the location options',
+      'Email or telephone accepted',
+      'Check answers no longer restarts the form'
+    ],
     journey: require('./v2/journey'),
     decision: require('./v2/decision')
   },
@@ -78,7 +113,9 @@ const VERSIONS = [
     number: '1.0',
     date: '24 July 2026',
     current: false,
-    summary: 'First build of the reporting journey.',
+    changes: [
+      'First build of the reporting journey'
+    ],
     journey: require('./v1/journey'),
     decision: require('./v1/decision')
   }

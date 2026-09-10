@@ -20,7 +20,13 @@
             {% if version.current %}{{ govukTag({ text: "Current" }) }}{% endif %}
           </h2>
           <p class="govuk-body-s govuk-!-margin-bottom-1"><strong>Updated:</strong> {{ version.date }}</p>
-          <p class="govuk-body">{{ version.summary }}</p>
+          {% if version.changes %}
+            <ul class="govuk-list govuk-list--bullet govuk-body">
+              {% for change in version.changes %}<li>{{ change }}</li>{% endfor %}
+            </ul>
+          {% elif version.summary %}
+            <p class="govuk-body">{{ version.summary }}</p>
+          {% endif %}
         </li>
       {% endfor %}
     </ul>
