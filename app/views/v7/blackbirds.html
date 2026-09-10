@@ -1,0 +1,31 @@
+{% extends "layouts/question.html" %}
+
+{% set pageName = "Were any of the dead birds blackbirds?" %}
+{% set backLink = "/bird-type-and-number" %}
+
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% block form %}
+<form method="post" novalidate>
+
+  {{ govukRadios({
+    name: "blackbirds",
+    fieldset: {
+      legend: {
+        text: "Were any of the dead birds blackbirds?",
+        isPageHeading: true,
+        classes: "govuk-fieldset__legend--l"
+      }
+    },
+    errorMessage: { text: errors.blackbirds } if errors.blackbirds,
+    items: [
+      { value: "yes", text: "Yes", checked: data.blackbirds == "yes" },
+      { value: "no", text: "No", checked: data.blackbirds == "no" },
+      { value: "not-sure", text: "I'm not sure", checked: data.blackbirds == "not-sure" }
+    ]
+  }) }}
+
+  {{ govukButton({ text: "Continue" }) }}
+
+</form>
+{% endblock %}
