@@ -6,18 +6,6 @@
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 
 {% block form %}
-
-<h1 class="govuk-heading-l">Can the bird be reached safely, without tools or equipment, if we need to collect it?</h1>
-
-<p class="govuk-body">Answer “No” if the bird is:</p>
-
-<ul class="govuk-list govuk-list--bullet">
-  <li>in water, or can only be reached by boat</li>
-  <li>somewhere difficult to reach, like on a roof or in a tree</li>
-  <li>behind a barrier, fence or locked area</li>
-  <li>in a location that would be dangerous to access, such as a railway line or motorway</li>
-</ul>
-
 <form method="post" novalidate>
 
   {{ govukRadios({
@@ -25,8 +13,12 @@
     fieldset: {
       legend: {
         text: "Can the bird be reached safely, without tools or equipment, if we need to collect it?",
-        classes: "govuk-visually-hidden"
+        isPageHeading: true,
+        classes: "govuk-fieldset__legend--l"
       }
+    },
+    hint: {
+      html: 'Answer “No” if the bird is:<ul class="govuk-list govuk-list--bullet"><li>in water, or can only be reached by boat</li><li>somewhere difficult to reach, like on a roof or in a tree</li><li>behind a barrier, fence or locked area</li><li>in a location that would be dangerous to access, such as a railway line or motorway</li></ul>'
     },
     errorMessage: { text: errors.accessible } if errors.accessible,
     items: [
