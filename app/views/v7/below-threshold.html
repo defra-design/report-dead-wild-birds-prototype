@@ -1,0 +1,24 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName = "Birds do not meet the collection threshold" %}
+{% set backLink = "/bird-type-and-number" %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-l">Birds do not meet the collection threshold</h1>
+
+    <p class="govuk-body">We use reports and surveillance information to decide which birds to collect for testing.</p>
+
+    <p class="govuk-body">Based on the information available, we do not need to collect this bird.</p>
+
+    <p class="govuk-body">Find out about <a class="govuk-link" href="https://www.gov.uk/government/publications/surveillance-collection-thresholds-for-dead-wild-birds" rel="noreferrer noopener" target="_blank">surveillance collection thresholds for dead wild birds</a>.</p>
+
+    <p class="govuk-body">If you want to dispose of the bird or ask for it to be removed, read the guidance on <a class="govuk-link" href="https://www.gov.uk/guidance/removing-and-disposing-of-dead-wild-birds" rel="noreferrer noopener" target="_blank">removing and disposing of dead wild birds</a>.</p>
+
+    {% include "includes/risks-to-humans.html" %}
+
+  </div>
+</div>
+{% endblock %}

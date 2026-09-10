@@ -18,11 +18,21 @@
 
 const VERSIONS = [
   {
+    id: 'v7',
+    number: '7.0',
+    name: 'Alpha Prototype',
+    date: '10 September 2026',
+    current: true,
+    summary: 'Alpha Prototype with the content designer\'s revisions. Same journey as v6 (screener, date seen, country, location, bird numbers, reachability, condition, photo, contact, check) with the "other information" free text folded into the location page and "Describe the location" restored as a location option. Start page reframed to a single "you should only use this service to report" list. Exit pages use the content designer\'s descriptive headings and drop the poultry-keeper section. Northern Ireland is kept as a country option and exit. Email required, telephone optional.',
+    journey: require('./v7/journey'),
+    decision: require('./v7/decision')
+  },
+  {
     id: 'v6',
     number: '6.0',
-    name: 'Alpha Prototype',
+    name: 'Alpha Prototype (v6)',
     date: '8 September 2026',
-    current: true,
+    current: false,
     summary: 'Alpha Prototype. Order: screener, date seen, country, location, bird type and number, reachability, condition, then photo, other information, contact and check answers. Country (England, Scotland, Wales, Northern Ireland) is an interim testing question that will be removed once the country is derived from the location. Six contextual exit pages, each shown as soon as its answer rules out collection: sick or injured bird, seen more than 48 hours ago, Northern Ireland selected, below the collection threshold, cannot be reached safely, or decomposed. A mass mortality (5+ birds) still overrides reachability and condition. In Scotland, a follow-up question asks whether reported songbirds are blackbirds; if so, a single blackbird meets the collection threshold. Email is required; telephone is optional. All six exits are reference-less guidance pages; only a collection reaches the outcome page and gives a WSF reference. Content applied from the latest content design doc.',
     journey: require('./v6/journey'),
     decision: require('./v6/decision')
