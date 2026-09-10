@@ -334,3 +334,13 @@ $app-debug-key: #8ac7ff;
     margin-top: govuk-spacing(1);
   }
 }
+
+// ---------------------------------------------------------------------------
+// Bullet lists inside hint text
+// ---------------------------------------------------------------------------
+// .govuk-list sets the default (near-black) body text colour, which overrides
+// the grey hint colour. Make lists inside a hint inherit the hint colour.
+
+.govuk-hint .govuk-list {
+  color: inherit;
+}
