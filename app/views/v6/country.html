@@ -1,6 +1,6 @@
 {% extends "layouts/question.html" %}
 
-{% set pageName = "In which country did you find the bird?" %}
+{% set pageName = "Where did you see the bird?" %}
 {% set backLink = "/date-seen" %}
 
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
@@ -13,7 +13,7 @@
     name: "country",
     fieldset: {
       legend: {
-        text: "In which country did you find the bird?",
+        text: "Where did you see the bird?",
         isPageHeading: true,
         classes: "govuk-fieldset__legend--l"
       }
