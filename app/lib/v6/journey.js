@@ -146,7 +146,7 @@ const VALIDATORS = {
   },
 
   country: function (body, data) {
-    if (isBlank(body.country)) return [{ field: 'country', message: 'Select the country where you found the bird' }]
+    if (isBlank(body.country)) return [{ field: 'country', message: 'Select the country where you saw the bird.' }]
     data.country = body.country
     return []
   },
