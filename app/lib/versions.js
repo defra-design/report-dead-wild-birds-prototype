@@ -20,9 +20,8 @@ const VERSIONS = [
   {
     id: 'v7',
     number: '7.0',
-    name: 'Alpha Prototype',
     date: '10 September 2026',
-    current: true,
+    current: false,
     changes: [
       'Start page reframed to a single list of who should use the service',
       '"Describe the location" added back as a location option',
@@ -36,9 +35,9 @@ const VERSIONS = [
   {
     id: 'v6',
     number: '6.0',
-    name: 'Alpha Prototype (v6)',
+    name: 'Alpha Prototype',
     date: '14 September 2026',
-    current: false,
+    current: true,
     changes: [
       'Journey reordered: screener, date, country, location, numbers, reachability, condition',
       'Country question added (England, Scotland, Wales, Northern Ireland)',
