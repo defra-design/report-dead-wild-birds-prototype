@@ -35,15 +35,43 @@ function setUpAddressToggle () {
     if (focusTarget) focusTarget.focus()
   }
 
+  // Show or clear a GOV.UK field error on the postcode input.
+  function setPostcodeError (message) {
+    if (!postcode) return
+    const group = postcode.closest('.govuk-form-group')
+    let error = document.getElementById('postcode-error')
+    if (message) {
+      group.classList.add('govuk-form-group--error')
+      postcode.classList.add('govuk-input--error')
+      if (!error) {
+        error = document.createElement('p')
+        error.id = 'postcode-error'
+        error.className = 'govuk-error-message'
+        postcode.parentNode.insertBefore(error, postcode)
+      }
+      error.innerHTML = '<span class="govuk-visually-hidden">Error:</span> ' + message
+      error.hidden = false
+    } else {
+      group.classList.remove('govuk-form-group--error')
+      postcode.classList.remove('govuk-input--error')
+      if (error) error.hidden = true
+    }
+  }
+
   // "Find address": the prototype only knows about NG7 5JH.
   if (findBtn && postcode) {
     findBtn.addEventListener('click', function (e) {
       e.preventDefault()
       const entered = postcode.value.trim()
       const normalised = entered.toUpperCase().replace(/\s+/g, '')
+      if (noResults) noResults.hidden = true
+      if (!entered) {
+        setPostcodeError('Enter a full UK postcode')
+        return
+      }
+      setPostcodeError(null)
       if (normalised === 'NG75JH') {
         if (foundPostcode) foundPostcode.textContent = entered
-        if (noResults) noResults.hidden = true
         show('select')
       } else if (noResults) {
         noResults.hidden = false
