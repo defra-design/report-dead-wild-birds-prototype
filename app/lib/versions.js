@@ -37,7 +37,7 @@ const VERSIONS = [
     id: 'v6',
     number: '6.0',
     name: 'Alpha Prototype (v6)',
-    date: '8 September 2026',
+    date: '13 September 2026',
     current: false,
     changes: [
       'Journey reordered: screener, date, country, location, numbers, reachability, condition',
