@@ -27,18 +27,34 @@
     <input type="hidden" name="lng" id="lng" value="{{ data.location.map.split(', ')[1] if data.location and data.location.map }}">
   {% endset %}
 
+  {# Two ways to give an address: look one up from a postcode, or enter the
+     address lines manually. The link toggles between them (see application.js).
+     If manual address details have been entered, show the manual form first. #}
+  {% set manualShown = (data.location.addressLine1 or data.location.addressTown or data.location.addressPostcode) if data.location else false %}
   {% set addressReveal %}
-    <p class="govuk-body">Enter the postcode where the dead birds are located:</p>
-    {{ govukInput({
-      label: { text: "Postcode", classes: "govuk-label--s" },
-      id: "postcode",
-      name: "postcode",
-      classes: "govuk-input--width-10",
-      autocomplete: "postal-code",
-      value: data.location.postcode if data.location
-    }) }}
-    {{ govukButton({ text: "Find address", classes: "govuk-button--secondary govuk-!-margin-top-2", type: "button" }) }}
-    <p class="govuk-body"><a class="govuk-link" href="#">I want to enter the address lines manually</a></p>
+    <div id="address-lookup"{% if manualShown %} hidden{% endif %}>
+      <p class="govuk-body">Enter the postcode where the dead birds are located:</p>
+      {{ govukInput({
+        label: { text: "Postcode", classes: "govuk-label--s" },
+        id: "postcode",
+        name: "postcode",
+        classes: "govuk-input--width-10",
+        autocomplete: "postal-code",
+        value: data.location.postcode if data.location
+      }) }}
+      {{ govukButton({ text: "Find address", classes: "govuk-button--secondary govuk-!-margin-top-2", type: "button" }) }}
+      <p class="govuk-body"><a class="govuk-link" href="#" id="address-manual-link">I want to enter the address lines manually</a></p>
+    </div>
+
+    <div id="address-manual"{% if not manualShown %} hidden{% endif %}>
+      <p class="govuk-body">Enter the address where the dead birds are located:</p>
+      {{ govukInput({ label: { text: "Building and street", classes: "govuk-label--s" }, id: "addressLine1", name: "addressLine1", autocomplete: "address-line1", value: data.location.addressLine1 if data.location }) }}
+      {{ govukInput({ label: { text: "Building and street line 2", classes: "govuk-visually-hidden" }, id: "addressLine2", name: "addressLine2", autocomplete: "address-line2", value: data.location.addressLine2 if data.location }) }}
+      {{ govukInput({ label: { text: "Town or city", classes: "govuk-label--s" }, id: "addressTown", name: "addressTown", classes: "govuk-!-width-two-thirds", autocomplete: "address-level2", value: data.location.addressTown if data.location }) }}
+      {{ govukInput({ label: { text: "County (optional)", classes: "govuk-label--s" }, id: "addressCounty", name: "addressCounty", classes: "govuk-!-width-two-thirds", value: data.location.addressCounty if data.location }) }}
+      {{ govukInput({ label: { text: "Postcode", classes: "govuk-label--s" }, id: "addressPostcode", name: "addressPostcode", classes: "govuk-input--width-10", autocomplete: "postal-code", value: data.location.addressPostcode if data.location }) }}
+      <p class="govuk-body"><a class="govuk-link" href="#" id="address-lookup-link">Lookup an address using a postcode instead</a></p>
+    </div>
   {% endset %}
 
   {% set what3wordsReveal %}

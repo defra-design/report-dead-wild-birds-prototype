@@ -35,6 +35,11 @@
     {{ methodText[data.location.method] or "Not provided" }}
     {%- if data.location.map %}<br>{{ data.location.map }}{% endif -%}
     {%- if data.location.postcode %}<br>{{ data.location.postcode }}{% endif -%}
+    {%- if data.location.addressLine1 %}<br>{{ data.location.addressLine1 }}{% endif -%}
+    {%- if data.location.addressLine2 %}<br>{{ data.location.addressLine2 }}{% endif -%}
+    {%- if data.location.addressTown %}<br>{{ data.location.addressTown }}{% endif -%}
+    {%- if data.location.addressCounty %}<br>{{ data.location.addressCounty }}{% endif -%}
+    {%- if data.location.addressPostcode %}<br>{{ data.location.addressPostcode }}{% endif -%}
     {%- if data.location.what3words %}<br>{{ data.location.what3words }}{% endif -%}
     {%- if data.location.info %}<br>{{ data.location.info }}{% endif -%}
   {%- else -%}Not provided{%- endif -%}
