@@ -6,6 +6,7 @@
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
 
 {% block form %}
 <form method="post" novalidate>
@@ -27,12 +28,16 @@
     <input type="hidden" name="lng" id="lng" value="{{ data.location.map.split(', ')[1] if data.location and data.location.map }}">
   {% endset %}
 
-  {# Two ways to give an address: look one up from a postcode, or enter the
-     address lines manually. The link toggles between them (see application.js).
-     If manual address details have been entered, show the manual form first. #}
+  {# Three ways to give an address (toggled by JavaScript, see application.js):
+     look up a postcode and pick from a list, or enter the address lines
+     manually. The postcode lookup is a prototype stand-in: only "NG7 5JH"
+     returns a canned list of addresses. #}
+  {% set selectShown = data.location.addressSelected if data.location else false %}
   {% set manualShown = (data.location.addressLine1 or data.location.addressTown or data.location.addressPostcode) if data.location else false %}
   {% set addressReveal %}
-    <div id="address-lookup"{% if manualShown %} hidden{% endif %}>
+
+    {# 1. Postcode entry #}
+    <div id="address-lookup"{% if selectShown or manualShown %} hidden{% endif %}>
       <p class="govuk-body">Enter the postcode where the dead birds are located:</p>
       {{ govukInput({
         label: { text: "Postcode", classes: "govuk-label--s" },
@@ -42,10 +47,37 @@
         autocomplete: "postal-code",
         value: data.location.postcode if data.location
       }) }}
-      {{ govukButton({ text: "Find address", classes: "govuk-button--secondary govuk-!-margin-top-2", type: "button" }) }}
+      {{ govukButton({ text: "Find address", classes: "govuk-button--secondary govuk-!-margin-top-2", type: "button", attributes: { id: "address-find-btn" } }) }}
+      <p class="govuk-body" id="address-no-results" hidden>No addresses found for that postcode. You can enter the address manually.</p>
       <p class="govuk-body"><a class="govuk-link" href="#" id="address-manual-link">I want to enter the address lines manually</a></p>
     </div>
 
+    {# 2. Select an address from the postcode lookup #}
+    <div id="address-select"{% if not selectShown %} hidden{% endif %}>
+      <p class="govuk-body">Enter the postcode where the dead birds are located:</p>
+      <p class="govuk-body"><span id="address-found-postcode">{{ data.location.postcode if data.location }}</span> <a class="govuk-link govuk-!-margin-left-2" href="#" id="address-change-link">Change</a></p>
+      {{ govukSelect({
+        id: "addressSelected",
+        name: "addressSelected",
+        label: { text: "Select an address", classes: "govuk-label--s" },
+        items: [
+          { value: "", text: "10 addresses found" },
+          { value: "Community Training Portal Ltd, 95 Gregory Boulevard, Nottingham, NG7 5JH", text: "Community Training Portal Ltd, 95 Gregory Boulevard, Nottingham, NG7 5JH", selected: data.location.addressSelected == "Community Training Portal Ltd, 95 Gregory Boulevard, Nottingham, NG7 5JH" if data.location },
+          { value: "97 Gregory Boulevard, Nottingham, NG7 5JH", text: "97 Gregory Boulevard, Nottingham, NG7 5JH", selected: data.location.addressSelected == "97 Gregory Boulevard, Nottingham, NG7 5JH" if data.location },
+          { value: "99 Gregory Boulevard, Nottingham, NG7 5JH", text: "99 Gregory Boulevard, Nottingham, NG7 5JH", selected: data.location.addressSelected == "99 Gregory Boulevard, Nottingham, NG7 5JH" if data.location },
+          { value: "101 Gregory Boulevard, Nottingham, NG7 5JH", text: "101 Gregory Boulevard, Nottingham, NG7 5JH", selected: data.location.addressSelected == "101 Gregory Boulevard, Nottingham, NG7 5JH" if data.location },
+          { value: "103 Gregory Boulevard, Nottingham, NG7 5JH", text: "103 Gregory Boulevard, Nottingham, NG7 5JH", selected: data.location.addressSelected == "103 Gregory Boulevard, Nottingham, NG7 5JH" if data.location },
+          { value: "105 Gregory Boulevard, Nottingham, NG7 5JH", text: "105 Gregory Boulevard, Nottingham, NG7 5JH", selected: data.location.addressSelected == "105 Gregory Boulevard, Nottingham, NG7 5JH" if data.location },
+          { value: "107 Gregory Boulevard, Nottingham, NG7 5JH", text: "107 Gregory Boulevard, Nottingham, NG7 5JH", selected: data.location.addressSelected == "107 Gregory Boulevard, Nottingham, NG7 5JH" if data.location },
+          { value: "109 Gregory Boulevard, Nottingham, NG7 5JH", text: "109 Gregory Boulevard, Nottingham, NG7 5JH", selected: data.location.addressSelected == "109 Gregory Boulevard, Nottingham, NG7 5JH" if data.location },
+          { value: "111 Gregory Boulevard, Nottingham, NG7 5JH", text: "111 Gregory Boulevard, Nottingham, NG7 5JH", selected: data.location.addressSelected == "111 Gregory Boulevard, Nottingham, NG7 5JH" if data.location },
+          { value: "113 Gregory Boulevard, Nottingham, NG7 5JH", text: "113 Gregory Boulevard, Nottingham, NG7 5JH", selected: data.location.addressSelected == "113 Gregory Boulevard, Nottingham, NG7 5JH" if data.location }
+        ]
+      }) }}
+      <p class="govuk-body govuk-!-margin-top-3"><a class="govuk-link" href="#" id="address-cantfind-link">I can’t find my address in the list</a></p>
+    </div>
+
+    {# 3. Manual entry #}
     <div id="address-manual"{% if not manualShown %} hidden{% endif %}>
       <p class="govuk-body">Enter the address where the dead birds are located:</p>
       {{ govukInput({ label: { text: "Building and street", classes: "govuk-label--s" }, id: "addressLine1", name: "addressLine1", autocomplete: "address-line1", value: data.location.addressLine1 if data.location }) }}
@@ -53,7 +85,7 @@
       {{ govukInput({ label: { text: "Town or city", classes: "govuk-label--s" }, id: "addressTown", name: "addressTown", classes: "govuk-!-width-two-thirds", autocomplete: "address-level2", value: data.location.addressTown if data.location }) }}
       {{ govukInput({ label: { text: "County (optional)", classes: "govuk-label--s" }, id: "addressCounty", name: "addressCounty", classes: "govuk-!-width-two-thirds", value: data.location.addressCounty if data.location }) }}
       {{ govukInput({ label: { text: "Postcode", classes: "govuk-label--s" }, id: "addressPostcode", name: "addressPostcode", classes: "govuk-input--width-10", autocomplete: "postal-code", value: data.location.addressPostcode if data.location }) }}
-      <p class="govuk-body"><a class="govuk-link" href="#" id="address-lookup-link">Lookup an address using a postcode instead</a></p>
+      <p class="govuk-body govuk-!-margin-top-3"><a class="govuk-link" href="#" id="address-lookup-link">Lookup an address using a postcode instead</a></p>
     </div>
   {% endset %}
 

@@ -34,7 +34,7 @@
   {%- if data.location -%}
     {{ methodText[data.location.method] or "Not provided" }}
     {%- if data.location.map %}<br>{{ data.location.map }}{% endif -%}
-    {%- if data.location.postcode %}<br>{{ data.location.postcode }}{% endif -%}
+    {%- if data.location.addressSelected %}<br>{{ data.location.addressSelected }}{% elif data.location.postcode %}<br>{{ data.location.postcode }}{% endif -%}
     {%- if data.location.addressLine1 %}<br>{{ data.location.addressLine1 }}{% endif -%}
     {%- if data.location.addressLine2 %}<br>{{ data.location.addressLine2 }}{% endif -%}
     {%- if data.location.addressTown %}<br>{{ data.location.addressTown }}{% endif -%}
