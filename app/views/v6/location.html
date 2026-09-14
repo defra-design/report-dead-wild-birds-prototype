@@ -53,7 +53,7 @@
       {{ govukInput({ label: { text: "Town or city", classes: "govuk-label--s" }, id: "addressTown", name: "addressTown", classes: "govuk-!-width-two-thirds", autocomplete: "address-level2", value: data.location.addressTown if data.location }) }}
       {{ govukInput({ label: { text: "County (optional)", classes: "govuk-label--s" }, id: "addressCounty", name: "addressCounty", classes: "govuk-!-width-two-thirds", value: data.location.addressCounty if data.location }) }}
       {{ govukInput({ label: { text: "Postcode", classes: "govuk-label--s" }, id: "addressPostcode", name: "addressPostcode", classes: "govuk-input--width-10", autocomplete: "postal-code", value: data.location.addressPostcode if data.location }) }}
-      <p class="govuk-body"><a class="govuk-link" href="#" id="address-lookup-link">Lookup an address using a postcode instead</a></p>
+      <p class="govuk-body govuk-!-margin-top-3"><a class="govuk-link" href="#" id="address-lookup-link">Lookup an address using a postcode instead</a></p>
     </div>
   {% endset %}
 
