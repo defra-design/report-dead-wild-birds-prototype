@@ -11,24 +11,82 @@ window.GOVUKPrototypeKit.documentReady(() => {
 })
 
 //
-// Address entry: switch between the postcode lookup and manual address lines.
+// Address entry: a prototype postcode lookup. It switches between three states
+// — entering a postcode, selecting an address from a list, and entering the
+// address lines manually. Only "NG7 5JH" returns a canned list of addresses.
 //
 function setUpAddressToggle () {
   const lookup = document.getElementById('address-lookup')
+  const select = document.getElementById('address-select')
   const manual = document.getElementById('address-manual')
-  const toManual = document.getElementById('address-manual-link')
-  const toLookup = document.getElementById('address-lookup-link')
-  if (!lookup || !manual || !toManual || !toLookup) return
+  if (!lookup || !select || !manual) return
+
+  const findBtn = document.getElementById('address-find-btn')
+  const postcode = document.getElementById('postcode')
+  const noResults = document.getElementById('address-no-results')
+  const foundPostcode = document.getElementById('address-found-postcode')
 
   function show (which) {
     lookup.hidden = which !== 'lookup'
+    select.hidden = which !== 'select'
     manual.hidden = which !== 'manual'
-    const focusTarget = which === 'manual' ? document.getElementById('addressLine1') : document.getElementById('postcode')
+    const focusId = { lookup: 'postcode', select: 'addressSelected', manual: 'addressLine1' }[which]
+    const focusTarget = document.getElementById(focusId)
     if (focusTarget) focusTarget.focus()
   }
 
-  toManual.addEventListener('click', function (e) { e.preventDefault(); show('manual') })
-  toLookup.addEventListener('click', function (e) { e.preventDefault(); show('lookup') })
+  // Show or clear a GOV.UK field error on the postcode input.
+  function setPostcodeError (message) {
+    if (!postcode) return
+    const group = postcode.closest('.govuk-form-group')
+    let error = document.getElementById('postcode-error')
+    if (message) {
+      group.classList.add('govuk-form-group--error')
+      postcode.classList.add('govuk-input--error')
+      if (!error) {
+        error = document.createElement('p')
+        error.id = 'postcode-error'
+        error.className = 'govuk-error-message'
+        postcode.parentNode.insertBefore(error, postcode)
+      }
+      error.innerHTML = '<span class="govuk-visually-hidden">Error:</span> ' + message
+      error.hidden = false
+    } else {
+      group.classList.remove('govuk-form-group--error')
+      postcode.classList.remove('govuk-input--error')
+      if (error) error.hidden = true
+    }
+  }
+
+  // "Find address": the prototype only knows about NG7 5JH.
+  if (findBtn && postcode) {
+    findBtn.addEventListener('click', function (e) {
+      e.preventDefault()
+      const entered = postcode.value.trim()
+      const normalised = entered.toUpperCase().replace(/\s+/g, '')
+      if (noResults) noResults.hidden = true
+      if (!entered) {
+        setPostcodeError('Enter a full UK postcode')
+        return
+      }
+      setPostcodeError(null)
+      if (normalised === 'NG75JH') {
+        if (foundPostcode) foundPostcode.textContent = entered
+        show('select')
+      } else if (noResults) {
+        noResults.hidden = false
+      }
+    })
+  }
+
+  function onClick (id, fn) {
+    const el = document.getElementById(id)
+    if (el) el.addEventListener('click', function (e) { e.preventDefault(); fn() })
+  }
+  onClick('address-manual-link', function () { show('manual') })
+  onClick('address-cantfind-link', function () { show('manual') })
+  onClick('address-lookup-link', function () { show('lookup') })
+  onClick('address-change-link', function () { if (noResults) noResults.hidden = true; show('lookup') })
 }
 
 //

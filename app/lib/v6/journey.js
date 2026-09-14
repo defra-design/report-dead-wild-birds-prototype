@@ -177,6 +177,7 @@ const VALIDATORS = {
       method: method,
       map: (body.lat && body.lng) ? (body.lat + ', ' + body.lng) : '',
       postcode: (body.postcode || '').trim(),
+      addressSelected: (body.addressSelected || '').trim(),
       addressLine1: (body.addressLine1 || '').trim(),
       addressLine2: (body.addressLine2 || '').trim(),
       addressTown: (body.addressTown || '').trim(),
