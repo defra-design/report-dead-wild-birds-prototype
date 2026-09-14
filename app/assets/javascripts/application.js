@@ -6,8 +6,30 @@
 window.GOVUKPrototypeKit.documentReady(() => {
   setUpMap()
   setUpPhotoName()
+  setUpAddressToggle()
   setUpDebugPanel()
 })
+
+//
+// Address entry: switch between the postcode lookup and manual address lines.
+//
+function setUpAddressToggle () {
+  const lookup = document.getElementById('address-lookup')
+  const manual = document.getElementById('address-manual')
+  const toManual = document.getElementById('address-manual-link')
+  const toLookup = document.getElementById('address-lookup-link')
+  if (!lookup || !manual || !toManual || !toLookup) return
+
+  function show (which) {
+    lookup.hidden = which !== 'lookup'
+    manual.hidden = which !== 'manual'
+    const focusTarget = which === 'manual' ? document.getElementById('addressLine1') : document.getElementById('postcode')
+    if (focusTarget) focusTarget.focus()
+  }
+
+  toManual.addEventListener('click', function (e) { e.preventDefault(); show('manual') })
+  toLookup.addEventListener('click', function (e) { e.preventDefault(); show('lookup') })
+}
 
 //
 // Map pin drop, on the "Where is the bird?" page.

@@ -160,7 +160,8 @@ const VALIDATORS = {
     if (method === 'map' && (isBlank(body.lat) || isBlank(body.lng))) {
       return [{ field: 'locationMethod', message: 'Select where you saw the bird on the map.' }]
     }
-    if (method === 'address' && isBlank(body.postcode)) {
+    // Address can be given by postcode lookup or by manual address lines.
+    if (method === 'address' && isBlank(body.postcode) && isBlank(body.addressPostcode)) {
       return [{ field: 'locationMethod', message: 'Enter a full UK postcode' }]
     }
     if (method === 'what3words' && isBlank(body.what3words)) {
@@ -176,6 +177,11 @@ const VALIDATORS = {
       method: method,
       map: (body.lat && body.lng) ? (body.lat + ', ' + body.lng) : '',
       postcode: (body.postcode || '').trim(),
+      addressLine1: (body.addressLine1 || '').trim(),
+      addressLine2: (body.addressLine2 || '').trim(),
+      addressTown: (body.addressTown || '').trim(),
+      addressCounty: (body.addressCounty || '').trim(),
+      addressPostcode: (body.addressPostcode || '').trim(),
       what3words: (body.what3words || '').trim(),
       info: info
     }
