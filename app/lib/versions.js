@@ -18,6 +18,19 @@
 
 const VERSIONS = [
   {
+    id: 'v8',
+    number: '8.0',
+    date: '15 September 2026',
+    current: false,
+    changes: [
+      'Guidance page rewritten into clear sections: what to report, what not to report, what we do, and other services',
+      'Sick or injured live birds now link to RSPB guidance',
+      'Everything else is the same as version 6'
+    ],
+    journey: require('./v8/journey'),
+    decision: require('./v8/decision')
+  },
+  {
     id: 'v7',
     number: '7.0',
     date: '10 September 2026',
