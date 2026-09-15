@@ -11,7 +11,7 @@
 //   6  accessible            ("No" -> straight to the end page, cannot collect)
 //   7  condition             (good/mixed collect; "decomposed" -> end page)
 //   8  photo
-//   9  location-details      (any other information)
+//   9  anything-else      (any other information)
 //   10 contact
 //   11 check
 //   12 outcome (end page)
@@ -32,7 +32,7 @@ const STEPS = [
   'accessible',
   'condition',
   'photo',
-  'location-details',
+  'anything-else',
   'contact',
   'check'
 ]
@@ -201,13 +201,13 @@ const VALIDATORS = {
     return []
   },
 
-  'location-details': function (body, data) {
+  'anything-else': function (body, data) {
     // Optional free text, but capped at 500 characters.
-    const details = (body.locationDetails || '').trim()
+    const details = (body.anythingElse || '').trim()
     if (details.length > 500) {
-      return [{ field: 'locationDetails', message: 'Description must be 500 characters or less.' }]
+      return [{ field: 'anythingElse', message: 'Description must be 500 characters or less.' }]
     }
-    data.locationDetails = details
+    data.anythingElse = details
     return []
   },
 
