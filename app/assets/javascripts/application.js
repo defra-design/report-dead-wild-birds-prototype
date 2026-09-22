@@ -155,9 +155,29 @@ function setUpPhotoName () {
   const nameField = document.getElementById('photoName')
   if (!fileInput || !nameField) return
 
+  const added = document.getElementById('photo-added')
+  const addedName = document.getElementById('photo-added-name')
+  const removeLink = document.getElementById('photo-remove')
+
+  // Record the file name and show/hide the "photo added" confirmation.
+  function setPhoto (name) {
+    nameField.value = name || ''
+    if (addedName) addedName.textContent = name || ''
+    if (added) added.hidden = !name
+  }
+
   fileInput.addEventListener('change', function () {
-    nameField.value = fileInput.files && fileInput.files[0] ? fileInput.files[0].name : ''
+    setPhoto(fileInput.files && fileInput.files[0] ? fileInput.files[0].name : '')
   })
+
+  if (removeLink) {
+    removeLink.addEventListener('click', function (e) {
+      e.preventDefault()
+      fileInput.value = ''
+      setPhoto('')
+      fileInput.focus()
+    })
+  }
 }
 
 //
