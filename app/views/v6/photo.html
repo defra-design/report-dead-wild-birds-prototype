@@ -23,6 +23,15 @@
   }) }}
   <input type="hidden" name="photoName" id="photoName" value="{{ data.photo }}">
 
+  {# Confirmation that a photo has been added (updated by application.js). #}
+  <div class="app-file-added" id="photo-added"{% if not data.photo %} hidden{% endif %}>
+    <p class="govuk-body">
+      <strong class="govuk-tag govuk-tag--green">Photo added</strong>
+      <span id="photo-added-name" class="govuk-!-margin-left-1">{{ data.photo }}</span>
+    </p>
+    <p class="govuk-body"><a class="govuk-link" href="#" id="photo-remove">Remove photo</a></p>
+  </div>
+
   {{ govukButton({ text: "Continue" }) }}
 
 </form>
