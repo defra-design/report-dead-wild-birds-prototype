@@ -24,6 +24,15 @@ To show a Back link, set backLink to a path within the version, for example:
     html: 'This is a prototype used for testing and design. It is not a live service. <a class="govuk-link" href="/">Switch version</a>.'
   }) }}
 
+  {# Internal versions (see version.internal in app/lib/versions.js) are for
+     staff use only. Make that unmistakable on every page. #}
+  {% if version.internal %}
+    <div class="app-internal-banner" role="note">
+      <span class="app-internal-banner__tag">Internal tool</span>
+      <span class="app-internal-banner__text">For call agents only. Enter the details the caller gives you. Do not share this with members of the public.</span>
+    </div>
+  {% endif %}
+
   {# When editing an answer from Check your answers, Back returns there. #}
   {% if returnToCheck %}
     {{ govukBackLink({ text: "Back", href: basePath + "/check" }) }}

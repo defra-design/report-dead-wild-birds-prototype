@@ -7,6 +7,37 @@
 // location page, and the debug panel. Neither would ship in a live service.
 
 // ---------------------------------------------------------------------------
+// Internal-tool banner (internal versions only)
+// ---------------------------------------------------------------------------
+// A hard-to-miss band on every page of an internal version, so a call agent is
+// never in doubt that this is the staff form, not the public one.
+.app-internal-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: govuk-spacing(2);
+  margin-bottom: govuk-spacing(4);
+  padding: govuk-spacing(2) govuk-spacing(3);
+  border-left: govuk-spacing(1) solid #912b88;
+  background: #f3d9f0;
+  color: govuk-colour("black");
+}
+
+.app-internal-banner__tag {
+  @include govuk-font($size: 16, $weight: bold);
+  flex: 0 0 auto;
+  padding: 2px govuk-spacing(2);
+  background: #912b88;
+  color: govuk-colour("white");
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.app-internal-banner__text {
+  @include govuk-font($size: 16);
+}
+
+// ---------------------------------------------------------------------------
 // Stand-in map (location page)
 // ---------------------------------------------------------------------------
 // Draws a simple map-like background so the pin drop can be tested without

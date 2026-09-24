@@ -1,0 +1,27 @@
+{% extends "layouts/question.html" %}
+
+{% set pageName = "Tell us anything else that could help us" %}
+{% set backLink = "/condition" %}
+
+{% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
+
+{% block form %}
+<form method="post" novalidate>
+
+  {{ govukCharacterCount({
+    id: "anythingElse",
+    name: "anythingElse",
+    maxlength: 500,
+    label: {
+      text: "Tell us anything else that could help us (optional)",
+      isPageHeading: true,
+      classes: "govuk-label--l"
+    },
+    errorMessage: { text: errors.anythingElse } if errors.anythingElse,
+    value: data.anythingElse
+  }) }}
+
+  {{ govukButton({ text: "Continue" }) }}
+
+</form>
+{% endblock %}
