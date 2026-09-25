@@ -1,23 +1,26 @@
 //
-// Journey definition for v5.
+// Journey definition for v6.
 //
 // Content comes from the content design doc; the page order is the team's:
 //
 //   1  start
 //   2  are-you-reporting-a-dead-bird   (screener: "No, sick/injured" -> guidance)
-//   3  location              (country is derived from this, so it is not asked)
-//   4  bird-type-and-number  (a number for each bird type; checked against thresholds)
-//   5  date-seen             (captured only; does not affect triage)
-//   6  accessible            ("No" -> straight to the end page, cannot collect)
-//   7  condition             (good/mixed collect; "decomposed" -> end page)
-//   8  photo
-//   9  anything-else      (any other information)
-//   10 contact
-//   11 check
-//   12 outcome (end page)
+//   3  date-seen             (over 48 hours -> too old guidance)
+//   4  location              (the nation is derived from here; Northern Ireland
+//                             -> Northern Ireland guidance)
+//   5  bird-type-and-number  (a number for each bird type; checked against thresholds)
+//   6  blackbirds            (Scotland songbird follow-up only)
+//   7  accessible            ("No" -> straight to the end page, cannot collect)
+//   8  condition             (good/mixed collect; "decomposed" -> end page)
+//   9  photo
+//   10 anything-else         (any other information)
+//   11 contact
+//   12 check
+//   13 outcome (end page)
 //
-// This is a scaffold: validation is light and the collection thresholds in
-// decision.js are placeholders, to be detailed page by page.
+// There is no country question: the nation (used for the Northern Ireland exit
+// and the Scotland blackbird rule) is worked out from the location the reporter
+// gives — see decision.nationFromLocation.
 //
 
 const decision = require('./decision')
@@ -25,7 +28,6 @@ const decision = require('./decision')
 const STEPS = [
   'are-you-reporting-a-dead-bird',
   'date-seen',
-  'country',
   'location',
   'bird-type-and-number',
   'blackbirds',
@@ -145,12 +147,6 @@ const VALIDATORS = {
     return []
   },
 
-  country: function (body, data) {
-    if (isBlank(body.country)) return [{ field: 'country', message: 'Select the country where you saw the bird.' }]
-    data.country = body.country
-    return []
-  },
-
   location: function (body, data) {
     const method = body.locationMethod
     if (isBlank(method)) return [{ field: 'locationMethod', message: 'Tell us where you saw the bird.' }]
@@ -186,6 +182,9 @@ const VALIDATORS = {
       what3words: (body.what3words || '').trim(),
       info: info
     }
+    // The nation is worked out from the location, not asked. It drives the
+    // Northern Ireland exit (below) and the Scotland blackbird rule.
+    data.country = decision.nationFromLocation(data.location)
     return []
   },
 
@@ -239,7 +238,7 @@ const VALIDATORS = {
 // to a contextual end page, in journey order:
 //   1. not a dead bird              -> sick or injured guidance          (no ref)
 //   2. seen more than 48 hours ago  -> too old guidance                  (no ref)
-//   3. Northern Ireland (country)   -> Northern Ireland guidance         (no ref)
+//   3. Northern Ireland (from the location) -> Northern Ireland guidance  (no ref)
 //   4. below the collection threshold -> below threshold guidance        (no ref)
 //   5. cannot be reached safely     -> not reachable guidance            (no ref)
 //   6. decomposed                   -> bird condition guidance           (no ref)
@@ -256,7 +255,8 @@ const VALIDATORS = {
 function nextStep (currentStep, data) {
   if (currentStep === 'are-you-reporting-a-dead-bird' && data.reportingDead === 'no') return 'sick-or-injured'
   if (currentStep === 'date-seen' && decision.tooOld(data)) return 'too-old'
-  if (currentStep === 'country' && data.country === 'northern-ireland') return 'northern-ireland'
+  // Northern Ireland is worked out from the location the reporter gave.
+  if (currentStep === 'location' && decision.northernIreland(data)) return 'northern-ireland'
 
   const isMassMortality = decision.massMortality(data)
 
