@@ -1,0 +1,22 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName = "Birds found more than a few days ago" %}
+{% set backLink = "/date-seen" %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-l">Birds found more than a few days ago</h1>
+
+    <p class="govuk-body">Birds that have been dead for several days are often too decomposed to collect and test for disease.</p>
+
+    <p class="govuk-body">You do not need to do anything.</p>
+
+    <p class="govuk-body">If you want to dispose of the bird or ask for it to be removed, read the guidance on <a class="govuk-link" href="https://www.gov.uk/guidance/removing-and-disposing-of-dead-wild-birds" rel="noreferrer noopener" target="_blank">removing and disposing of dead wild birds</a>.</p>
+
+    {% include "includes/risks-to-humans.html" %}
+
+  </div>
+</div>
+{% endblock %}

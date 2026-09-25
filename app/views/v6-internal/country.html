@@ -1,0 +1,37 @@
+{% extends "layouts/question.html" %}
+
+{% set pageName = "Where did you see the bird?" %}
+{% set backLink = "/date-seen" %}
+
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+
+{% block form %}
+<form method="post" novalidate>
+
+  {{ govukRadios({
+    name: "country",
+    fieldset: {
+      legend: {
+        text: "Where did you see the bird?",
+        isPageHeading: true,
+        classes: "govuk-fieldset__legend--l"
+      }
+    },
+    errorMessage: { text: errors.country } if errors.country,
+    items: [
+      { value: "england", text: "England", checked: data.country == "england" },
+      { value: "scotland", text: "Scotland", checked: data.country == "scotland" },
+      { value: "wales", text: "Wales", checked: data.country == "wales" },
+      { value: "northern-ireland", text: "Northern Ireland", checked: data.country == "northern-ireland" }
+    ]
+  }) }}
+
+  {{ govukButton({ text: "Continue" }) }}
+
+</form>
+
+{{ govukInsetText({
+  text: "This question is only here for testing. In the live service we will work out the country from the location you give, so it will be removed."
+}) }}
+{% endblock %}
