@@ -56,8 +56,8 @@
 {{ govukSummaryList({
   rows: [
     { key: { text: "Date seen" }, value: { text: (data.dateSeen.day ~ " " ~ monthNames[data.dateSeen.month] ~ " " ~ data.dateSeen.year) if data.dateSeen else "Not provided" }, actions: { items: [ { href: basePath + "/date-seen" + change, text: "Change", visuallyHiddenText: "date seen" } ] } },
-    { key: { text: "Country" }, value: { text: countryText[data.country] or "Not provided" }, actions: { items: [ { href: basePath + "/country" + change, text: "Change", visuallyHiddenText: "country" } ] } },
     { key: { text: "Location" }, value: { html: locationHtml }, actions: { items: [ { href: basePath + "/location" + change, text: "Change", visuallyHiddenText: "location" } ] } },
+    { key: { text: "Country" }, value: { text: (countryText[data.country] ~ " (from location)") if data.country else "Not provided" } },
     { key: { text: "Birds found" }, value: { html: countsHtml }, actions: { items: [ { href: basePath + "/bird-type-and-number" + change, text: "Change", visuallyHiddenText: "the birds you found" } ] } }
   ].concat(blackbirdRows).concat([
     { key: { text: "Reached safely" }, value: { text: accessibleText[data.accessible] or "Not provided" }, actions: { items: [ { href: basePath + "/accessible" + change, text: "Change", visuallyHiddenText: "whether the bird can be reached safely" } ] } },

@@ -101,9 +101,70 @@ function tooOld (data) {
   return hours > MAX_AGE_HOURS
 }
 
-// True if the reporter selected Northern Ireland on the country question. (The
-// country question is an interim testing step — a real service would derive the
-// country from the location.)
+// Working out the nation from the location, instead of asking a country
+// question. Postcodes are the reliable signal; a map pin gives coordinates; a
+// what3words address cannot be resolved without the what3words service, so the
+// prototype accepts a nation name as its first word for testing (see below).
+//
+// Postcode areas are the leading letters of a postcode (BT, EH, G, CF ...).
+const NI_POSTCODE_AREAS = ['BT']
+const SCOTLAND_POSTCODE_AREAS = ['AB', 'DD', 'DG', 'EH', 'FK', 'G', 'HS', 'IV', 'KA', 'KW', 'KY', 'ML', 'PA', 'PH', 'TD', 'ZE']
+const WALES_POSTCODE_AREAS = ['CF', 'LL', 'NP', 'SA', 'LD', 'SY']
+
+function postcodeArea (postcode) {
+  const m = String(postcode || '').trim().toUpperCase().match(/^[A-Z]{1,2}/)
+  return m ? m[0] : ''
+}
+
+// Approximate bounding box for the island of Ireland's north-east — good enough
+// for a prototype map pin; a real service would use a proper geocoder.
+function coordsInNorthernIreland (lat, lng) {
+  return lat >= 54.0 && lat <= 55.35 && lng >= -8.2 && lng <= -5.35
+}
+
+// Rough "north of the border" test for Scotland from a map pin.
+function coordsInScotland (lat, lng) {
+  return lat >= 55.5
+}
+
+// Derive the nation ('england' | 'scotland' | 'wales' | 'northern-ireland')
+// from the location the reporter gave.
+function nationFromLocation (location) {
+  if (!location) return 'england'
+
+  // 1. Postcode (from the lookup or entered manually) — the reliable signal.
+  const area = postcodeArea(location.postcode || location.addressPostcode)
+  if (area) {
+    if (NI_POSTCODE_AREAS.indexOf(area) !== -1) return 'northern-ireland'
+    if (SCOTLAND_POSTCODE_AREAS.indexOf(area) !== -1) return 'scotland'
+    if (WALES_POSTCODE_AREAS.indexOf(area) !== -1) return 'wales'
+    return 'england'
+  }
+
+  // 2. A map pin gives "lat, lng".
+  if (location.map) {
+    const parts = String(location.map).split(',')
+    const lat = parseFloat(parts[0]); const lng = parseFloat(parts[1])
+    if (!isNaN(lat) && !isNaN(lng)) {
+      if (coordsInNorthernIreland(lat, lng)) return 'northern-ireland'
+      if (coordsInScotland(lat, lng)) return 'scotland'
+      return 'england'
+    }
+  }
+
+  // 3. what3words needs the what3words service to resolve to a point, which the
+  //    prototype does not have. For testing, a nation name as the first word
+  //    stands in — e.g. "northernireland.dead.bird" or "scotland.dead.bird".
+  const first = String(location.what3words || '').trim().toLowerCase().replace(/^\/+/, '').split('.')[0]
+  if (first === 'northernireland' || first === 'ni') return 'northern-ireland'
+  if (first === 'scotland') return 'scotland'
+  if (first === 'wales') return 'wales'
+
+  return 'england'
+}
+
+// True if the reporter's location is in Northern Ireland (worked out from the
+// location — see nationFromLocation).
 function northernIreland (data) {
   return data.country === 'northern-ireland'
 }
@@ -209,5 +270,6 @@ module.exports = {
   scotlandSongbird: scotlandSongbird,
   tooOld: tooOld,
   northernIreland: northernIreland,
+  nationFromLocation: nationFromLocation,
   SPECIES: SPECIES
 }
