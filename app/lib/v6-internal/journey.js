@@ -2,9 +2,11 @@
 // Journey definition for v6 internal (call agents).
 //
 // A copy of v6 for internal call handlers, who key in the details a member of
-// the public gives them over the phone. It differs from v6 in three ways:
-//   - no photo upload step (the caller is not on the form)
-//   - no "select on a map" location option
+// the public gives them over the phone. It differs from v6 in these ways:
+//   - no "select on a map" location option (an agent cannot drop a pin)
+//   - "Describe the location" is offered, for callers who cannot give a
+//     postcode or what3words over the phone
+//   - the photo upload is optional (a caller can email a photo in later)
 //   - every page is flagged as an internal tool (see version.internal)
 //
 // The page order otherwise matches v6:
@@ -18,10 +20,11 @@
 //   7  blackbirds            (Scotland songbird follow-up only)
 //   8  accessible            ("No" -> straight to the end page, cannot collect)
 //   9  condition             (good/mixed collect; "decomposed" -> end page)
-//   10 anything-else         (any other information)
-//   11 contact
-//   12 check
-//   13 outcome (end page)
+//   10 photo                 (optional)
+//   11 anything-else         (any other information)
+//   12 contact
+//   13 check
+//   14 outcome (end page)
 //
 
 const decision = require('./decision')
@@ -35,6 +38,7 @@ const STEPS = [
   'blackbirds',
   'accessible',
   'condition',
+  'photo',
   'anything-else',
   'contact',
   'check'
@@ -167,6 +171,11 @@ const VALIDATORS = {
     if (method === 'what3words' && isBlank(body.what3words)) {
       return [{ field: 'locationMethod', message: 'Enter a what3words location.' }]
     }
+    // Describe the location: a fallback for callers who cannot give a postcode
+    // or what3words over the phone.
+    if (method === 'describe' && isBlank(body.locationDescribe)) {
+      return [{ field: 'locationMethod', message: 'Describe where the caller saw the bird.' }]
+    }
 
     const info = (body.locationInfo || '').trim()
     if (info.length > 500) {
@@ -183,6 +192,7 @@ const VALIDATORS = {
       addressCounty: (body.addressCounty || '').trim(),
       addressPostcode: (body.addressPostcode || '').trim(),
       what3words: (body.what3words || '').trim(),
+      description: (body.locationDescribe || '').trim(),
       info: info
     }
     return []
@@ -191,6 +201,12 @@ const VALIDATORS = {
   blackbirds: function (body, data) {
     if (isBlank(body.blackbirds)) return [{ field: 'blackbirds', message: 'Select whether any of the dead birds were blackbirds' }]
     data.blackbirds = body.blackbirds
+    return []
+  },
+
+  photo: function (body, data) {
+    // Optional. The prototype stores the file name only.
+    data.photo = body.photoName ? body.photoName : null
     return []
   },
 

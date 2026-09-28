@@ -1,0 +1,38 @@
+{% extends "layouts/question.html" %}
+
+{% set pageName = "Add a photo of the bird (optional)" %}
+{% set backLink = "/condition" %}
+
+{% from "govuk/components/file-upload/macro.njk" import govukFileUpload %}
+
+{% block form %}
+
+<h1 class="govuk-heading-l">Add a photo of the bird (optional)</h1>
+
+<p class="govuk-body">Upload a photo showing the bird and its surroundings.</p>
+
+<p class="govuk-body">Do not touch the bird or put yourself at risk to take a photo.</p>
+
+<form method="post" novalidate>
+
+  {{ govukFileUpload({
+    id: "photo",
+    name: "photo",
+    label: { text: "Upload a photo", classes: "govuk-label--s" },
+    attributes: { accept: "image/*" }
+  }) }}
+  <input type="hidden" name="photoName" id="photoName" value="{{ data.photo }}">
+
+  {# Confirmation that a photo has been added (updated by application.js). #}
+  <div class="app-file-added" id="photo-added"{% if not data.photo %} hidden{% endif %}>
+    <p class="govuk-body">
+      <strong class="govuk-tag govuk-tag--green">Photo added</strong>
+      <span id="photo-added-name" class="govuk-!-margin-left-1">{{ data.photo }}</span>
+    </p>
+    <p class="govuk-body"><a class="govuk-link" href="#" id="photo-remove">Remove photo</a></p>
+  </div>
+
+  {{ govukButton({ text: "Continue" }) }}
+
+</form>
+{% endblock %}
