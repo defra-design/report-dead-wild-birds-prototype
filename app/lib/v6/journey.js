@@ -6,7 +6,9 @@
 //   1  start
 //   2  are-you-reporting-a-dead-bird   (screener: "No, sick/injured" -> guidance)
 //   3  date-seen             (over 48 hours -> too old guidance)
-//   4  location              (the nation is derived from here; Northern Ireland
+//   4  location              (choose how to give the location — no reveals)
+//   4a location-map / location-address / location-what3words  (one per method;
+//                             the nation is derived here; Northern Ireland
 //                             -> Northern Ireland guidance)
 //   5  bird-type-and-number  (a number for each bird type; checked against thresholds)
 //   6  blackbirds            (Scotland songbird follow-up only)
@@ -29,6 +31,9 @@ const STEPS = [
   'are-you-reporting-a-dead-bird',
   'date-seen',
   'location',
+  'location-map',
+  'location-address',
+  'location-what3words',
   'bird-type-and-number',
   'blackbirds',
   'accessible',
@@ -68,6 +73,36 @@ function isValidPhone (value) {
   // Allow digits, spaces, and the usual separators; needs 8–15 digits.
   const digits = value.replace(/[\s()-]/g, '').replace(/^\+/, '')
   return /^[0-9]{8,15}$/.test(digits)
+}
+
+// The optional "any other information about the location" field, shared by the
+// three location method pages (map, address, what3words).
+function locationInfoError (body) {
+  const info = (body.locationInfo || '').trim()
+  if (info.length > 500) {
+    return [{ field: 'locationInfo', message: 'Description must be 500 characters or less.' }]
+  }
+  return []
+}
+
+// Build data.location from a method page's fields and work out the nation from
+// it (which drives the Northern Ireland exit and the Scotland blackbird rule).
+function setLocation (data, method, body) {
+  data.location = {
+    method: method,
+    map: (body.lat && body.lng) ? (body.lat + ', ' + body.lng) : '',
+    postcode: (body.postcode || '').trim(),
+    addressSelected: (body.addressSelected || '').trim(),
+    addressLine1: (body.addressLine1 || '').trim(),
+    addressLine2: (body.addressLine2 || '').trim(),
+    addressTown: (body.addressTown || '').trim(),
+    addressCounty: (body.addressCounty || '').trim(),
+    addressPostcode: (body.addressPostcode || '').trim(),
+    what3words: (body.what3words || '').trim(),
+    info: (body.locationInfo || '').trim()
+  }
+  data.locationMethod = method
+  data.country = decision.nationFromLocation(data.location)
 }
 
 const VALIDATORS = {
@@ -147,44 +182,44 @@ const VALIDATORS = {
     return []
   },
 
+  // Choose how to give the location. Each method has its own page (below), so
+  // this page has no conditional reveals — one thing per page.
   location: function (body, data) {
-    const method = body.locationMethod
-    if (isBlank(method)) return [{ field: 'locationMethod', message: 'Tell us where you saw the bird.' }]
-
-    // The chosen method must have its detail filled in. (Manual address lines
-    // and real postcode/what3words format checks are a later, backend job.)
-    if (method === 'map' && (isBlank(body.lat) || isBlank(body.lng))) {
-      return [{ field: 'locationMethod', message: 'Select where you saw the bird on the map.' }]
+    if (isBlank(body.locationMethod)) {
+      return [{ field: 'locationMethod', message: 'Select how you want to tell us where you saw the bird.' }]
     }
+    data.locationMethod = body.locationMethod
+    return []
+  },
+
+  'location-map': function (body, data) {
+    if (isBlank(body.lat) || isBlank(body.lng)) {
+      return [{ field: 'map', message: 'Select where you saw the bird on the map.' }]
+    }
+    const errors = locationInfoError(body)
+    if (errors.length) return errors
+    setLocation(data, 'map', body)
+    return []
+  },
+
+  'location-address': function (body, data) {
     // Address can be given by postcode lookup or by manual address lines.
-    if (method === 'address' && isBlank(body.postcode) && isBlank(body.addressPostcode)) {
-      return [{ field: 'locationMethod', message: 'Enter a full UK postcode' }]
+    if (isBlank(body.postcode) && isBlank(body.addressPostcode)) {
+      return [{ field: 'postcode', message: 'Enter a full UK postcode' }]
     }
-    if (method === 'what3words' && isBlank(body.what3words)) {
-      return [{ field: 'locationMethod', message: 'Enter a what3words location.' }]
-    }
+    const errors = locationInfoError(body)
+    if (errors.length) return errors
+    setLocation(data, 'address', body)
+    return []
+  },
 
-    const info = (body.locationInfo || '').trim()
-    if (info.length > 500) {
-      return [{ field: 'locationInfo', message: 'Description must be 500 characters or less.' }]
+  'location-what3words': function (body, data) {
+    if (isBlank(body.what3words)) {
+      return [{ field: 'what3words', message: 'Enter a what3words location.' }]
     }
-
-    data.location = {
-      method: method,
-      map: (body.lat && body.lng) ? (body.lat + ', ' + body.lng) : '',
-      postcode: (body.postcode || '').trim(),
-      addressSelected: (body.addressSelected || '').trim(),
-      addressLine1: (body.addressLine1 || '').trim(),
-      addressLine2: (body.addressLine2 || '').trim(),
-      addressTown: (body.addressTown || '').trim(),
-      addressCounty: (body.addressCounty || '').trim(),
-      addressPostcode: (body.addressPostcode || '').trim(),
-      what3words: (body.what3words || '').trim(),
-      info: info
-    }
-    // The nation is worked out from the location, not asked. It drives the
-    // Northern Ireland exit (below) and the Scotland blackbird rule.
-    data.country = decision.nationFromLocation(data.location)
+    const errors = locationInfoError(body)
+    if (errors.length) return errors
+    setLocation(data, 'what3words', body)
     return []
   },
 
@@ -255,8 +290,18 @@ const VALIDATORS = {
 function nextStep (currentStep, data) {
   if (currentStep === 'are-you-reporting-a-dead-bird' && data.reportingDead === 'no') return 'sick-or-injured'
   if (currentStep === 'date-seen' && decision.tooOld(data)) return 'too-old'
-  // Northern Ireland is worked out from the location the reporter gave.
-  if (currentStep === 'location' && decision.northernIreland(data)) return 'northern-ireland'
+
+  // The location is split across pages: a chooser, then one page per method.
+  if (currentStep === 'location') {
+    if (data.locationMethod === 'map') return 'location-map'
+    if (data.locationMethod === 'what3words') return 'location-what3words'
+    return 'location-address'
+  }
+  // After a method page the nation is known, so the Northern Ireland exit fires.
+  if (currentStep === 'location-map' || currentStep === 'location-address' || currentStep === 'location-what3words') {
+    if (decision.northernIreland(data)) return 'northern-ireland'
+    return 'bird-type-and-number'
+  }
 
   const isMassMortality = decision.massMortality(data)
 

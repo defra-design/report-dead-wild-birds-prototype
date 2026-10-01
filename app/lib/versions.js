@@ -66,11 +66,12 @@ const VERSIONS = [
     id: 'v6',
     number: '6.0',
     name: 'Alpha Prototype',
-    date: '25 September 2026',
+    date: '1 October 2026',
     current: true,
     changes: [
       'Journey reordered: screener, date, location, numbers, reachability, condition',
       'No country question — the nation is worked out from the location (postcode, map pin or what3words)',
+      'Location split across pages: a chooser, then one page per method (no conditional reveals)',
       'Northern Ireland reports are redirected once the location is given',
       'Six contextual exit pages, each shown as soon as collection is ruled out',
       'Birds seen more than 48 hours ago are not collected',

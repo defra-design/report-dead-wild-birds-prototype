@@ -1,7 +1,11 @@
 {% extends "layouts/main.html" %}
 
 {% set pageName = "Report dead wild birds in Northern Ireland" %}
+{# Back returns to whichever location method page was used. #}
 {% set backLink = "/location" %}
+{% if data.location.method == "map" %}{% set backLink = "/location-map" %}
+{% elif data.location.method == "what3words" %}{% set backLink = "/location-what3words" %}
+{% elif data.location.method == "address" %}{% set backLink = "/location-address" %}{% endif %}
 
 {% block content %}
 <div class="govuk-grid-row">
