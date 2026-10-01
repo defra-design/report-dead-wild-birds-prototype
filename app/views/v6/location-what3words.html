@@ -1,6 +1,6 @@
 {% extends "layouts/question.html" %}
 
-{% set pageName = "Enter the what3words location" %}
+{% set pageName = "Where is the bird?" %}
 {% set backLink = "/location" %}
 
 {% from "govuk/components/input/macro.njk" import govukInput %}
@@ -9,12 +9,18 @@
 {% block form %}
 <form method="post" novalidate>
 
+  <h1 class="govuk-heading-l">Where is the bird?</h1>
+
+  <p class="govuk-body">Enter your what3words.</p>
+
+  <p class="govuk-body">Use the what3words website to get a 3-word reference to a 3 metre square.</p>
+
   {{ govukInput({
-    label: { text: "Enter the what3words location", classes: "govuk-label--l", isPageHeading: true },
+    label: { text: "Enter what3words", classes: "govuk-label--s" },
     id: "what3words",
     name: "what3words",
     classes: "govuk-input--width-20",
-    hint: { text: "A 3-word reference to a 3 metre square, for example ///filled.count.soap. Get it from the what3words app or website." },
+    hint: { text: "For example, spare.coach.loops. Do not enter ///" },
     errorMessage: { text: errors.what3words } if errors.what3words,
     value: data.location.what3words if data.location
   }) }}
@@ -23,7 +29,7 @@
     id: "locationInfo",
     name: "locationInfo",
     maxlength: 500,
-    label: { text: "Tell us any other information about the location, such as landmarks or buildings (optional)", classes: "govuk-label--s" },
+    label: { text: "Tell us any other information about how to get to the location and find the dead bird, such as landmarks or buildings (optional)", classes: "govuk-label--s" },
     errorMessage: { text: errors.locationInfo } if errors.locationInfo,
     value: data.location.info if data.location
   }) }}

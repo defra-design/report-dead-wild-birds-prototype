@@ -1,6 +1,6 @@
 {% extends "layouts/main.html" %}
 
-{% set pageName = "Thank you for your report" %}
+{% set pageName = "Thank you for reporting" %}
 
 {% from "govuk/components/panel/macro.njk" import govukPanel %}
 
@@ -8,63 +8,53 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
 
-    {% set panelStatus = "We may collect these birds for testing." if birdCount > 1 else "We may collect this bird for testing." %}
-
     {{ govukPanel({
-      titleText: "Thank you for your report",
-      classes: "" if outcome.collect else "app-panel--received",
-      html: ('<span class="govuk-!-font-size-24">' + panelStatus + '</span><br><br>' if outcome.collect else "") + "Your reference number<br><strong>" + referenceNumber + "</strong>"
+      titleText: "Thank you for reporting",
+      html: "Your reference number<br><strong>" + referenceNumber + "</strong>"
     }) }}
 
-    <p class="govuk-body">Your report helps us understand how diseases like bird flu are spreading.</p>
+    <p class="govuk-body">Use this reference number if you get in touch with us to report the bird’s body has gone. Please do not contact us to ask for updates.</p>
+
+    <p class="govuk-body">Telephone: 03459 33 55 77</p>
 
     {% if outcome.collect %}
 
       {# WSF submission — the bird may be collected. #}
       <h2 class="govuk-heading-m">What happens next</h2>
 
-      <p class="govuk-body">We’ll use your report to decide if we need to collect the bird for testing.</p>
+      <p class="govuk-body">We will collect the body of the bird within the next 48 hours, subject to the availability of operators collecting in your region.</p>
 
-      <p class="govuk-body">If we collect the bird:</p>
+      <h3 class="govuk-heading-s">Bird on private land</h3>
 
-      <ul class="govuk-list govuk-list--bullet">
-        <li>we’ll usually collect the bird within 48 hours, but it can take up to 4 days</li>
-        <li>we may contact you to confirm the location</li>
-        <li>if we test the bird, we’ll email you the results within 2 to 4 weeks</li>
-      </ul>
+      <p class="govuk-body">If the bird is on your property, we’ll try to contact you to arrange a pick-up time. You can bag and store the bird for us to collect (if you can do this, follow the directions for bagging birds in <a class="govuk-link" href="https://www.gov.uk/guidance/removing-and-disposing-of-dead-wild-birds" rel="noreferrer noopener" target="_blank">removing and disposing of dead wild birds</a> and do not store the bird indoors). Please leave the bag in an obvious and accessible place if you’re not at home.</p>
+
+      <h3 class="govuk-heading-s">Bird on public land</h3>
+
+      <p class="govuk-body">If the bird is on public land, we may need to contact you to confirm the location.</p>
+
+      <h3 class="govuk-heading-s">If we test the bird</h3>
+
+      <p class="govuk-body">If we test the bird, we’ll email you the test results within 2 to 4 weeks.</p>
+
+      <p class="govuk-body"><a class="govuk-link" href="https://www.gov.uk/government/publications/avian-influenza-in-wild-birds" rel="noreferrer noopener" target="_blank">Find out about our wild bird surveillance programme</a>.</p>
+
+      <h2 class="govuk-heading-m">Bird not collected</h2>
+
+      <p class="govuk-body">If we do not collect the bird and you want to know how to dispose of dead wild birds on your property or ask for them to be removed from public land, read the guidance on <a class="govuk-link" href="https://www.gov.uk/guidance/removing-and-disposing-of-dead-wild-birds" rel="noreferrer noopener" target="_blank">removing and disposing of dead wild birds</a>.</p>
 
     {% else %}
 
-      {# REP submission — new REP submissions only, for duplicates / locations
-         with test embargos or awaiting test results. Not reached by the
-         prototype journey, which routes every no-collection case to its own
-         guidance page. #}
+      {# Fallback only — the prototype routes every no-collection case to its own
+         guidance page, so this branch is not normally reached. #}
       <h2 class="govuk-heading-m">What happens next</h2>
 
-      <p class="govuk-body">We use reports and surveillance information to decide which birds to collect for testing.</p>
+      <p class="govuk-body">We do not need to collect the bird(s) you have reported.</p>
 
-      <p class="govuk-body">Based on the information available, we do not need to collect the bird(s) you have reported as we already have recent testing in the location you reported. If further testing is deemed necessary we shall be in touch within 24 hours.</p>
-
-      <p class="govuk-body">You do not need to do anything.</p>
-
-      <p class="govuk-body">If you want to dispose of the bird or ask for it to be removed, read the guidance on <a class="govuk-link" href="https://www.gov.uk/guidance/removing-and-disposing-of-dead-wild-birds" rel="noreferrer noopener" target="_blank">removing and disposing of dead wild birds</a>.</p>
+      <p class="govuk-body">If you want to know how to dispose of dead wild birds on your property or ask for them to be removed from public land, read the guidance on <a class="govuk-link" href="https://www.gov.uk/guidance/removing-and-disposing-of-dead-wild-birds" rel="noreferrer noopener" target="_blank">removing and disposing of dead wild birds</a>.</p>
 
     {% endif %}
 
-    <h2 class="govuk-heading-m">Why your report is important</h2>
-
-    <p class="govuk-body">Your report helps us understand where wild birds are dying and which species are affected.</p>
-
-    <p class="govuk-body">This information supports our wild bird surveillance programme and helps us investigate new and emerging threats to wild birds.</p>
-
-    {# No URL for this in the content doc — plain text there. #}
-    <p class="govuk-body">Find out about our wild bird surveillance programme.</p>
-
-    <h2 class="govuk-heading-m">Risks to humans from bird flu</h2>
-
-    <p class="govuk-body">The risk of bird flu passing from infected dead birds to humans is low. You can read <a class="govuk-link" href="https://www.nhs.uk/conditions/bird-flu/" rel="noreferrer noopener" target="_blank">NHS guidance on the risks to humans from bird flu</a>.</p>
-
-    <p class="govuk-body">If you’re concerned about symptoms, phone the NHS on 111.</p>
+    {% include "includes/risks-to-humans.html" %}
 
     <p class="govuk-body govuk-!-margin-top-6"><a class="govuk-link" href="{{ basePath }}/start-again">Report another dead wild bird</a></p>
 

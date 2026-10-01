@@ -1,6 +1,6 @@
 {% extends "layouts/question.html" %}
 
-{% set pageName = "Enter the address or postcode" %}
+{% set pageName = "Where is the bird?" %}
 {% set backLink = "/location" %}
 
 {% from "govuk/components/input/macro.njk" import govukInput %}
@@ -10,7 +10,9 @@
 {% block form %}
 <form method="post" novalidate>
 
-  <h1 class="govuk-heading-l">Enter the address or postcode</h1>
+  <h1 class="govuk-heading-l">Where is the bird?</h1>
+
+  <p class="govuk-body">Enter the postcode and select the address.</p>
 
   {# Three ways to give an address (toggled by JavaScript, see application.js):
      look up a postcode and pick from a list, or enter the address lines
@@ -73,7 +75,7 @@
     id: "locationInfo",
     name: "locationInfo",
     maxlength: 500,
-    label: { text: "Tell us any other information about the location, such as landmarks or buildings (optional)", classes: "govuk-label--s" },
+    label: { text: "Tell us any other information about how to get to the location and find the dead bird, such as landmarks or buildings (optional)", classes: "govuk-label--s" },
     errorMessage: { text: errors.locationInfo } if errors.locationInfo,
     value: data.location.info if data.location
   }) }}

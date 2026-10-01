@@ -1,6 +1,6 @@
 {% extends "layouts/question.html" %}
 
-{% set pageName = "How do you want to tell us where you saw the bird?" %}
+{% set pageName = "Where is the bird?" %}
 {% set backLink = "/date-seen" %}
 
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
@@ -12,17 +12,17 @@
     name: "locationMethod",
     fieldset: {
       legend: {
-        text: "How do you want to tell us where you saw the bird?",
+        text: "Where is the bird?",
         isPageHeading: true,
         classes: "govuk-fieldset__legend--l"
       }
     },
-    hint: { text: "You'll give the exact location on the next page. Choose the way that's easiest for you." },
+    hint: { text: "Select one option to give us the most precise location for the bird." },
     errorMessage: { text: errors.locationMethod } if errors.locationMethod,
     items: [
-      { value: "map", text: "Point to it on a map", hint: { text: "Best if you do not know the postcode." }, checked: data.locationMethod == "map" },
-      { value: "address", text: "Enter an address or postcode", checked: data.locationMethod == "address" },
-      { value: "what3words", text: "Enter a what3words location", hint: { text: "A 3-word reference to a 3 metre square, from the what3words app or website." }, checked: data.locationMethod == "what3words" }
+      { value: "map", text: "Put a pin on a map", checked: data.locationMethod == "map" },
+      { value: "address", text: "Address and postcode", checked: data.locationMethod == "address" },
+      { value: "what3words", text: "Enter a what3words location", hint: { text: "Use the what3words website to get a 3-word reference to a 3m square." }, checked: data.locationMethod == "what3words" }
     ]
   }) }}
 

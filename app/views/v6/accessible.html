@@ -7,14 +7,14 @@
 
 {% block form %}
 
-<h1 class="govuk-heading-l">Can the bird be reached safely, without tools or equipment, if we need to collect it?</h1>
+<h1 class="govuk-heading-l">Can the bird be reached safely, without tools or equipment?</h1>
 
-<p class="govuk-body">Answer “No” if the bird is:</p>
+<div class="govuk-hint">Answer ‘No’ if the bird is:</div>
 
-<ul class="govuk-list govuk-list--bullet">
-  <li>in water, or can only be reached by boat</li>
-  <li>somewhere difficult to reach, like on a roof or in a tree</li>
-  <li>behind a barrier, fence or locked area</li>
+<ul class="govuk-list govuk-list--bullet govuk-hint">
+  <li>in water and can only be reached by boat</li>
+  <li>somewhere that would need a ladder, like on a roof or in a tree</li>
+  <li>behind a barrier, fence or locked area (unless it is on your property)</li>
   <li>in a location that would be dangerous to access, such as a railway line or motorway</li>
 </ul>
 
@@ -24,7 +24,7 @@
     name: "accessible",
     fieldset: {
       legend: {
-        text: "Can the bird be reached safely, without tools or equipment, if we need to collect it?",
+        text: "Can the bird be reached safely, without tools or equipment?",
         classes: "govuk-visually-hidden"
       }
     },
