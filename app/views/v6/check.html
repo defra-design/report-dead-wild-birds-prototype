@@ -53,10 +53,16 @@
   ] %}
 {% endif %}
 
+{# Editing location returns to the method page the reporter used, not the chooser. #}
+{% set locationChange = "/location" %}
+{% if data.location.method == "map" %}{% set locationChange = "/location-map" %}
+{% elif data.location.method == "what3words" %}{% set locationChange = "/location-what3words" %}
+{% elif data.location.method == "address" %}{% set locationChange = "/location-address" %}{% endif %}
+
 {{ govukSummaryList({
   rows: [
     { key: { text: "Date seen" }, value: { text: (data.dateSeen.day ~ " " ~ monthNames[data.dateSeen.month] ~ " " ~ data.dateSeen.year) if data.dateSeen else "Not provided" }, actions: { items: [ { href: basePath + "/date-seen" + change, text: "Change", visuallyHiddenText: "date seen" } ] } },
-    { key: { text: "Location" }, value: { html: locationHtml }, actions: { items: [ { href: basePath + "/location" + change, text: "Change", visuallyHiddenText: "location" } ] } },
+    { key: { text: "Location" }, value: { html: locationHtml }, actions: { items: [ { href: basePath + locationChange + change, text: "Change", visuallyHiddenText: "location" } ] } },
     { key: { text: "Country" }, value: { text: (countryText[data.country] ~ " (from location)") if data.country else "Not provided" } },
     { key: { text: "Birds found" }, value: { html: countsHtml }, actions: { items: [ { href: basePath + "/bird-type-and-number" + change, text: "Change", visuallyHiddenText: "the birds you found" } ] } }
   ].concat(blackbirdRows).concat([

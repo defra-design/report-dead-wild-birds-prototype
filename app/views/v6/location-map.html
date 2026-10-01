@@ -1,0 +1,46 @@
+{% extends "layouts/question.html" %}
+
+{% set pageName = "Point to where you saw the bird on the map" %}
+{% set backLink = "/location" %}
+
+{% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
+{% from "govuk/components/error-message/macro.njk" import govukErrorMessage %}
+
+{% block form %}
+<form method="post" novalidate>
+
+  <div class="govuk-form-group {%- if errors.map %} govuk-form-group--error{% endif %}">
+    <h1 class="govuk-label-wrapper">
+      <label class="govuk-label govuk-label--l" for="map">Point to where you saw the bird on the map</label>
+    </h1>
+    <div id="map-hint" class="govuk-hint">Move the map and select the spot as precisely as you can.</div>
+    {% if errors.map %}{{ govukErrorMessage({ text: errors.map }) }}{% endif %}
+
+    <div class="app-map" id="map" role="application" tabindex="0" aria-describedby="map-hint">
+      <div class="app-map__water"></div>
+      <div class="app-map__road app-map__road--vertical"></div>
+      <div class="app-map__road app-map__road--horizontal"></div>
+      <svg class="app-map__pin" id="map-pin" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
+        <path d="M12 0C7 0 3 4 3 9c0 6.5 9 15 9 15s9-8.5 9-15c0-5-4-9-9-9zm0 12.5A3.5 3.5 0 1 1 12 5.5a3.5 3.5 0 0 1 0 7z"/>
+      </svg>
+      <p class="app-map__readout" id="map-readout">No location selected yet</p>
+    </div>
+    <input type="hidden" name="lat" id="lat" value="{{ data.location.map.split(', ')[0] if data.location and data.location.map }}">
+    <input type="hidden" name="lng" id="lng" value="{{ data.location.map.split(', ')[1] if data.location and data.location.map }}">
+  </div>
+
+  {{ govukCharacterCount({
+    id: "locationInfo",
+    name: "locationInfo",
+    maxlength: 500,
+    label: { text: "Tell us any other information about the location, such as landmarks or buildings (optional)", classes: "govuk-label--s" },
+    errorMessage: { text: errors.locationInfo } if errors.locationInfo,
+    value: data.location.info if data.location
+  }) }}
+
+  {{ govukButton({ text: "Continue" }) }}
+
+  <p class="govuk-body"><a class="govuk-link" href="{{ basePath }}/location">Tell us the location a different way</a></p>
+
+</form>
+{% endblock %}

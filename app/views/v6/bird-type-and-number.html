@@ -1,7 +1,11 @@
 {% extends "layouts/question.html" %}
 
 {% set pageName = "How many birds of each species did you find?" %}
+{# Back returns to whichever location method page was used. #}
 {% set backLink = "/location" %}
+{% if data.location.method == "map" %}{% set backLink = "/location-map" %}
+{% elif data.location.method == "what3words" %}{% set backLink = "/location-what3words" %}
+{% elif data.location.method == "address" %}{% set backLink = "/location-address" %}{% endif %}
 
 {% from "govuk/components/input/macro.njk" import govukInput %}
 
