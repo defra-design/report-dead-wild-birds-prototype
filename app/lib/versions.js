@@ -21,13 +21,14 @@ const VERSIONS = [
     id: 'v6-internal',
     number: '6.0',
     name: 'Internal (call agents)',
-    date: '24 September 2026',
+    date: '25 September 2026',
     current: false,
     internal: true,
     changes: [
       'Internal call-agent version of version 6 — agents enter the details a caller gives them',
-      'No photo upload (the caller is not on the form)',
       'No "select on a map" option for the location',
+      '"Describe the location" added, for callers who cannot give a postcode or what3words',
+      'Optional photo upload (a caller can email a photo in later)',
       'Every page is flagged as an internal tool'
     ],
     journey: require('./v6-internal/journey'),
