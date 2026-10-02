@@ -1,0 +1,30 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName = "Collection not necessary" %}
+
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    {# Post-submission exit. This page is reached only after a back-end check
+       finds an eligible bird already reported, collected or tested within a
+       radius of this report, so it is not wired into the prototype journey —
+       it is a standalone page to share for review. #}
+
+    <h1 class="govuk-heading-l">Collection not necessary</h1>
+
+    <p class="govuk-body">Thank you for making this report, but we do not need to make a collection.</p>
+
+    <p class="govuk-body">We’ve recently collected another bird from this location.</p>
+
+    {{ govukWarningText({ text: "Our operators will not collect birds from locations with existing cases.", iconFallbackText: "Warning" }) }}
+
+    <p class="govuk-body">If you want to know how to dispose of dead wild birds on your property or ask for them to be removed from public land, read the guidance on <a class="govuk-link" href="https://www.gov.uk/guidance/removing-and-disposing-of-dead-wild-birds" rel="noreferrer noopener" target="_blank">removing and disposing of dead wild birds</a>.</p>
+
+    {% include "includes/risks-to-humans.html" %}
+
+  </div>
+</div>
+{% endblock %}
