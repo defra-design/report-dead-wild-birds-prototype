@@ -1,6 +1,6 @@
 {% extends "layouts/question.html" %}
 
-{% set pageName = "Point to where you saw the bird on the map" %}
+{% set pageName = "Where is the bird?" %}
 {% set backLink = "/location" %}
 
 {% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
@@ -11,9 +11,9 @@
 
   <div class="govuk-form-group {%- if errors.map %} govuk-form-group--error{% endif %}">
     <h1 class="govuk-label-wrapper">
-      <label class="govuk-label govuk-label--l" for="map">Point to where you saw the bird on the map</label>
+      <label class="govuk-label govuk-label--l" for="map">Where is the bird?</label>
     </h1>
-    <div id="map-hint" class="govuk-hint">Move the map and select the spot as precisely as you can.</div>
+    <div id="map-hint" class="govuk-hint">Put a pin on a map as precisely as you can.</div>
     {% if errors.map %}{{ govukErrorMessage({ text: errors.map }) }}{% endif %}
 
     <div class="app-map" id="map" role="application" tabindex="0" aria-describedby="map-hint">
@@ -33,7 +33,7 @@
     id: "locationInfo",
     name: "locationInfo",
     maxlength: 500,
-    label: { text: "Tell us any other information about the location, such as landmarks or buildings (optional)", classes: "govuk-label--s" },
+    label: { text: "Tell us any other information about how to get to the location and find the dead bird, such as landmarks or buildings (optional)", classes: "govuk-label--s" },
     errorMessage: { text: errors.locationInfo } if errors.locationInfo,
     value: data.location.info if data.location
   }) }}

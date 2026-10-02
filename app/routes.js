@@ -41,6 +41,10 @@ function mountVersion (version) {
   function withVersion (req, res, next) {
     const data = req.session.data[version.id] || (req.session.data[version.id] = {})
     res.locals.data = data
+    // Total birds reported so far (used, for example, to switch the condition
+    // question between single-bird and multiple-bird wording).
+    const counts = data.counts || {}
+    res.locals.birdCount = Object.keys(counts).reduce(function (sum, k) { return sum + (counts[k] || 0) }, 0)
     res.locals.basePath = basePath
     res.locals.version = version
     res.locals.speciesLabel = decision.speciesLabel

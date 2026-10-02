@@ -128,7 +128,7 @@ const VALIDATORS = {
     data.counts = counts
 
     if (total === 0) {
-      errors.push({ field: 'count-bird-of-prey', message: 'Enter the number of birds you found for each species.' })
+      errors.push({ field: 'count-bird-of-prey', message: 'Enter a number for at least one species.' })
     }
 
     return errors
@@ -186,7 +186,7 @@ const VALIDATORS = {
   // this page has no conditional reveals — one thing per page.
   location: function (body, data) {
     if (isBlank(body.locationMethod)) {
-      return [{ field: 'locationMethod', message: 'Select how you want to tell us where you saw the bird.' }]
+      return [{ field: 'locationMethod', message: 'Use one of the options to tell us where you saw the bird.' }]
     }
     data.locationMethod = body.locationMethod
     return []
@@ -247,19 +247,21 @@ const VALIDATORS = {
 
   contact: function (body, data) {
     const errors = []
-    if (isBlank(body.name)) errors.push({ field: 'name', message: 'Name must be provided.' })
+    if (isBlank(body.name)) errors.push({ field: 'name', message: 'Enter your name.' })
     else data.name = body.name.trim()
 
     const phone = (body.phone || '').trim()
     const email = (body.email || '').trim()
 
-    // Email is required; telephone is optional.
+    // Email and telephone are both required.
     if (!email) {
-      errors.push({ field: 'email', message: 'Enter an email address' })
+      errors.push({ field: 'email', message: 'Enter your email address.' })
     } else if (!isValidEmail(email)) {
       errors.push({ field: 'email', message: 'Enter an email address in the correct format, like name@example.com' })
     }
-    if (phone && !isValidPhone(phone)) {
+    if (!phone) {
+      errors.push({ field: 'phone', message: 'Enter a telephone number.' })
+    } else if (!isValidPhone(phone)) {
       errors.push({ field: 'phone', message: 'Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 808 157 0192' })
     }
     data.phone = phone
