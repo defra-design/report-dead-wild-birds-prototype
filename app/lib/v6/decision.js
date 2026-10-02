@@ -17,26 +17,28 @@
 //
 
 // Species options from the doc (type of bird). key -> { label, hint, threshold }.
+// Thresholds follow the published APHA surveillance collection thresholds:
+// https://www.gov.uk/government/publications/surveillance-collection-thresholds-for-dead-wild-birds
 const SPECIES = {
   'bird-of-prey': { label: 'Birds of prey', hint: 'Such as owls, hawks or buzzards.', threshold: 1 },
-  corvid: { label: 'Corvids', hint: 'Such as crows, ravens, rooks, magpies, jackdaws and jays.', threshold: 3 },
+  corvid: { label: 'Corvids', hint: 'Such as crows, ravens, rooks, magpies, jackdaws and jays.', threshold: 5 },
   duck: { label: 'Ducks', threshold: 1 },
-  gamebird: { label: 'Gamebirds', hint: 'Such as pheasants, partridges and grouse.', threshold: 3 },
+  gamebird: { label: 'Gamebirds', hint: 'Such as pheasants, partridges and grouse.', threshold: 5 },
   goose: { label: 'Geese', threshold: 1 },
   gull: { label: 'Gulls', hint: 'Includes all gulls and kittiwakes.', threshold: 1 },
   seabird: { label: 'Other seabirds', hint: 'Such as puffins, gannets, guillemots and cormorants.', threshold: 1 },
   wader: { label: 'Waders', hint: 'Such as avocets, curlews, oystercatchers and plovers.', threshold: 1 },
   'gull-seabird-wader-unknown': { label: 'Unknown gulls, seabirds and waders', threshold: 1 },
-  'heron-egret': { label: 'Herons and egrets', hint: 'Includes cranes, bitterns, spoonbills and storks.', threshold: 1 },
-  'pigeon-dove': { label: 'Pigeons and doves', threshold: 3 },
-  'rail-crake': { label: 'Rails', hint: 'Such as moorhens and coots.', threshold: 3 },
-  'songbird-garden': { label: 'Songbirds and garden birds', hint: 'Such as sparrows, tits, blackbirds, finches, starlings and robins.', threshold: 3 },
+  'heron-egret': { label: 'Herons and egrets', hint: 'Includes cranes, bitterns, spoonbills and storks.', threshold: 5 },
+  'pigeon-dove': { label: 'Pigeons and doves', threshold: 5 },
+  'rail-crake': { label: 'Rails', hint: 'Such as moorhens and coots.', threshold: 5 },
+  'songbird-garden': { label: 'Songbirds and garden birds', hint: 'Such as sparrows, tits, blackbirds, finches, starlings and robins.', threshold: 5 },
   swan: { label: 'Swans', threshold: 1 },
-  other: { label: 'Other wild birds', threshold: 3 },
-  unknown: { label: 'I\'m not sure', threshold: 3 }
+  other: { label: 'Other wild birds', threshold: 5 },
+  unknown: { label: 'I\'m not sure', threshold: 5 }
 }
 
-const DEFAULT_THRESHOLD = 3
+const DEFAULT_THRESHOLD = 5
 
 // A mass mortality is 5 or more dead wild birds in total, across all species.
 // It overrides the condition and reachability gates (see decide()).
