@@ -10,8 +10,12 @@
 {% from "govuk/components/input/macro.njk" import govukInput %}
 
 {% macro birdCount(bird) %}
+  {# Keep the "– such as …" descriptor on the same line as the species, but at
+     regular weight so only the species name is bold. #}
+  {% set parts = bird.label.split(" – ") %}
+  {% set labelHtml %}{{ parts[0] }}{% if parts.length > 1 %} <span class="govuk-!-font-weight-regular">– {{ parts[1] }}</span>{% endif %}{% endset %}
   {{ govukInput({
-    label: { text: bird.label, classes: "govuk-label--s" },
+    label: { html: labelHtml, classes: "govuk-label--s" },
     id: "count-" + bird.key,
     name: "count-" + bird.key,
     classes: "govuk-input--width-4",
