@@ -253,13 +253,15 @@ const VALIDATORS = {
     const phone = (body.phone || '').trim()
     const email = (body.email || '').trim()
 
-    // Email is required; telephone is optional.
+    // Email and telephone are both required.
     if (!email) {
       errors.push({ field: 'email', message: 'Enter your email address.' })
     } else if (!isValidEmail(email)) {
       errors.push({ field: 'email', message: 'Enter an email address in the correct format, like name@example.com' })
     }
-    if (phone && !isValidPhone(phone)) {
+    if (!phone) {
+      errors.push({ field: 'phone', message: 'Enter a telephone number.' })
+    } else if (!isValidPhone(phone)) {
       errors.push({ field: 'phone', message: 'Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 808 157 0192' })
     }
     data.phone = phone
