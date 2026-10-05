@@ -134,6 +134,13 @@ function coordsInScotland (lat, lng) {
 function nationFromLocation (location) {
   if (!location) return 'england'
 
+  // 0. A country chosen on the manual address entry is an explicit signal — use
+  //    it in preference to deriving from the postcode. (Only England, Scotland
+  //    and Wales are offered there; Northern Ireland is handled separately.)
+  if (['england', 'scotland', 'wales'].indexOf(location.addressCountry) !== -1) {
+    return location.addressCountry
+  }
+
   // 1. Postcode (from the lookup or entered manually) — the reliable signal.
   const area = postcodeArea(location.postcode || location.addressPostcode)
   if (area) {
