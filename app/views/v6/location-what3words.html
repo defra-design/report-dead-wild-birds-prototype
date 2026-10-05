@@ -18,7 +18,8 @@
     id: "what3words",
     name: "what3words",
     classes: "govuk-input--width-20",
-    hint: { text: "For example, spare.coach.loops. Do not enter ///" },
+    prefix: { text: "///" },
+    hint: { text: "For example, spare.coach.loops. Do not enter /// before the 3 words" },
     errorMessage: { text: errors.what3words } if errors.what3words,
     value: data.location.what3words if data.location
   }) }}
