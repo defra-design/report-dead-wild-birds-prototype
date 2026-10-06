@@ -98,6 +98,7 @@ function setLocation (data, method, body) {
     addressTown: (body.addressTown || '').trim(),
     addressCounty: (body.addressCounty || '').trim(),
     addressPostcode: (body.addressPostcode || '').trim(),
+    addressCountry: (body.addressCountry || '').trim(),
     what3words: (body.what3words || '').trim(),
     info: (body.locationInfo || '').trim()
   }
