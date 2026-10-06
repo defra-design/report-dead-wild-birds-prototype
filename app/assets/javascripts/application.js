@@ -151,7 +151,10 @@ function setUpMap () {
 // That is enough to show the photo on check your answers.
 //
 function setUpPhotoName () {
-  const fileInput = document.getElementById('photo')
+  // The JavaScript-enhanced GOV.UK file upload renames the input to
+  // "<id>-input" and adds a button with the original id, so find the input by
+  // name (unchanged) rather than by id, whichever order the scripts run in.
+  const fileInput = document.querySelector('input[type="file"][name="photo"]') || document.getElementById('photo')
   const nameField = document.getElementById('photoName')
   if (!fileInput || !nameField) return
 
