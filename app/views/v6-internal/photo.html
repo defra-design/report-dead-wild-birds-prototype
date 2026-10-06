@@ -9,7 +9,7 @@
 
 <h1 class="govuk-heading-l">Add photos of the bird (optional)</h1>
 
-<p class="govuk-body">Upload up to 3 photos showing the bird and its surroundings.</p>
+<p class="govuk-body">Upload photos showing the bird and its surroundings.</p>
 
 <p class="govuk-body">Do not touch the bird or put yourself at risk to take a photo.</p>
 
@@ -19,7 +19,7 @@
     id: "photo",
     name: "photo",
     label: { text: "Upload photos", classes: "govuk-label--s" },
-    hint: { text: "You can select more than one. The limit is 3." },
+    hint: { text: "You can select more than one photo." },
     errorMessage: { text: errors.photo } if errors.photo,
     attributes: { accept: "image/*", multiple: "multiple" }
   }) }}
