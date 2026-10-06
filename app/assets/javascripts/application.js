@@ -151,15 +151,135 @@ function setUpMap () {
 // That is enough to show the photo on check your answers.
 //
 function setUpPhotoName () {
-  const fileInput = document.getElementById('photo')
+  // The JavaScript-enhanced GOV.UK file upload renames the input to
+  // "<id>-input" and adds a button with the original id, so find the input by
+  // name (unchanged) rather than by id, whichever order the scripts run in.
+  const fileInput = document.querySelector('input[type="file"][name="photo"]') || document.getElementById('photo')
   const nameField = document.getElementById('photoName')
   if (!fileInput || !nameField) return
 
+  // Up to this many photos.
+  const MAX = 3
+
   const added = document.getElementById('photo-added')
-  const addedName = document.getElementById('photo-added-name')
+  const addedList = document.getElementById('photo-added-list') // multi-photo pages (with previews)
+  const addedName = document.getElementById('photo-added-name') // older, single-photo pages
   const removeLink = document.getElementById('photo-remove')
 
-  // Record the file name and show/hide the "photo added" confirmation.
+  // Show or clear a GOV.UK field error on the file upload.
+  function setError (message) {
+    const group = fileInput.closest('.govuk-form-group')
+    if (!group) return
+    let err = document.getElementById('photo-error')
+    if (message) {
+      group.classList.add('govuk-form-group--error')
+      if (!err) {
+        err = document.createElement('p')
+        err.id = 'photo-error'
+        err.className = 'govuk-error-message'
+        fileInput.parentNode.insertBefore(err, fileInput)
+      }
+      err.innerHTML = '<span class="govuk-visually-hidden">Error:</span> ' + message
+      err.hidden = false
+    } else {
+      group.classList.remove('govuk-form-group--error')
+      if (err) err.hidden = true
+    }
+  }
+
+  // --- Newer pages: previews with a Remove button per photo -----------------
+  // Works alongside the JavaScript-enhanced GOV.UK file upload: the input's own
+  // FileList stays authoritative, so the component's "x photos selected" text
+  // and these previews never disagree. Removing one rebuilds the FileList.
+  if (addedList) {
+    const supportsDataTransfer = typeof DataTransfer !== 'undefined'
+    let syncing = false
+
+    function filesArr () { return fileInput.files ? Array.prototype.slice.call(fileInput.files) : [] }
+
+    // Rebuild the input's FileList (used to cap at MAX and to remove one photo),
+    // then let the enhanced component refresh its own status text.
+    function setFiles (arr) {
+      if (!supportsDataTransfer) return
+      const dt = new DataTransfer()
+      arr.forEach(function (f) { dt.items.add(f) })
+      fileInput.files = dt.files
+      syncing = true
+      fileInput.dispatchEvent(new Event('change', { bubbles: true }))
+      syncing = false
+    }
+
+    function renderFiles () {
+      const files = filesArr()
+      addedList.innerHTML = ''
+      files.forEach(function (f, idx) {
+        const li = document.createElement('li')
+        li.className = 'app-photo-item'
+
+        const img = document.createElement('img')
+        img.className = 'app-photo-thumb'
+        img.alt = ''
+        const reader = new FileReader()
+        reader.onload = function () { img.src = reader.result }
+        reader.readAsDataURL(f)
+        li.appendChild(img)
+
+        const name = document.createElement('span')
+        name.className = 'app-photo-name'
+        name.textContent = f.name
+        li.appendChild(name)
+
+        if (supportsDataTransfer) {
+          const rm = document.createElement('a')
+          rm.href = '#'
+          rm.className = 'govuk-link app-photo-remove'
+          rm.innerHTML = 'Remove<span class="govuk-visually-hidden"> ' + f.name + '</span>'
+          rm.addEventListener('click', function (e) {
+            e.preventDefault()
+            setError(null)
+            setFiles(filesArr().filter(function (_, i) { return i !== idx }))
+            renderFiles()
+            fileInput.focus()
+          })
+          li.appendChild(rm)
+        }
+
+        addedList.appendChild(li)
+      })
+      nameField.value = files.map(function (f) { return f.name }).join(', ')
+      if (added) added.hidden = files.length === 0
+    }
+
+    // Names stored from a previous step (no File objects to preview).
+    const existing = (nameField.value || '').split(',').map(function (s) { return s.trim() }).filter(Boolean)
+    if (existing.length && !filesArr().length) {
+      addedList.innerHTML = ''
+      existing.forEach(function (n) {
+        const li = document.createElement('li'); li.className = 'app-photo-item'
+        const ph = document.createElement('span'); ph.className = 'app-photo-thumb app-photo-thumb--placeholder'; ph.setAttribute('aria-hidden', 'true')
+        li.appendChild(ph)
+        const nm = document.createElement('span'); nm.className = 'app-photo-name'; nm.textContent = n
+        li.appendChild(nm)
+        addedList.appendChild(li)
+      })
+      if (added) added.hidden = false
+    }
+
+    fileInput.addEventListener('change', function () {
+      if (syncing) return
+      let files = filesArr()
+      if (files.length > MAX) {
+        setError('You can upload up to ' + MAX + ' photos.')
+        if (supportsDataTransfer) { setFiles(files.slice(0, MAX)) }
+      } else {
+        setError(null)
+      }
+      renderFiles()
+    })
+    return
+  }
+
+  // --- Older single-photo pages: just remember the name ---------------------
   function setPhoto (name) {
     nameField.value = name || ''
     if (addedName) addedName.textContent = name || ''

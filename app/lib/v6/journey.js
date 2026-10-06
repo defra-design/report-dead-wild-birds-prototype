@@ -231,8 +231,12 @@ const VALIDATORS = {
   },
 
   photo: function (body, data) {
-    // Optional in the scaffold.
-    data.photo = body.photoName ? body.photoName : null
+    // Optional. Up to 3 photos; the file name(s) are stored comma-separated.
+    const names = (body.photoName || '').split(',').map(function (s) { return s.trim() }).filter(Boolean)
+    if (names.length > 3) {
+      return [{ field: 'photo', message: 'You can upload up to 3 photos.' }]
+    }
+    data.photo = names.length ? names.join(', ') : null
     return []
   },
 

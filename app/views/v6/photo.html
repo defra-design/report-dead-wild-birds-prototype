@@ -1,15 +1,15 @@
 {% extends "layouts/question.html" %}
 
-{% set pageName = "Add a photo of the bird (optional)" %}
+{% set pageName = "Add photos of the bird (optional)" %}
 {% set backLink = "/condition" %}
 
 {% from "govuk/components/file-upload/macro.njk" import govukFileUpload %}
 
 {% block form %}
 
-<h1 class="govuk-heading-l">Add a photo of the bird (optional)</h1>
+<h1 class="govuk-heading-l">Add photos of the bird (optional)</h1>
 
-<p class="govuk-body">Upload a photo showing the bird and its surroundings.</p>
+<p class="govuk-body">Upload photos showing the bird and its surroundings.</p>
 
 <p class="govuk-body">Do not touch the bird or put yourself at risk to take a photo.</p>
 
@@ -18,18 +18,22 @@
   {{ govukFileUpload({
     id: "photo",
     name: "photo",
-    label: { text: "Upload a photo", classes: "govuk-label--s" },
-    attributes: { accept: "image/*" }
+    label: { text: "Upload photos", classes: "govuk-label--s" },
+    hint: { text: "You can select more than one photo." },
+    errorMessage: { text: errors.photo } if errors.photo,
+    javascript: true,
+    chooseFilesButtonText: "Choose photos",
+    dropInstructionText: "or drag and drop photos here",
+    multipleFilesChosenText: { other: "%{count} photos selected", one: "%{count} photo selected" },
+    noFileChosenText: "No photos selected",
+    attributes: { accept: "image/*", multiple: "multiple" }
   }) }}
   <input type="hidden" name="photoName" id="photoName" value="{{ data.photo }}">
 
-  {# Confirmation that a photo has been added (updated by application.js). #}
+  {# Previews of the photos added, each with its own Remove (built by application.js). #}
   <div class="app-file-added" id="photo-added"{% if not data.photo %} hidden{% endif %}>
-    <p class="govuk-body">
-      <strong class="govuk-tag govuk-tag--green">Photo added</strong>
-      <span id="photo-added-name" class="govuk-!-margin-left-1">{{ data.photo }}</span>
-    </p>
-    <p class="govuk-body"><a class="govuk-link" href="#" id="photo-remove">Remove photo</a></p>
+    <h2 class="govuk-heading-s govuk-!-margin-bottom-2">Photos added</h2>
+    <ul class="govuk-list app-photo-list" id="photo-added-list"></ul>
   </div>
 
   {{ govukButton({ text: "Continue" }) }}
