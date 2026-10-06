@@ -155,30 +155,13 @@ function setUpPhotoName () {
   const nameField = document.getElementById('photoName')
   if (!fileInput || !nameField) return
 
-  // Up to this many photos (only pages whose file input allows multiple files
-  // can reach the limit; single-photo pages never do).
+  // Up to this many photos.
   const MAX = 3
 
   const added = document.getElementById('photo-added')
-  const addedList = document.getElementById('photo-added-list') // newer, multi-photo pages
+  const addedList = document.getElementById('photo-added-list') // multi-photo pages (with previews)
   const addedName = document.getElementById('photo-added-name') // older, single-photo pages
   const removeLink = document.getElementById('photo-remove')
-
-  // Record the file name(s) and show/hide the "photo added" confirmation.
-  function render (names) {
-    nameField.value = names.join(', ')
-    if (addedList) {
-      addedList.innerHTML = ''
-      names.forEach(function (n) {
-        const li = document.createElement('li')
-        li.textContent = n
-        addedList.appendChild(li)
-      })
-    } else if (addedName) {
-      addedName.textContent = names.join(', ')
-    }
-    if (added) added.hidden = names.length === 0
-  }
 
   // Show or clear a GOV.UK field error on the file upload.
   function setError (message) {
@@ -201,28 +184,95 @@ function setUpPhotoName () {
     }
   }
 
-  // Show anything already stored when returning to the page.
-  const existing = (nameField.value || '').split(',').map(function (s) { return s.trim() }).filter(Boolean)
-  if (existing.length) render(existing)
+  // --- Newer pages: previews with a Remove button per photo -----------------
+  if (addedList) {
+    // Each item is { name, src } where src is a data URL (or null if we only
+    // know the name, e.g. when returning to the page).
+    let items = (nameField.value || '').split(',').map(function (s) { return s.trim() })
+      .filter(Boolean).map(function (n) { return { name: n, src: null } })
+
+    function sync () { nameField.value = items.map(function (i) { return i.name }).join(', ') }
+
+    function renderItems () {
+      addedList.innerHTML = ''
+      items.forEach(function (it, idx) {
+        const li = document.createElement('li')
+        li.className = 'app-photo-item'
+
+        if (it.src) {
+          const img = document.createElement('img')
+          img.className = 'app-photo-thumb'
+          img.src = it.src
+          img.alt = ''
+          li.appendChild(img)
+        } else {
+          const ph = document.createElement('span')
+          ph.className = 'app-photo-thumb app-photo-thumb--placeholder'
+          ph.setAttribute('aria-hidden', 'true')
+          li.appendChild(ph)
+        }
+
+        const name = document.createElement('span')
+        name.className = 'app-photo-name'
+        name.textContent = it.name
+        li.appendChild(name)
+
+        const rm = document.createElement('a')
+        rm.href = '#'
+        rm.className = 'govuk-link app-photo-remove'
+        rm.innerHTML = 'Remove<span class="govuk-visually-hidden"> ' + it.name + '</span>'
+        rm.addEventListener('click', function (e) {
+          e.preventDefault()
+          items.splice(idx, 1)
+          setError(null)
+          sync()
+          renderItems()
+          fileInput.focus()
+        })
+        li.appendChild(rm)
+
+        addedList.appendChild(li)
+      })
+      if (added) added.hidden = items.length === 0
+      sync()
+    }
+
+    if (items.length) renderItems()
+
+    fileInput.addEventListener('change', function () {
+      const files = fileInput.files ? Array.prototype.slice.call(fileInput.files) : []
+      const room = MAX - items.length
+      setError(files.length > room ? 'You can upload up to ' + MAX + ' photos.' : null)
+      const toAdd = files.slice(0, Math.max(0, room))
+      fileInput.value = '' // let the same file be chosen again / add more later
+      if (!toAdd.length) return
+      let pending = toAdd.length
+      toAdd.forEach(function (f) {
+        const reader = new FileReader()
+        reader.onload = function () { items.push({ name: f.name, src: reader.result }); if (!--pending) renderItems() }
+        reader.onerror = function () { items.push({ name: f.name, src: null }); if (!--pending) renderItems() }
+        reader.readAsDataURL(f)
+      })
+    })
+    return
+  }
+
+  // --- Older single-photo pages: just remember the name ---------------------
+  function setPhoto (name) {
+    nameField.value = name || ''
+    if (addedName) addedName.textContent = name || ''
+    if (added) added.hidden = !name
+  }
 
   fileInput.addEventListener('change', function () {
-    const files = fileInput.files ? Array.prototype.slice.call(fileInput.files) : []
-    if (files.length > MAX) {
-      setError('You can upload up to ' + MAX + ' photos.')
-      fileInput.value = ''
-      render([])
-      return
-    }
-    setError(null)
-    render(files.map(function (f) { return f.name }))
+    setPhoto(fileInput.files && fileInput.files[0] ? fileInput.files[0].name : '')
   })
 
   if (removeLink) {
     removeLink.addEventListener('click', function (e) {
       e.preventDefault()
       fileInput.value = ''
-      setError(null)
-      render([])
+      setPhoto('')
       fileInput.focus()
     })
   }
