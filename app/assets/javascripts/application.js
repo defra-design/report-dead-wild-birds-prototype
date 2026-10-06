@@ -185,74 +185,93 @@ function setUpPhotoName () {
   }
 
   // --- Newer pages: previews with a Remove button per photo -----------------
+  // Works alongside the JavaScript-enhanced GOV.UK file upload: the input's own
+  // FileList stays authoritative, so the component's "x photos selected" text
+  // and these previews never disagree. Removing one rebuilds the FileList.
   if (addedList) {
-    // Each item is { name, src } where src is a data URL (or null if we only
-    // know the name, e.g. when returning to the page).
-    let items = (nameField.value || '').split(',').map(function (s) { return s.trim() })
-      .filter(Boolean).map(function (n) { return { name: n, src: null } })
+    const supportsDataTransfer = typeof DataTransfer !== 'undefined'
+    let syncing = false
 
-    function sync () { nameField.value = items.map(function (i) { return i.name }).join(', ') }
+    function filesArr () { return fileInput.files ? Array.prototype.slice.call(fileInput.files) : [] }
 
-    function renderItems () {
+    // Rebuild the input's FileList (used to cap at MAX and to remove one photo),
+    // then let the enhanced component refresh its own status text.
+    function setFiles (arr) {
+      if (!supportsDataTransfer) return
+      const dt = new DataTransfer()
+      arr.forEach(function (f) { dt.items.add(f) })
+      fileInput.files = dt.files
+      syncing = true
+      fileInput.dispatchEvent(new Event('change', { bubbles: true }))
+      syncing = false
+    }
+
+    function renderFiles () {
+      const files = filesArr()
       addedList.innerHTML = ''
-      items.forEach(function (it, idx) {
+      files.forEach(function (f, idx) {
         const li = document.createElement('li')
         li.className = 'app-photo-item'
 
-        if (it.src) {
-          const img = document.createElement('img')
-          img.className = 'app-photo-thumb'
-          img.src = it.src
-          img.alt = ''
-          li.appendChild(img)
-        } else {
-          const ph = document.createElement('span')
-          ph.className = 'app-photo-thumb app-photo-thumb--placeholder'
-          ph.setAttribute('aria-hidden', 'true')
-          li.appendChild(ph)
-        }
+        const img = document.createElement('img')
+        img.className = 'app-photo-thumb'
+        img.alt = ''
+        const reader = new FileReader()
+        reader.onload = function () { img.src = reader.result }
+        reader.readAsDataURL(f)
+        li.appendChild(img)
 
         const name = document.createElement('span')
         name.className = 'app-photo-name'
-        name.textContent = it.name
+        name.textContent = f.name
         li.appendChild(name)
 
-        const rm = document.createElement('a')
-        rm.href = '#'
-        rm.className = 'govuk-link app-photo-remove'
-        rm.innerHTML = 'Remove<span class="govuk-visually-hidden"> ' + it.name + '</span>'
-        rm.addEventListener('click', function (e) {
-          e.preventDefault()
-          items.splice(idx, 1)
-          setError(null)
-          sync()
-          renderItems()
-          fileInput.focus()
-        })
-        li.appendChild(rm)
+        if (supportsDataTransfer) {
+          const rm = document.createElement('a')
+          rm.href = '#'
+          rm.className = 'govuk-link app-photo-remove'
+          rm.innerHTML = 'Remove<span class="govuk-visually-hidden"> ' + f.name + '</span>'
+          rm.addEventListener('click', function (e) {
+            e.preventDefault()
+            setError(null)
+            setFiles(filesArr().filter(function (_, i) { return i !== idx }))
+            renderFiles()
+            fileInput.focus()
+          })
+          li.appendChild(rm)
+        }
 
         addedList.appendChild(li)
       })
-      if (added) added.hidden = items.length === 0
-      sync()
+      nameField.value = files.map(function (f) { return f.name }).join(', ')
+      if (added) added.hidden = files.length === 0
     }
 
-    if (items.length) renderItems()
+    // Names stored from a previous step (no File objects to preview).
+    const existing = (nameField.value || '').split(',').map(function (s) { return s.trim() }).filter(Boolean)
+    if (existing.length && !filesArr().length) {
+      addedList.innerHTML = ''
+      existing.forEach(function (n) {
+        const li = document.createElement('li'); li.className = 'app-photo-item'
+        const ph = document.createElement('span'); ph.className = 'app-photo-thumb app-photo-thumb--placeholder'; ph.setAttribute('aria-hidden', 'true')
+        li.appendChild(ph)
+        const nm = document.createElement('span'); nm.className = 'app-photo-name'; nm.textContent = n
+        li.appendChild(nm)
+        addedList.appendChild(li)
+      })
+      if (added) added.hidden = false
+    }
 
     fileInput.addEventListener('change', function () {
-      const files = fileInput.files ? Array.prototype.slice.call(fileInput.files) : []
-      const room = MAX - items.length
-      setError(files.length > room ? 'You can upload up to ' + MAX + ' photos.' : null)
-      const toAdd = files.slice(0, Math.max(0, room))
-      fileInput.value = '' // let the same file be chosen again / add more later
-      if (!toAdd.length) return
-      let pending = toAdd.length
-      toAdd.forEach(function (f) {
-        const reader = new FileReader()
-        reader.onload = function () { items.push({ name: f.name, src: reader.result }); if (!--pending) renderItems() }
-        reader.onerror = function () { items.push({ name: f.name, src: null }); if (!--pending) renderItems() }
-        reader.readAsDataURL(f)
-      })
+      if (syncing) return
+      let files = filesArr()
+      if (files.length > MAX) {
+        setError('You can upload up to ' + MAX + ' photos.')
+        if (supportsDataTransfer) { setFiles(files.slice(0, MAX)) }
+      } else {
+        setError(null)
+      }
+      renderFiles()
     })
     return
   }

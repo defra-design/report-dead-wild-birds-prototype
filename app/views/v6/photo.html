@@ -21,6 +21,11 @@
     label: { text: "Upload photos", classes: "govuk-label--s" },
     hint: { text: "You can select more than one photo." },
     errorMessage: { text: errors.photo } if errors.photo,
+    javascript: true,
+    chooseFilesButtonText: "Choose photos",
+    dropInstructionText: "or drag and drop photos here",
+    multipleFilesChosenText: { other: "%{count} photos selected", one: "%{count} photo selected" },
+    noFileChosenText: "No photos selected",
     attributes: { accept: "image/*", multiple: "multiple" }
   }) }}
   <input type="hidden" name="photoName" id="photoName" value="{{ data.photo }}">
