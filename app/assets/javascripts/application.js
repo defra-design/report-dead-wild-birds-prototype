@@ -155,26 +155,74 @@ function setUpPhotoName () {
   const nameField = document.getElementById('photoName')
   if (!fileInput || !nameField) return
 
+  // Up to this many photos (only pages whose file input allows multiple files
+  // can reach the limit; single-photo pages never do).
+  const MAX = 3
+
   const added = document.getElementById('photo-added')
-  const addedName = document.getElementById('photo-added-name')
+  const addedList = document.getElementById('photo-added-list') // newer, multi-photo pages
+  const addedName = document.getElementById('photo-added-name') // older, single-photo pages
   const removeLink = document.getElementById('photo-remove')
 
-  // Record the file name and show/hide the "photo added" confirmation.
-  function setPhoto (name) {
-    nameField.value = name || ''
-    if (addedName) addedName.textContent = name || ''
-    if (added) added.hidden = !name
+  // Record the file name(s) and show/hide the "photo added" confirmation.
+  function render (names) {
+    nameField.value = names.join(', ')
+    if (addedList) {
+      addedList.innerHTML = ''
+      names.forEach(function (n) {
+        const li = document.createElement('li')
+        li.textContent = n
+        addedList.appendChild(li)
+      })
+    } else if (addedName) {
+      addedName.textContent = names.join(', ')
+    }
+    if (added) added.hidden = names.length === 0
   }
 
+  // Show or clear a GOV.UK field error on the file upload.
+  function setError (message) {
+    const group = fileInput.closest('.govuk-form-group')
+    if (!group) return
+    let err = document.getElementById('photo-error')
+    if (message) {
+      group.classList.add('govuk-form-group--error')
+      if (!err) {
+        err = document.createElement('p')
+        err.id = 'photo-error'
+        err.className = 'govuk-error-message'
+        fileInput.parentNode.insertBefore(err, fileInput)
+      }
+      err.innerHTML = '<span class="govuk-visually-hidden">Error:</span> ' + message
+      err.hidden = false
+    } else {
+      group.classList.remove('govuk-form-group--error')
+      if (err) err.hidden = true
+    }
+  }
+
+  // Show anything already stored when returning to the page.
+  const existing = (nameField.value || '').split(',').map(function (s) { return s.trim() }).filter(Boolean)
+  if (existing.length) render(existing)
+
   fileInput.addEventListener('change', function () {
-    setPhoto(fileInput.files && fileInput.files[0] ? fileInput.files[0].name : '')
+    const files = fileInput.files ? Array.prototype.slice.call(fileInput.files) : []
+    if (files.length > MAX) {
+      setError('You can upload up to ' + MAX + ' photos.')
+      fileInput.value = ''
+      render([])
+      return
+    }
+    setError(null)
+    render(files.map(function (f) { return f.name }))
   })
 
   if (removeLink) {
     removeLink.addEventListener('click', function (e) {
       e.preventDefault()
       fileInput.value = ''
-      setPhoto('')
+      setError(null)
+      render([])
       fileInput.focus()
     })
   }
