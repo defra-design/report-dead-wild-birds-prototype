@@ -161,9 +161,19 @@ function nationFromLocation (location) {
     }
   }
 
-  // 3. what3words needs the what3words service to resolve to a point, which the
-  //    prototype does not have. For testing, a nation name as the first word
-  //    stands in — e.g. "northernireland.dead.bird" or "scotland.dead.bird".
+  // 2b. A what3words that has been resolved to a point gives its coordinates.
+  if (location.w3wLat && location.w3wLng) {
+    const lat = parseFloat(location.w3wLat); const lng = parseFloat(location.w3wLng)
+    if (!isNaN(lat) && !isNaN(lng)) {
+      if (coordsInNorthernIreland(lat, lng)) return 'northern-ireland'
+      if (coordsInScotland(lat, lng)) return 'scotland'
+      return 'england'
+    }
+  }
+
+  // 3. An unresolved what3words needs the what3words service to resolve to a
+  //    point, which the prototype does not have. For testing, a nation name as
+  //    the first word stands in — e.g. "scotland.dead.bird".
   const first = String(location.what3words || '').trim().toLowerCase().replace(/^\/+/, '').split('.')[0]
   if (first === 'northernireland' || first === 'ni') return 'northern-ireland'
   if (first === 'scotland') return 'scotland'

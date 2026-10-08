@@ -83,6 +83,17 @@
     <p class="govuk-body govuk-!-margin-top-3"><a class="govuk-link" href="#" id="address-lookup-link">Lookup an address using a postcode instead</a></p>
   </div>
 
+  {# Confirmation — the same Location details panel used by the other methods. #}
+  <div id="address-confirmed"{% if not (data.location and data.location.addressSelected) %} hidden{% endif %}>
+    <details class="govuk-details"{% if data.location and data.location.addressSelected %} open{% endif %}>
+      <summary class="govuk-details__summary"><span class="govuk-details__summary-text">Location details</span></summary>
+      <div class="govuk-details__text">
+        <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">Address</p>
+        <p class="govuk-body govuk-!-margin-bottom-0"><span id="address-details-value">{{ data.location.addressSelected if data.location }}</span></p>
+      </div>
+    </details>
+  </div>
+
   {{ govukCharacterCount({
     id: "locationInfo",
     name: "locationInfo",

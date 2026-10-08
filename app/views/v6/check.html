@@ -40,7 +40,8 @@
     {%- if data.location.addressTown %}<br>{{ data.location.addressTown }}{% endif -%}
     {%- if data.location.addressCounty %}<br>{{ data.location.addressCounty }}{% endif -%}
     {%- if data.location.addressPostcode %}<br>{{ data.location.addressPostcode }}{% endif -%}
-    {%- if data.location.what3words %}<br>{{ data.location.what3words }}{% endif -%}
+    {%- if data.location.what3words %}<br>///{{ data.location.what3words }}{% endif -%}
+    {%- if data.location.w3wPlace %}<br>Nearest place: {{ data.location.w3wPlace }}{% endif -%}
     {%- if data.location.info %}<br>{{ data.location.info }}{% endif -%}
   {%- else -%}Not provided{%- endif -%}
 {% endset %}
