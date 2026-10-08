@@ -30,10 +30,8 @@ function setUpWhat3words () {
   const latField = document.getElementById('w3wLat')
   const lngField = document.getElementById('w3wLng')
   const placeField = document.getElementById('w3wPlaceField')
-  const wordsOut = document.getElementById('w3w-words')
-  const placeOut = document.getElementById('w3w-place')
-  const readout = document.getElementById('w3w-readout')
   const changeLink = document.getElementById('w3w-change')
+  function setText (id, value) { const el = document.getElementById(id); if (el) el.textContent = value }
 
   // The canned "known" what3words addresses and where they resolve to.
   const KNOWN = {
@@ -75,9 +73,10 @@ function setUpWhat3words () {
     latField.value = res.lat
     lngField.value = res.lng
     placeField.value = res.place
-    if (wordsOut) wordsOut.textContent = words
-    if (placeOut) placeOut.textContent = res.place
-    if (readout) readout.textContent = res.lat + ', ' + res.lng
+    setText('w3w-place', res.place)
+    setText('w3w-words', words)
+    setText('w3w-coords', res.lat + ', ' + res.lng)
+    setText('w3w-near', res.place)
     show('confirmed')
   }
 
@@ -121,15 +120,29 @@ function setUpAddressToggle () {
   const postcode = document.getElementById('postcode')
   const noResults = document.getElementById('address-no-results')
   const foundPostcode = document.getElementById('address-found-postcode')
+  const addressSelected = document.getElementById('addressSelected')
+  const addressConfirmed = document.getElementById('address-confirmed')
+  const addressDetailsValue = document.getElementById('address-details-value')
+
+  // The Location details panel reflects the address chosen from the list.
+  function updateAddressDetails () {
+    if (!addressConfirmed) return
+    const value = (addressSelected && addressSelected.value) || ''
+    if (value && addressDetailsValue) addressDetailsValue.textContent = value
+    addressConfirmed.hidden = !(value && !select.hidden)
+  }
 
   function show (which) {
     lookup.hidden = which !== 'lookup'
     select.hidden = which !== 'select'
     manual.hidden = which !== 'manual'
+    updateAddressDetails()
     const focusId = { lookup: 'postcode', select: 'addressSelected', manual: 'addressLine1' }[which]
     const focusTarget = document.getElementById(focusId)
     if (focusTarget) focusTarget.focus()
   }
+
+  if (addressSelected) addressSelected.addEventListener('change', updateAddressDetails)
 
   // Show or clear a GOV.UK field error on the postcode input.
   function setPostcodeError (message) {
@@ -201,6 +214,9 @@ function setUpMap () {
   const readout = document.getElementById('map-readout')
   const latField = document.getElementById('lat')
   const lngField = document.getElementById('lng')
+  const confirmed = document.getElementById('map-confirmed')
+  const coordsOut = document.getElementById('map-coords')
+  const changeLink = document.getElementById('map-change')
 
   // The area the stand-in map covers. Only used to turn a click into a
   // plausible looking coordinate.
@@ -224,12 +240,26 @@ function setUpMap () {
     latField.value = latitude
     lngField.value = longitude
     readout.textContent = 'Pin dropped at ' + latitude + ', ' + longitude
+    if (coordsOut) coordsOut.textContent = latitude + ', ' + longitude
+    if (confirmed) confirmed.hidden = false
   }
 
   map.addEventListener('click', function (event) {
     const bounds = map.getBoundingClientRect()
     dropPin(event.clientX - bounds.left, event.clientY - bounds.top)
   })
+
+  if (changeLink) {
+    changeLink.addEventListener('click', function (e) {
+      e.preventDefault()
+      latField.value = ''
+      lngField.value = ''
+      pin.style.display = 'none'
+      readout.textContent = 'No location selected yet'
+      if (confirmed) confirmed.hidden = true
+      map.focus()
+    })
+  }
 
   // Put the pin back if someone returns to this page after answering.
   if (latField.value && lngField.value) {

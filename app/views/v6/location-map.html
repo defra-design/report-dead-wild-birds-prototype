@@ -29,6 +29,21 @@
     <input type="hidden" name="lng" id="lng" value="{{ data.location.map.split(', ')[1] if data.location and data.location.map }}">
   </div>
 
+  {# Confirmation — the same Location details panel used by the other methods. #}
+  <div id="map-confirmed"{% if not (data.location and data.location.map) %} hidden{% endif %}>
+    <p class="govuk-body">Location selected on the map
+      <a class="govuk-link govuk-!-margin-left-2" href="#" id="map-change">Change</a></p>
+    <details class="govuk-details"{% if data.location and data.location.map %} open{% endif %}>
+      <summary class="govuk-details__summary"><span class="govuk-details__summary-text">Location details</span></summary>
+      <div class="govuk-details__text">
+        <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">Geographic coordinates</p>
+        <p class="govuk-body"><span id="map-coords">{{ data.location.map if data.location }}</span></p>
+        <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">Near address</p>
+        <p class="govuk-body govuk-!-margin-bottom-0">Approximate — based on the pin you placed</p>
+      </div>
+    </details>
+  </div>
+
   {{ govukCharacterCount({
     id: "locationInfo",
     name: "locationInfo",
