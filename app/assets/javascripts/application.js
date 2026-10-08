@@ -7,8 +7,104 @@ window.GOVUKPrototypeKit.documentReady(() => {
   setUpMap()
   setUpPhotoName()
   setUpAddressToggle()
+  setUpWhat3words()
   setUpDebugPanel()
 })
+
+//
+// what3words page: resolve the 3 words to a location and confirm it.
+//
+// A prototype stand-in for the what3words service: only the addresses below
+// resolve. Resolving lets the reporter confirm the pin before continuing, so a
+// single mistyped word does not send a collector to the wrong 3-metre square.
+// The real service would resolve this server-side with the what3words API.
+//
+function setUpWhat3words () {
+  const search = document.getElementById('w3w-search')
+  const confirmed = document.getElementById('w3w-confirmed')
+  if (!search || !confirmed) return
+
+  const input = document.getElementById('what3words')
+  const findBtn = document.getElementById('w3w-find-btn')
+  const noResults = document.getElementById('w3w-no-results')
+  const latField = document.getElementById('w3wLat')
+  const lngField = document.getElementById('w3wLng')
+  const placeField = document.getElementById('w3wPlaceField')
+  const wordsOut = document.getElementById('w3w-words')
+  const placeOut = document.getElementById('w3w-place')
+  const readout = document.getElementById('w3w-readout')
+  const changeLink = document.getElementById('w3w-change')
+
+  // The canned "known" what3words addresses and where they resolve to.
+  const KNOWN = {
+    'spare.coach.loops': { lat: '52.954800', lng: '-1.158100', place: 'The Arboretum, Nottingham' },
+    'ni.dead.bird': { lat: '54.597300', lng: '-5.930100', place: 'Belfast city centre' },
+    'scotland.dead.bird': { lat: '55.953300', lng: '-3.188300', place: 'Edinburgh city centre' }
+  }
+  function normalise (v) { return (v || '').trim().toLowerCase().replace(/^\/+/, '') }
+
+  // Show or clear a GOV.UK field error on the what3words input.
+  function setW3wError (message) {
+    const group = input.closest('.govuk-form-group')
+    if (!group) return
+    let err = document.getElementById('what3words-error')
+    if (message) {
+      group.classList.add('govuk-form-group--error')
+      input.classList.add('govuk-input--error')
+      if (!err) {
+        err = document.createElement('p')
+        err.id = 'what3words-error'
+        err.className = 'govuk-error-message'
+        input.parentNode.insertBefore(err, input.closest('.govuk-input__wrapper') || input)
+      }
+      err.innerHTML = '<span class="govuk-visually-hidden">Error:</span> ' + message
+      err.hidden = false
+    } else {
+      group.classList.remove('govuk-form-group--error')
+      input.classList.remove('govuk-input--error')
+      if (err) err.hidden = true
+    }
+  }
+
+  function show (state) {
+    search.hidden = state !== 'search'
+    confirmed.hidden = state !== 'confirmed'
+  }
+
+  function confirm (words, res) {
+    latField.value = res.lat
+    lngField.value = res.lng
+    placeField.value = res.place
+    if (wordsOut) wordsOut.textContent = words
+    if (placeOut) placeOut.textContent = res.place
+    if (readout) readout.textContent = res.lat + ', ' + res.lng
+    show('confirmed')
+  }
+
+  if (findBtn && input) {
+    findBtn.addEventListener('click', function (e) {
+      e.preventDefault()
+      if (noResults) noResults.hidden = true
+      const raw = (input.value || '').trim()
+      if (!raw) { setW3wError('Enter a what3words location.'); return }
+      setW3wError(null)
+      const match = KNOWN[normalise(raw)]
+      if (match) confirm(raw, match)
+      else if (noResults) noResults.hidden = false
+    })
+  }
+
+  if (changeLink) {
+    changeLink.addEventListener('click', function (e) {
+      e.preventDefault()
+      latField.value = ''
+      lngField.value = ''
+      placeField.value = ''
+      show('search')
+      if (input) input.focus()
+    })
+  }
+}
 
 //
 // Address entry: a prototype postcode lookup. It switches between three states

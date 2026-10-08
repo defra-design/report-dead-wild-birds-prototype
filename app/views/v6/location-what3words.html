@@ -13,16 +13,47 @@
 
   <p class="govuk-body">Use the what3words website to get a 3-word reference to a 3 metre square.</p>
 
-  {{ govukInput({
-    label: { text: "what3words location", classes: "govuk-label--s" },
-    id: "what3words",
-    name: "what3words",
-    classes: "govuk-input--width-20",
-    prefix: { text: "///" },
-    hint: { text: "For example, spare.coach.loops. Do not enter /// before the 3 words" },
-    errorMessage: { text: errors.what3words } if errors.what3words,
-    value: data.location.what3words if data.location
-  }) }}
+  {# A what3words is resolved to a location and confirmed before continuing, so a
+     single wrong word does not send a collector to the wrong place. The lookup
+     is a prototype stand-in (see application.js): only a few addresses resolve.
+     The real service would resolve this with the what3words API. #}
+  {% set resolved = (data.location.w3wLat and data.location.w3wLng) if data.location else false %}
+
+  {# 1. Enter the three words and find the location #}
+  <div id="w3w-search"{% if resolved %} hidden{% endif %}>
+    {{ govukInput({
+      label: { text: "what3words location", classes: "govuk-label--s" },
+      id: "what3words",
+      name: "what3words",
+      classes: "govuk-input--width-20",
+      prefix: { text: "///" },
+      hint: { text: "For example, spare.coach.loops. Do not enter /// before the 3 words" },
+      errorMessage: { text: errors.what3words } if errors.what3words,
+      value: data.location.what3words if data.location
+    }) }}
+    {{ govukButton({ text: "Find location", classes: "govuk-button--secondary govuk-!-margin-top-1", type: "button", attributes: { id: "w3w-find-btn" } }) }}
+    <p class="govuk-body" id="w3w-no-results" hidden>We could not find that what3words location. Check the 3 words and try again.</p>
+  </div>
+
+  {# 2. Confirm the resolved location #}
+  <div id="w3w-confirmed"{% if not resolved %} hidden{% endif %}>
+    <p class="govuk-body govuk-!-margin-bottom-1"><strong>///<span id="w3w-words">{{ data.location.what3words if data.location }}</span></strong>
+      <a class="govuk-link govuk-!-margin-left-2" href="#" id="w3w-change">Change</a></p>
+    <p class="govuk-body govuk-!-margin-bottom-2">Nearest place: <span id="w3w-place">{{ data.location.w3wPlace if data.location }}</span></p>
+    <div class="app-map" id="w3w-map" role="img" aria-label="Map showing the what3words location">
+      <div class="app-map__water"></div>
+      <div class="app-map__road app-map__road--vertical"></div>
+      <div class="app-map__road app-map__road--horizontal"></div>
+      <svg class="app-map__pin" id="w3w-pin" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false" style="display:block;left:50%;top:50%;transform:translate(-50%,-100%)">
+        <path d="M12 0C7 0 3 4 3 9c0 6.5 9 15 9 15s9-8.5 9-15c0-5-4-9-9-9zm0 12.5A3.5 3.5 0 1 1 12 5.5a3.5 3.5 0 0 1 0 7z"/>
+      </svg>
+      <p class="app-map__readout" id="w3w-readout">{{ (data.location.w3wLat ~ ", " ~ data.location.w3wLng) if resolved }}</p>
+    </div>
+  </div>
+
+  <input type="hidden" name="w3wLat" id="w3wLat" value="{{ data.location.w3wLat if data.location }}">
+  <input type="hidden" name="w3wLng" id="w3wLng" value="{{ data.location.w3wLng if data.location }}">
+  <input type="hidden" name="w3wPlace" id="w3wPlaceField" value="{{ data.location.w3wPlace if data.location }}">
 
   {{ govukCharacterCount({
     id: "locationInfo",

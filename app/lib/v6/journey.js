@@ -221,6 +221,14 @@ const VALIDATORS = {
     const errors = locationInfoError(body)
     if (errors.length) return errors
     setLocation(data, 'what3words', body)
+    // If the words were resolved to a point, keep it and use its coordinates to
+    // work out the nation (more reliable than the words alone).
+    data.location.w3wLat = (body.w3wLat || '').trim()
+    data.location.w3wLng = (body.w3wLng || '').trim()
+    data.location.w3wPlace = (body.w3wPlace || '').trim()
+    if (data.location.w3wLat && data.location.w3wLng) {
+      data.country = decision.nationFromLocation(data.location)
+    }
     return []
   },
 
