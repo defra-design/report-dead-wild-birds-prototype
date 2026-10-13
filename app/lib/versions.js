@@ -68,6 +68,7 @@ const VERSIONS = [
     name: 'Alpha Prototype',
     date: '1 October 2026',
     current: true,
+    cookieBanner: true,
     changes: [
       'Journey reordered: screener, date, location, numbers, reachability, condition',
       'No country question — the nation is worked out from the location (postcode, map pin or what3words)',

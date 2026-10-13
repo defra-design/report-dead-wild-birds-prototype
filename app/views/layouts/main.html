@@ -18,6 +18,14 @@ To show a Back link, set backLink to a path within the version, for example:
 {% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 
+{# Cookie banner: sits right after <body>, before the skip link. Shown only on
+   versions that opt in with cookieBanner (see app/lib/versions.js). #}
+{% block bodyStart %}
+  {% if version.cookieBanner %}
+    {% include "includes/cookie-banner.html" %}
+  {% endif %}
+{% endblock %}
+
 {% block beforeContent %}
   {{ govukPhaseBanner({
     tag: { text: "Prototype" },
