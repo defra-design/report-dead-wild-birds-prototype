@@ -8,6 +8,8 @@ window.GOVUKPrototypeKit.documentReady(() => {
   setUpPhotoName()
   setUpAddressToggle()
   setUpWhat3words()
+  setUpCookieBanner()
+  setUpCookiesPage()
   setUpDebugPanel()
 })
 
@@ -424,6 +426,96 @@ function setUpPhotoName () {
       fileInput.focus()
     })
   }
+}
+
+//
+// Cookie banner: reveal it until the visitor accepts or rejects analytics
+// cookies, then remember the choice.
+//
+// A prototype stand-in for a real cookie-consent implementation. The choice is
+// saved in a `cookies_policy` cookie for a year; there is no real analytics in
+// the prototype, so nothing is actually loaded or blocked. See the banner
+// markup in includes/cookie-banner.html and the settings page cookies.html.
+//
+function setUpCookieBanner () {
+  const banner = document.querySelector('[data-cookie-banner]')
+  if (!banner) return
+
+  const question = banner.querySelector('[data-cookie-banner-message="question"]')
+  const accepted = banner.querySelector('[data-cookie-banner-message="accepted"]')
+  const rejected = banner.querySelector('[data-cookie-banner-message="rejected"]')
+
+  // Show the banner only if no choice has been made yet.
+  if (!getCookie('cookies_policy')) {
+    banner.hidden = false
+  }
+
+  function choose (value, confirmation) {
+    setCookie('cookies_policy', value, 365)
+    question.hidden = true
+    confirmation.hidden = false
+    confirmation.setAttribute('tabindex', '-1')
+    confirmation.focus()
+  }
+
+  banner.querySelector('[data-cookie-banner-accept]').addEventListener('click', function () {
+    choose('accepted', accepted)
+  })
+  banner.querySelector('[data-cookie-banner-reject]').addEventListener('click', function () {
+    choose('rejected', rejected)
+  })
+  banner.querySelectorAll('[data-cookie-banner-hide]').forEach(function (button) {
+    button.addEventListener('click', function () { banner.hidden = true })
+  })
+}
+
+//
+// Cookies settings page: preselect the saved choice, and save a new one
+// without leaving the page. Only runs where the form is present (cookies.html).
+//
+function setUpCookiesPage () {
+  const form = document.querySelector('[data-cookie-settings-form]')
+  if (!form) return
+
+  const success = document.querySelector('[data-cookie-settings-success]')
+
+  const saved = getCookie('cookies_policy')
+  if (saved) {
+    const current = form.querySelector('input[name="cookies"][value="' + saved + '"]')
+    if (current) current.checked = true
+  }
+
+  form.addEventListener('submit', function (event) {
+    event.preventDefault()
+    const chosen = form.querySelector('input[name="cookies"]:checked')
+    if (!chosen) return
+    setCookie('cookies_policy', chosen.value, 365)
+    if (success) {
+      success.hidden = false
+      success.setAttribute('tabindex', '-1')
+      success.focus()
+      window.scrollTo(0, 0)
+    }
+  })
+}
+
+//
+// Minimal document.cookie helpers, shared by the cookie banner and the cookies
+// settings page.
+//
+function setCookie (name, value, days) {
+  let expires = ''
+  if (days) {
+    const date = new Date()
+    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000))
+    expires = '; expires=' + date.toUTCString()
+  }
+  document.cookie = name + '=' + encodeURIComponent(value) + expires + '; path=/; SameSite=Lax'
+}
+
+function getCookie (name) {
+  const match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'))
+  return match ? decodeURIComponent(match[1]) : null
 }
 
 //
