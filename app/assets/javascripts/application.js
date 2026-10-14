@@ -10,6 +10,7 @@ window.GOVUKPrototypeKit.documentReady(() => {
   setUpWhat3words()
   setUpCookieBanner()
   setUpCookiesPage()
+  setUpPrintLinks()
   setUpDebugPanel()
 })
 
@@ -516,6 +517,19 @@ function setCookie (name, value, days) {
 function getCookie (name) {
   const match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'))
   return match ? decodeURIComponent(match[1]) : null
+}
+
+//
+// "Print this page" links: open the browser print dialog, as on a GOV.UK
+// guidance page.
+//
+function setUpPrintLinks () {
+  document.querySelectorAll('[data-print-page]').forEach(function (link) {
+    link.addEventListener('click', function (event) {
+      event.preventDefault()
+      window.print()
+    })
+  })
 }
 
 //
