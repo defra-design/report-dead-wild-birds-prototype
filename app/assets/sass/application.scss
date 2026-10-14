@@ -414,3 +414,61 @@ $app-debug-key: #8ac7ff;
 .app-photo-remove {
   flex: 0 0 auto;
 }
+
+// ---------------------------------------------------------------------------
+// "Applies to" box (guidance page)
+// ---------------------------------------------------------------------------
+// The grey "Applies to ... / Guidance for Northern Ireland" panel at the top
+// of the live GOV.UK guidance page (the govuk_publishing_components
+// "devolved nations" component): a solid light-grey box, not an inset border.
+.app-applies-to {
+  padding: govuk-spacing(4);
+  background-color: govuk-colour("light-grey");
+}
+
+.app-applies-to > :last-child {
+  margin-bottom: 0;
+}
+
+// ---------------------------------------------------------------------------
+// Publication buttons (guidance page)
+// ---------------------------------------------------------------------------
+// "Get emails about this page" and "Print this page", matching GOV.UK's
+// gem-c-button__outline: a white, square-cornered, grey-bordered button that
+// shrinks to its content, with a leading icon. The icons are the GOV.UK
+// notification (bell) and print SVGs, inlined so the prototype is
+// self-contained.
+.app-publication-button {
+  display: table;
+  margin: 0 0 govuk-spacing(4);
+  padding: 10px 10px 10px 38px;
+  border: 1px solid #484949;
+  background-color: transparent;
+  background-position: 10px 50%;
+  background-repeat: no-repeat;
+  background-size: 18px 18px;
+  color: $govuk-link-colour;
+  font-family: $govuk-font-family;
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 400;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.app-publication-button:hover {
+  background-color: govuk-colour("light-grey");
+}
+
+.app-publication-button:focus {
+  outline: 3px solid $govuk-focus-colour;
+  outline-offset: 0;
+}
+
+.app-publication-button--email {
+  background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' height='18' width='18' viewBox='0 0 459.334 459.334'><path fill='%230b0c0c' d='M177.216 404.514c-.001.12-.009.239-.009.359 0 30.078 24.383 54.461 54.461 54.461s54.461-24.383 54.461-54.461c0-.12-.008-.239-.009-.359H175.216zM403.549 336.438l-49.015-72.002v-89.83c0-60.581-43.144-111.079-100.381-122.459V24.485C254.152 10.963 243.19 0 229.667 0s-24.485 10.963-24.485 24.485v27.663c-57.237 11.381-100.381 61.879-100.381 122.459v89.83l-49.015 72.002a24.76 24.76 0 0 0 20.468 38.693H383.08a24.761 24.761 0 0 0 20.469-38.694z'/></svg>");
+}
+
+.app-publication-button--print {
+  background-image: url("data:image/svg+xml,<svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'><g clip-path='url(%23clip0_30_240)'><path d='M7.86133 1H13.4766V7H4.49219V4.02H7.86133V1ZM4.49219 10H13.4766V17H4.49219V10ZM5.61523 12H12.3535V11H5.61523V12ZM5.61523 14H12.3535V13H5.61523V14ZM5.61523 16H12.3535V15H5.61523V16Z' fill='white'/><path d='M12.3535 16H5.61523V15H12.3535V16ZM14.5996 7H17.9688V14H14.5996V18H3.36914V14H0V7H3.36914V3H4.49219V2H5.61523V1H6.73828V0H14.5996V7ZM13.4766 10H4.49219V17H13.4766V10ZM13.4766 1H7.86133V4.02H4.49219V7H13.4766V1ZM12.3535 13H5.61523V14H12.3535V13ZM12.3535 11H5.61523V12H12.3535V11Z' fill='%230B0C0C'/></g><defs><clipPath id='clip0_30_240'><rect width='17.9688' height='18' fill='white'/></clipPath></defs></svg>");
+}
