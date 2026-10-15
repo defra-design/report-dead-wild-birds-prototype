@@ -295,12 +295,14 @@ function setUpPhotoName () {
   const addedName = document.getElementById('photo-added-name') // older, single-photo pages
   const removeLink = document.getElementById('photo-remove')
 
-  // Show or clear a GOV.UK field error on the file upload.
-  function setError (message) {
+  // Show or clear GOV.UK field errors on the file upload. Accepts a single
+  // message or a list (shown one per line).
+  function setError (messages) {
     const group = fileInput.closest('.govuk-form-group')
     if (!group) return
     let err = document.getElementById('photo-error')
-    if (message) {
+    const list = messages ? (Array.isArray(messages) ? messages : [messages]) : []
+    if (list.length) {
       group.classList.add('govuk-form-group--error')
       if (!err) {
         err = document.createElement('p')
@@ -308,7 +310,9 @@ function setUpPhotoName () {
         err.className = 'govuk-error-message'
         fileInput.parentNode.insertBefore(err, fileInput)
       }
-      err.innerHTML = '<span class="govuk-visually-hidden">Error:</span> ' + message
+      err.innerHTML = list.map(function (m) {
+        return '<span class="govuk-visually-hidden">Error:</span> ' + m
+      }).join('<br>')
       err.hidden = false
     } else {
       group.classList.remove('govuk-form-group--error')
@@ -394,15 +398,37 @@ function setUpPhotoName () {
       if (added) added.hidden = false
     }
 
+    // Permitted file types and maximum size. The prototype can check these for
+    // real because it reads the selected File objects (the same ones it uses for
+    // the previews), so a non-jpeg/png or an oversized file shows the error here
+    // with no back end. The live service would also validate server-side.
+    const ALLOWED_TYPES = ['image/jpeg', 'image/png']
+    const MAX_BYTES = 10 * 1024 * 1024
+
     fileInput.addEventListener('change', function () {
       if (syncing) return
-      let files = filesArr()
-      if (files.length > MAX) {
-        setError('You can upload up to ' + MAX + ' photos.')
-        if (supportsDataTransfer) { setFiles(files.slice(0, MAX)) }
-      } else {
-        setError(null)
-      }
+      const selected = filesArr()
+      const valid = []
+      const messages = []
+      let wrongType = false
+      let tooBig = false
+
+      selected.forEach(function (f) {
+        if (ALLOWED_TYPES.indexOf(f.type) === -1) { wrongType = true; return }
+        if (f.size > MAX_BYTES) { tooBig = true; return }
+        valid.push(f)
+      })
+
+      let tooMany = false
+      if (valid.length > MAX) { tooMany = true; valid.length = MAX }
+
+      if (wrongType) messages.push('The image file must be a jpeg or a png.')
+      if (tooBig) messages.push('The image file must be smaller than 10MB.')
+      if (tooMany) messages.push('You can upload up to ' + MAX + ' photos.')
+
+      // Keep only the files we accepted.
+      if (supportsDataTransfer && valid.length !== selected.length) { setFiles(valid) }
+      setError(messages.length ? messages : null)
       renderFiles()
     })
     return
