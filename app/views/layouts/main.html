@@ -27,10 +27,20 @@ To show a Back link, set backLink to a path within the version, for example:
 {% endblock %}
 
 {% block beforeContent %}
-  {{ govukPhaseBanner({
-    tag: { text: "Prototype" },
-    html: 'This is a prototype used for testing and design. It is not a live service. <a class="govuk-link" href="/">Switch version</a>.'
-  }) }}
+  {# A version in beta (phase: 'beta' in app/lib/versions.js) shows the GDS beta
+     banner with a link to the feedback form; other versions show the
+     prototype banner with a link back to the version picker. #}
+  {% if version.phase == 'beta' %}
+    {{ govukPhaseBanner({
+      tag: { text: "Beta" },
+      html: 'This is a new service – your <a class="govuk-link" href="' + version.feedbackUrl + '" rel="noreferrer noopener" target="_blank">feedback</a> will help us to improve it.'
+    }) }}
+  {% else %}
+    {{ govukPhaseBanner({
+      tag: { text: "Prototype" },
+      html: 'This is a prototype used for testing and design. It is not a live service. <a class="govuk-link" href="/">Switch version</a>.'
+    }) }}
+  {% endif %}
 
   {# Internal versions (see version.internal in app/lib/versions.js) are for
      staff use only. Make that unmistakable on every page. #}
