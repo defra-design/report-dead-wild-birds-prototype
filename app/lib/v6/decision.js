@@ -135,9 +135,10 @@ function nationFromLocation (location) {
   if (!location) return 'england'
 
   // 0. A country chosen on the manual address entry is an explicit signal — use
-  //    it in preference to deriving from the postcode. (Only England, Scotland
-  //    and Wales are offered there; Northern Ireland is handled separately.)
-  if (['england', 'scotland', 'wales'].indexOf(location.addressCountry) !== -1) {
+  //    it in preference to deriving from the postcode. So selecting Northern
+  //    Ireland sends the reporter to the NI exit even if they entered a GB
+  //    postcode: the person is telling us directly where the bird is.
+  if (['england', 'scotland', 'wales', 'northern-ireland'].indexOf(location.addressCountry) !== -1) {
     return location.addressCountry
   }
 

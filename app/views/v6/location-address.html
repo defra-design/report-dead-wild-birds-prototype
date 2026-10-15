@@ -77,7 +77,8 @@
         { value: "", text: "Select a country" },
         { value: "england", text: "England", selected: data.location.addressCountry == "england" if data.location },
         { value: "scotland", text: "Scotland", selected: data.location.addressCountry == "scotland" if data.location },
-        { value: "wales", text: "Wales", selected: data.location.addressCountry == "wales" if data.location }
+        { value: "wales", text: "Wales", selected: data.location.addressCountry == "wales" if data.location },
+        { value: "northern-ireland", text: "Northern Ireland", selected: data.location.addressCountry == "northern-ireland" if data.location }
       ]
     }) }}
     <p class="govuk-body govuk-!-margin-top-3"><a class="govuk-link" href="#" id="address-lookup-link">Lookup an address using a postcode instead</a></p>
