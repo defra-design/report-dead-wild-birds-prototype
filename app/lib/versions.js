@@ -6,6 +6,11 @@
 // list, and app/routes.js mounts each version under its own path (for example
 // /v1 and /v2).
 //
+// v6 is the current service (now in beta). Every other version is an earlier
+// iteration, kept for reference and flagged `archived: true` so the picker
+// lists it under "Archived versions". The internal call-agent version is
+// archived too.
+//
 // Each version is self-contained: its own journey, decision engine and page
 // templates (in app/views/<id>). Older versions are frozen - to change the
 // journey, add a new version rather than editing an existing one.
@@ -18,57 +23,14 @@
 
 const VERSIONS = [
   {
-    id: 'v6-internal',
-    number: '6.0',
-    name: 'Internal (call agents)',
-    date: '25 September 2026',
-    current: false,
-    internal: true,
-    changes: [
-      'Internal call-agent version of version 6 — agents enter the details a caller gives them',
-      'No "select on a map" option for the location',
-      '"Describe the location" added, for callers who cannot give a postcode or what3words',
-      'Optional photo upload (a caller can email a photo in later)',
-      'Every page is flagged as an internal tool'
-    ],
-    journey: require('./v6-internal/journey'),
-    decision: require('./v6-internal/decision')
-  },
-  {
-    id: 'v8',
-    number: '8.0',
-    date: '15 September 2026',
-    current: false,
-    changes: [
-      'Guidance page rewritten into clear sections: what to report, what not to report, what we do, and other services',
-      'Sick or injured live birds now link to RSPB guidance',
-      'Everything else is the same as version 6'
-    ],
-    journey: require('./v8/journey'),
-    decision: require('./v8/decision')
-  },
-  {
-    id: 'v7',
-    number: '7.0',
-    date: '10 September 2026',
-    current: false,
-    changes: [
-      'Start page reframed to a single list of who should use the service',
-      '"Describe the location" added back as a location option',
-      '"Other information" folded into the location page',
-      'Clearer exit-page headings, with extra guidance sections trimmed',
-      'Email address required, telephone optional'
-    ],
-    journey: require('./v7/journey'),
-    decision: require('./v7/decision')
-  },
-  {
     id: 'v6',
     number: '6.0',
     name: 'Alpha Prototype',
     date: '1 October 2026',
     current: true,
     cookieBanner: true,
+    phase: 'beta',
+    feedbackUrl: 'https://defragroup.eu.qualtrics.com/jfe/form/SV_eyq0grlLV8o4xJs',
     changes: [
       'Journey reordered: screener, date, location, numbers, reachability, condition',
       'No country question — the nation is worked out from the location (postcode, map pin or what3words)',
@@ -84,10 +46,41 @@ const VERSIONS = [
     decision: require('./v6/decision')
   },
   {
+    id: 'v8',
+    number: '8.0',
+    date: '15 September 2026',
+    current: false,
+    archived: true,
+    changes: [
+      'Guidance page rewritten into clear sections: what to report, what not to report, what we do, and other services',
+      'Sick or injured live birds now link to RSPB guidance',
+      'Everything else is the same as version 6'
+    ],
+    journey: require('./v8/journey'),
+    decision: require('./v8/decision')
+  },
+  {
+    id: 'v7',
+    number: '7.0',
+    date: '10 September 2026',
+    current: false,
+    archived: true,
+    changes: [
+      'Start page reframed to a single list of who should use the service',
+      '"Describe the location" added back as a location option',
+      '"Other information" folded into the location page',
+      'Clearer exit-page headings, with extra guidance sections trimmed',
+      'Email address required, telephone optional'
+    ],
+    journey: require('./v7/journey'),
+    decision: require('./v7/decision')
+  },
+  {
     id: 'v5',
     number: '5.0',
     date: '24 August 2026',
     current: false,
+    archived: true,
     changes: [
       'Rebuilt from the latest content pages in the agreed page order',
       'Bird species and numbers checked against collection thresholds',
@@ -102,6 +95,7 @@ const VERSIONS = [
     number: '4.0',
     date: '20 August 2026',
     current: false,
+    archived: true,
     changes: [
       'Fuller start-page guidance explaining the service is for disease monitoring, not bird removal',
       'No screening questions — goes straight into the form',
@@ -115,6 +109,7 @@ const VERSIONS = [
     number: '3.0',
     date: '20 August 2026',
     current: false,
+    archived: true,
     changes: [
       'Standard start-page guidance',
       'Screening questions to filter out reports that do not need the form',
@@ -129,6 +124,7 @@ const VERSIONS = [
     number: '2.0',
     date: '4 August 2026',
     current: false,
+    archived: true,
     changes: [
       'Country asked first',
       'Species asked before the number of birds',
@@ -145,11 +141,30 @@ const VERSIONS = [
     number: '1.0',
     date: '24 July 2026',
     current: false,
+    archived: true,
     changes: [
       'First build of the reporting journey'
     ],
     journey: require('./v1/journey'),
     decision: require('./v1/decision')
+  },
+  {
+    id: 'v6-internal',
+    number: '6.0',
+    name: 'Internal (call agents)',
+    date: '25 September 2026',
+    current: false,
+    internal: true,
+    archived: true,
+    changes: [
+      'Internal call-agent version of version 6 — agents enter the details a caller gives them',
+      'No "select on a map" option for the location',
+      '"Describe the location" added, for callers who cannot give a postcode or what3words',
+      'Optional photo upload (a caller can email a photo in later)',
+      'Every page is flagged as an internal tool'
+    ],
+    journey: require('./v6-internal/journey'),
+    decision: require('./v6-internal/decision')
   }
 ]
 
