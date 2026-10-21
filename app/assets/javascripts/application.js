@@ -422,7 +422,7 @@ function setUpPhotoName () {
       let tooMany = false
       if (valid.length > MAX) { tooMany = true; valid.length = MAX }
 
-      if (wrongType) messages.push('The image file must be a jpeg or a png.')
+      if (wrongType) messages.push('The image file must be a JPEG or a PNG.')
       if (tooBig) messages.push('The image file must be smaller than 10MB.')
       if (tooMany) messages.push('You can upload up to ' + MAX + ' photos.')
 
