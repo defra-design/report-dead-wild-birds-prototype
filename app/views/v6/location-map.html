@@ -13,7 +13,7 @@
     <h1 class="govuk-label-wrapper">
       <label class="govuk-label govuk-label--l" for="map">Place your pin</label>
     </h1>
-    <div id="map-hint" class="govuk-hint">Put a pin on a map as precisely as you can.</div>
+    <div id="map-hint" class="govuk-hint">Put a pin on the map as precisely as you can.</div>
     {% if errors.map %}{{ govukErrorMessage({ text: errors.map }) }}{% endif %}
 
     <div class="app-map" id="map" role="application" tabindex="0" aria-describedby="map-hint">
