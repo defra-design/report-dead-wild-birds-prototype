@@ -1,0 +1,29 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName = "Bird already reported" %}
+
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    {# Post-submission exit. This page is reached only after a back-end check
+       finds we have already received a report of this same bird, so it is not
+       wired into the prototype journey — it is a standalone page to share for
+       review. The radius case (a different bird recently collected nearby)
+       uses collection-not-necessary.html instead. #}
+
+    <h1 class="govuk-heading-l">Bird already reported</h1>
+
+    <p class="govuk-body">Thank you for making this report, but we appear to have received a report of this bird already.</p>
+
+    {{ govukWarningText({ text: "Our operators aim to collect the bird within the next 2 days.", iconFallbackText: "Warning" }) }}
+
+    <p class="govuk-body">If after 2 days have passed you want to know how to dispose of dead wild birds on your property or ask for them to be removed from public land, read the guidance on <a class="govuk-link" href="https://www.gov.uk/guidance/removing-and-disposing-of-dead-wild-birds" rel="noreferrer noopener" target="_blank">removing and disposing of dead wild birds</a>.</p>
+
+    {% include "includes/risks-to-humans.html" %}
+
+  </div>
+</div>
+{% endblock %}
