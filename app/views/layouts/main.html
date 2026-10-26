@@ -17,6 +17,23 @@ To show a Back link, set backLink to a path within the version, for example:
 
 {% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/footer/macro.njk" import govukFooter %}
+
+{# Footer: on a version with a language toggle (altLang), add the Cymraeg/
+   English link to the footer links; otherwise keep the kit's default footer. #}
+{% block footer %}
+  {% if version.altLang and altLangHref %}
+    {% set langItem = { href: altLangHref, text: version.altLang.label, attributes: { lang: version.altLang.lang, hreflang: version.altLang.lang } } %}
+    {% if GOVUKPrototypeKit.isDevelopment %}
+      {% set footerItems = [langItem, { href: "/manage-prototype", text: "Manage your prototype" }, { href: "/manage-prototype/clear-data", text: "Clear data" }] %}
+    {% else %}
+      {% set footerItems = [langItem, { href: "/manage-prototype/clear-data", text: "Clear data" }] %}
+    {% endif %}
+    {{ govukFooter({ meta: { items: footerItems, visuallyHiddenTitle: "Support links" } }) }}
+  {% else %}
+    {{ super() }}
+  {% endif %}
+{% endblock %}
 
 {# Cookie banner: sits right after <body>, before the skip link. Shown only on
    versions that opt in with cookieBanner (see app/lib/versions.js). #}
@@ -27,15 +44,6 @@ To show a Back link, set backLink to a path within the version, for example:
 {% endblock %}
 
 {% block beforeContent %}
-  {# Welsh/English language toggle, top-right (versions with an altLang, see
-     app/lib/versions.js). The link shows the other language's name in that
-     language and leads to the equivalent page. #}
-  {% if version.altLang and altLangHref %}
-    <p class="govuk-body govuk-!-text-align-right govuk-!-margin-top-2 govuk-!-margin-bottom-0">
-      <a class="govuk-link" href="{{ altLangHref }}" lang="{{ version.altLang.lang }}" hreflang="{{ version.altLang.lang }}">{{ version.altLang.label }}</a>
-    </p>
-  {% endif %}
-
   {# A version in beta (phase: 'beta' in app/lib/versions.js) shows the GDS beta
      banner with a link to the feedback form; other versions show the
      prototype banner with a link back to the version picker. #}
