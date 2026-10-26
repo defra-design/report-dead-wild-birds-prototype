@@ -17,19 +17,27 @@ To show a Back link, set backLink to a path within the version, for example:
 
 {% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
-{% from "govuk/components/footer/macro.njk" import govukFooter %}
+{% from "govuk/components/service-navigation/macro.njk" import govukServiceNavigation %}
 
-{# Footer: on a version with a language toggle (altLang), add the Cymraeg/
-   English link to the footer links; otherwise keep the kit's default footer. #}
-{% block footer %}
+{# Language toggle: "English | Cymraeg" on the right of the service-name row
+   (versions with an altLang, see app/lib/versions.js). The current language
+   is plain text; the other is a link to the equivalent page. #}
+{% block govukServiceNavigation %}
   {% if version.altLang and altLangHref %}
-    {% set langItem = { href: altLangHref, text: version.altLang.label, attributes: { lang: version.altLang.lang, hreflang: version.altLang.lang } } %}
-    {% if GOVUKPrototypeKit.isDevelopment %}
-      {% set footerItems = [langItem, { href: "/manage-prototype", text: "Manage your prototype" }, { href: "/manage-prototype/clear-data", text: "Clear data" }] %}
-    {% else %}
-      {% set footerItems = [langItem, { href: "/manage-prototype/clear-data", text: "Clear data" }] %}
-    {% endif %}
-    {{ govukFooter({ meta: { items: footerItems, visuallyHiddenTitle: "Support links" } }) }}
+    {% set languageSlot %}
+      <nav class="app-language-switch" aria-label="Language">
+        {% if version.lang == "cy" %}
+          <a class="govuk-link app-language-switch__link" href="{{ altLangHref }}" lang="en" hreflang="en">English</a>
+          <span class="app-language-switch__sep" aria-hidden="true">|</span>
+          <span class="app-language-switch__current">Cymraeg</span>
+        {% else %}
+          <span class="app-language-switch__current">English</span>
+          <span class="app-language-switch__sep" aria-hidden="true">|</span>
+          <a class="govuk-link app-language-switch__link" href="{{ altLangHref }}" lang="cy" hreflang="cy">Cymraeg</a>
+        {% endif %}
+      </nav>
+    {% endset %}
+    {{ govukServiceNavigation({ serviceName: serviceName, serviceUrl: serviceUrl or "/", slots: { end: languageSlot } }) }}
   {% else %}
     {{ super() }}
   {% endif %}
