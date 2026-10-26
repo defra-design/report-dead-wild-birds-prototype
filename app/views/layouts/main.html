@@ -17,6 +17,31 @@ To show a Back link, set backLink to a path within the version, for example:
 
 {% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/service-navigation/macro.njk" import govukServiceNavigation %}
+
+{# Language toggle: "English | Cymraeg" on the right of the service-name row
+   (versions with an altLang, see app/lib/versions.js). The current language
+   is plain text; the other is a link to the equivalent page. #}
+{% block govukServiceNavigation %}
+  {% if version.altLang and altLangHref %}
+    {% set languageSlot %}
+      <nav class="app-language-switch" aria-label="Language">
+        {% if version.lang == "cy" %}
+          <a class="govuk-link app-language-switch__link" href="{{ altLangHref }}" lang="en" hreflang="en"><span class="govuk-visually-hidden">English </span>ENG</a>
+          <span class="app-language-switch__sep" aria-hidden="true">|</span>
+          <span class="app-language-switch__current" lang="cy" aria-current="true"><span class="govuk-visually-hidden">Cymraeg </span>CYM</span>
+        {% else %}
+          <span class="app-language-switch__current" lang="en" aria-current="true"><span class="govuk-visually-hidden">English </span>ENG</span>
+          <span class="app-language-switch__sep" aria-hidden="true">|</span>
+          <a class="govuk-link app-language-switch__link" href="{{ altLangHref }}" lang="cy" hreflang="cy"><span class="govuk-visually-hidden">Cymraeg </span>CYM</a>
+        {% endif %}
+      </nav>
+    {% endset %}
+    {{ govukServiceNavigation({ serviceName: serviceName, serviceUrl: serviceUrl or "/", slots: { end: languageSlot } }) }}
+  {% else %}
+    {{ super() }}
+  {% endif %}
+{% endblock %}
 
 {# Cookie banner: sits right after <body>, before the skip link. Shown only on
    versions that opt in with cookieBanner (see app/lib/versions.js). #}

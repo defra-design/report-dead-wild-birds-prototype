@@ -1,0 +1,32 @@
+{% extends "layouts/question.html" %}
+
+{% set pageName = "Ble mae'r aderyn?" %}
+{% set backLink = "/date-seen" %}
+
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% block form %}
+<form method="post" novalidate>
+
+  {{ govukRadios({
+    name: "locationMethod",
+    fieldset: {
+      legend: {
+        text: "Ble mae'r aderyn?",
+        isPageHeading: true,
+        classes: "govuk-fieldset__legend--l"
+      }
+    },
+    hint: { text: "Dewiswch un opsiwn i roi'r lleoliad mwyaf manwl gywir i ni ar gyfer yr aderyn." },
+    errorMessage: { text: errors.locationMethod } if errors.locationMethod,
+    items: [
+      { value: "map", text: "Rhowch bin ar fap", checked: data.locationMethod == "map" },
+      { value: "address", text: "Cyfeiriad a chod post", checked: data.locationMethod == "address" },
+      { value: "what3words", text: "Nodwch leoliad 'what3words'", checked: data.locationMethod == "what3words" }
+    ]
+  }) }}
+
+  {{ govukButton({ text: "Parhau" }) }}
+
+</form>
+{% endblock %}

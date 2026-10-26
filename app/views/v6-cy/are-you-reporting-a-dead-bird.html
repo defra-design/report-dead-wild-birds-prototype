@@ -1,0 +1,31 @@
+{% extends "layouts/question.html" %}
+
+{% set pageName = "Ydych chi'n rhoi gwybod am aderyn marw?" %}
+{% set backLink = "/start" %}
+
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% block form %}
+<form method="post" novalidate>
+
+  {{ govukRadios({
+    name: "reportingDead",
+    fieldset: {
+      legend: {
+        text: "Ydych chi'n rhoi gwybod am aderyn marw?",
+        isPageHeading: true,
+        classes: "govuk-fieldset__legend--l"
+      }
+    },
+    hint: { text: "Dim ond er mwyn rhoi gwybod am adar gwyllt marw y dylech chi ddefnyddio'r gwasanaeth hwn." },
+    errorMessage: { text: errors.reportingDead } if errors.reportingDead,
+    items: [
+      { value: "yes", text: "Ydw", checked: data.reportingDead == "yes" },
+      { value: "no", text: "Nac ydw, mae'r aderyn yn sâl neu wedi'i anafu", checked: data.reportingDead == "no" }
+    ]
+  }) }}
+
+  {{ govukButton({ text: "Parhau" }) }}
+
+</form>
+{% endblock %}

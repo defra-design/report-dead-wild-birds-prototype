@@ -1,0 +1,29 @@
+{% extends "layouts/question.html" %}
+
+{% set pageName = "Dywedwch wrthym unrhyw beth arall a allai ein helpu" %}
+{% set backLink = "/photo" %}
+
+{% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
+
+{% block form %}
+<form method="post" novalidate>
+
+  {# The character-count helper text (e.g. "You can enter up to 500 characters")
+     is still English - it is one of the items awaiting Welsh. #}
+  {{ govukCharacterCount({
+    id: "anythingElse",
+    name: "anythingElse",
+    maxlength: 500,
+    label: {
+      text: "Dywedwch wrthym unrhyw beth arall a allai ein helpu (dewisol)",
+      isPageHeading: true,
+      classes: "govuk-label--l"
+    },
+    errorMessage: { text: errors.anythingElse } if errors.anythingElse,
+    value: data.anythingElse
+  }) }}
+
+  {{ govukButton({ text: "Parhau" }) }}
+
+</form>
+{% endblock %}

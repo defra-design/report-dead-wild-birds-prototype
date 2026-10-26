@@ -1,0 +1,42 @@
+{% extends "layouts/question.html" %}
+
+{% set pageName = "A ellir cyrraedd yr aderyn yn ddiogel?" %}
+{% set backLink = "/bird-type-and-number" %}
+
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% block form %}
+
+<h1 class="govuk-heading-l">A ellir cyrraedd yr aderyn yn ddiogel, heb offer na chyfarpar?</h1>
+
+<p class="govuk-body">Atebwch ‘Na ellir’ os yw'r aderyn:</p>
+
+<ul class="govuk-list govuk-list--bullet">
+  <li>mewn dŵr a dim ond mewn cwch y gellir ei gyrraedd</li>
+  <li>yn rhywle y byddai angen ysgol i'w gyrraedd, fel ar do neu mewn coeden</li>
+  <li>y tu ôl i rwystr, ffens neu ardal dan glo (oni bai ei fod ar eich eiddo)</li>
+  <li>mewn lleoliad y byddai'n beryglus ei gyrraedd, fel llinell reilffordd neu draffordd</li>
+</ul>
+
+<form method="post" novalidate>
+
+  {{ govukRadios({
+    name: "accessible",
+    fieldset: {
+      legend: {
+        text: "A ellir cyrraedd yr aderyn yn ddiogel, heb offer na chyfarpar?",
+        classes: "govuk-visually-hidden"
+      }
+    },
+    errorMessage: { text: errors.accessible } if errors.accessible,
+    items: [
+      { value: "yes", text: "Gellir", checked: data.accessible == "yes" },
+      { value: "no", text: "Na ellir", checked: data.accessible == "no" },
+      { value: "not-sure", text: "Dydw i ddim yn siŵr", checked: data.accessible == "not-sure" }
+    ]
+  }) }}
+
+  {{ govukButton({ text: "Parhau" }) }}
+
+</form>
+{% endblock %}

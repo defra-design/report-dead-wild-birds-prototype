@@ -1,0 +1,25 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName = "Nid yw'r corff yn addas" %}
+
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-l">Nid yw'r corff yn addas</h1>
+
+    <p class="govuk-body">Diolch am gyflwyno'r adroddiad hwn, ond nid oes angen i ni gasglu'r aderyn.</p>
+
+    <p class="govuk-body">Yn anffodus, mae'n debygol y bydd adar sydd wedi bod yn farw am fwy na 48 awr wedi pydru gormod i'w profi.</p>
+
+    {{ govukWarningText({ text: "Ni fydd ein gweithredwyr yn casglu adar sy'n pydru i'w profi.", iconFallbackText: "Rhybudd" }) }}
+
+    <p class="govuk-body">Os ydych chi am wybod sut i gael gwared ar adar gwyllt marw ar eich eiddo neu ofyn am iddynt gael eu symud o dir cyhoeddus, darllenwch y canllawiau ar <a class="govuk-link" href="https://www.gov.uk/guidance/removing-and-disposing-of-dead-wild-birds" rel="noreferrer noopener" target="_blank">symud adar gwyllt marw a chael gwared arnynt</a>.</p>
+
+    {% include "includes/risks-to-humans-cy.html" %}
+
+  </div>
+</div>
+{% endblock %}

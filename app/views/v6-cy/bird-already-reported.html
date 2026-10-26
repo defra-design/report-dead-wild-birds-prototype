@@ -1,0 +1,23 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName = "Adar y rhoddwyd gwybod amdanynt eisoes" %}
+
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-l">Adar y rhoddwyd gwybod amdanynt eisoes</h1>
+
+    <p class="govuk-body">Diolch am gyflwyno'r adroddiad hwn, ond ymddengys ein bod eisoes wedi cael adroddiad am yr aderyn hwn.</p>
+
+    {{ govukWarningText({ text: "Mae ein gweithredwyr yn anelu at gasglu'r aderyn o fewn y ddau ddiwrnod nesaf.", iconFallbackText: "Rhybudd" }) }}
+
+    <p class="govuk-body">Ar ôl i ddau ddiwrnod fynd heibio, os byddwch am wybod sut i gael gwared ar adar gwyllt marw ar eich eiddo neu ofyn am iddynt gael eu symud o dir cyhoeddus, darllenwch y canllawiau ar <a class="govuk-link" href="https://www.gov.uk/guidance/removing-and-disposing-of-dead-wild-birds" rel="noreferrer noopener" target="_blank">symud adar gwyllt marw a chael gwared arnynt</a>.</p>
+
+    {% include "includes/risks-to-humans-cy.html" %}
+
+  </div>
+</div>
+{% endblock %}

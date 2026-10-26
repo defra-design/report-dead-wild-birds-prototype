@@ -1,0 +1,45 @@
+{% extends "layouts/question.html" %}
+
+{% set pageName = "Beth yw cyflwr yr aderyn?" %}
+{% set backLink = "/accessible" %}
+
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% block form %}
+<form method="post" novalidate>
+
+  {% if birdCount > 1 %}
+    {# More than one bird. The single-bird options are from the approved
+       translation; the "all birds…" wording is composed from those approved
+       terms and should be confirmed with the translator. #}
+    {{ govukRadios({
+      name: "condition",
+      fieldset: {
+        legend: { text: "Beth yw cyflwr yr adar?", isPageHeading: true, classes: "govuk-fieldset__legend--l" }
+      },
+      errorMessage: { text: errors.condition } if errors.condition,
+      items: [
+        { value: "good", text: "Mae pob aderyn yn ffres neu'n gyfan gan mwyaf", hint: { text: "Mae'r cyrff yn gyfan neu bron yn gyfan." }, checked: data.condition == "good" },
+        { value: "decomposed", text: "Mae pob aderyn wedi pydru neu'n torri i lawr", hint: { text: "Efallai nad yw'r corff yn gyfan neu gallai fod aroglau cryf arno." }, checked: data.condition == "decomposed" },
+        { value: "mixed", text: "Adar mewn cyflyrau gwahanol", hint: { text: "Os nad ydyn nhw i gyd yn yr un cyflwr." }, checked: data.condition == "mixed" }
+      ]
+    }) }}
+  {% else %}
+    {# A single bird reported. #}
+    {{ govukRadios({
+      name: "condition",
+      fieldset: {
+        legend: { text: "Beth yw cyflwr yr aderyn?", isPageHeading: true, classes: "govuk-fieldset__legend--l" }
+      },
+      errorMessage: { text: errors.condition } if errors.condition,
+      items: [
+        { value: "good", text: "Ffres neu'n gyfan gan mwyaf", hint: { text: "Mae'r corff yn gyfan neu bron yn gyfan." }, checked: data.condition == "good" },
+        { value: "decomposed", text: "Wedi pydru neu'n torri i lawr", hint: { text: "Efallai nad yw'r corff yn gyfan neu gallai fod aroglau cryf arno." }, checked: data.condition == "decomposed" }
+      ]
+    }) }}
+  {% endif %}
+
+  {{ govukButton({ text: "Parhau" }) }}
+
+</form>
+{% endblock %}
