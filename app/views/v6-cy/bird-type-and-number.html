@@ -1,0 +1,61 @@
+{% extends "layouts/question.html" %}
+
+{% set pageName = "Pa rywogaeth a faint ohonynt?" %}
+{# Back returns to whichever location method page was used. #}
+{% set backLink = "/location" %}
+{% if data.location.method == "map" %}{% set backLink = "/location-map" %}
+{% elif data.location.method == "what3words" %}{% set backLink = "/location-what3words" %}
+{% elif data.location.method == "address" %}{% set backLink = "/location-address" %}{% endif %}
+
+{% from "govuk/components/input/macro.njk" import govukInput %}
+
+{% macro birdCount(bird) %}
+  {# Keep the "– such as …" descriptor on the same line as the species, but at
+     regular weight so only the species name is bold. #}
+  {% set parts = bird.label.split(" – ") %}
+  {% set labelHtml %}{{ parts[0] }}{% if parts.length > 1 %} <span class="govuk-!-font-weight-regular">– {{ parts[1] }}</span>{% endif %}{% endset %}
+  {{ govukInput({
+    label: { html: labelHtml, classes: "govuk-label--s" },
+    id: "count-" + bird.key,
+    name: "count-" + bird.key,
+    classes: "govuk-input--width-4",
+    inputmode: "numeric",
+    spellcheck: false,
+    value: data.counts[bird.key] if (data.counts and data.counts[bird.key]) else ""
+  }) }}
+{% endmacro %}
+
+{% block form %}
+
+<h1 class="govuk-heading-l">Pa rywogaeth a faint ohonynt?</h1>
+
+<p class="govuk-body">Rhowch nifer ar gyfer pob un o'r rhywogaethau y daethoch o hyd iddynt.</p>
+
+<form method="post" novalidate>
+
+  {% if errors["count-bird-of-prey"] %}
+    <p class="govuk-error-message"><span class="govuk-visually-hidden">Gwall:</span> {{ errors["count-bird-of-prey"] }}</p>
+  {% endif %}
+
+  {% for bird in [
+    { key: "bird-of-prey", label: "Adar ysglyfaethus – fel tylluanod, hebogiaid neu fwncathod" },
+    { key: "gull", label: "Gwylanod" },
+    { key: "seabird", label: "Adar môr eraill – fel palod, huganod, gwylogod a mulfrain" },
+    { key: "wader", label: "Adar hirgoes – fel cambigau, gylfinirod, piod môr a chwtiaid" },
+    { key: "gull-seabird-wader-unknown", label: "Gwylanod, adar môr ac adar hirgoes anhysbys – os nad ydych chi'n siŵr pa gategori i'w ddefnyddio" },
+    { key: "goose", label: "Gwyddau" },
+    { key: "duck", label: "Hwyaid" },
+    { key: "swan", label: "Elyrch" },
+    { key: "rail-crake", label: "Rhegennod – fel ieir dŵr a chwtieir" },
+    { key: "heron-egret", label: "Crehyrod a chrehyrod bach copog – yn cynnwys garanod, adar y bwn, llydanbigau a storciaid" },
+    { key: "gamebird", label: "Adar hela – fel ffesantod, petris a grugiar" },
+    { key: "pigeon-dove", label: "Colomennod" },
+    { key: "corvid", label: "Corfidiaid – fel brain, cigfrain, ydfrain, pïod, jac-dos a sgrechod y coed" },
+    { key: "songbird-garden", label: "Adar cân ac adar gardd – fel adar y to, titwod, mwyeilch, llinosod, drudwyod a robinod" },
+    { key: "other", label: "Adar gwyllt eraill – neu os nad ydych chi'n siŵr pa fath o aderyn ydyw" }
+  ] %}{{ birdCount(bird) }}{% endfor %}
+
+  {{ govukButton({ text: "Parhau" }) }}
+
+</form>
+{% endblock %}

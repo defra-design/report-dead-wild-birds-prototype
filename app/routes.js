@@ -49,6 +49,14 @@ function mountVersion (version) {
     res.locals.version = version
     res.locals.speciesLabel = decision.speciesLabel
 
+    // Page language, and the equivalent page in the other language (for the
+    // Cymraeg/English toggle). altLangHref swaps the version prefix in the
+    // current path, e.g. /v6/date-seen <-> /v6-cy/date-seen.
+    res.locals.htmlLang = version.lang || 'en'
+    if (version.altLang) {
+      res.locals.altLangHref = '/' + version.altLang.id + req.path.slice(basePath.length)
+    }
+
     const debugKey = 'showDebug_' + version.id
     if (req.query.debug === 'off') req.session[debugKey] = false
     if (req.query.debug === 'on') req.session[debugKey] = true

@@ -1,0 +1,30 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName = "Mae nifer yr adar yn rhy fach" %}
+
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-l">Mae nifer yr adar yn rhy fach</h1>
+
+    <p class="govuk-body">Diolch am gyflwyno'r adroddiad hwn, ond nid oes angen i ni gasglu'r adar.</p>
+
+    {{ govukWarningText({ text: "Ni fydd ein gweithredwyr yn casglu adar islaw'r nifer gofynnol.", iconFallbackText: "Rhybudd" }) }}
+
+    <p class="govuk-body">Dylech chi roi gwybod am y canlynol:</p>
+
+    <ul class="govuk-list govuk-list--bullet">
+      <li>1 neu fwy o adar ysglyfaethus, elyrch, gwyddau, hwyaid, adar môr, neu yn yr Alban, unrhyw fwyeilch marw</li>
+      <li>5 neu fwy o adar gwyllt marw o unrhyw rywogaeth a ganfyddir mewn un ardal ar yr un pryd</li>
+    </ul>
+
+    <p class="govuk-body">Os ydych chi am wybod sut i gael gwared ar adar gwyllt marw ar eich eiddo neu ofyn am iddynt gael eu symud o dir cyhoeddus, darllenwch y canllawiau ar <a class="govuk-link" href="https://www.gov.uk/guidance/removing-and-disposing-of-dead-wild-birds" rel="noreferrer noopener" target="_blank">symud adar gwyllt marw a chael gwared arnynt</a>.</p>
+
+    {% include "includes/risks-to-humans-cy.html" %}
+
+  </div>
+</div>
+{% endblock %}

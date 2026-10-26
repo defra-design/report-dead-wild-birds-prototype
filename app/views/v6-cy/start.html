@@ -1,0 +1,160 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName = "Report dead wild birds" %}
+
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+
+{# Breadcrumbs sit above the main content, as on a GOV.UK guidance page. The
+   links are placeholders - this is a prototype of the service, not GOV.UK. #}
+{% block beforeContent %}
+  {{ super() }}
+  {{ govukBreadcrumbs({
+    items: [
+      { text: "Home", href: "#" },
+      { text: "Environment", href: "#" },
+      { text: "Wildlife, animals, biodiversity and ecosystems", href: "#" },
+      { text: "Wildlife and habitat conservation", href: "#" },
+      { text: "Birds", href: "#" }
+    ]
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+{# Title block, styled like a GOV.UK guidance page: a "Guidance" label, the
+   title, and a one-line summary. #}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <span class="govuk-caption-l">Guidance</span>
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-3">Report dead wild birds</h1>
+    <p class="govuk-body-l">How to report dead wild birds.</p>
+  </div>
+</div>
+
+{# Publication metadata and the "Applies to" line with the Northern Ireland
+   link, matching the top of the live GOV.UK guidance page. Dates are the
+   live page's, shown here only so the prototype looks the same. #}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-3">
+    <p class="govuk-body-s govuk-!-margin-bottom-1">From:
+      <a class="govuk-link" href="#">Department for Environment, Food &amp; Rural Affairs</a>
+      and
+      <a class="govuk-link" href="#">Animal and Plant Health Agency</a>
+    </p>
+    <p class="govuk-body-s govuk-!-margin-bottom-1">Published: 13 December 2022</p>
+    <p class="govuk-body-s govuk-!-margin-bottom-3">Last updated: 17 May 2024</p>
+    <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-4">
+    <div class="app-applies-to govuk-!-margin-bottom-6">
+      <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-2">Applies to England, Scotland and Wales</p>
+      <ul class="govuk-list">
+        <li>
+          <a class="govuk-link" href="https://www.daera-ni.gov.uk/articles/wild-birds-and-advice-public" rel="noreferrer noopener" target="_blank">Guidance for Northern Ireland</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+{# Main body (left) with a Related content column (right), as on a GOV.UK
+   guidance page. The body is the existing prototype copy, unchanged. #}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <p class="govuk-body">This service is to report dead wild birds for disease investigation.</p>
+
+    <h2 class="govuk-heading-m">What to report</h2>
+
+    <p class="govuk-body">You should report:</p>
+
+    <ul class="govuk-list govuk-list--bullet">
+      <li>1 or more dead birds of prey, swans, geese, ducks, seabirds or, in Scotland, any blackbirds</li>
+      <li>5 or more dead wild birds of any other species found in one area at the same time</li>
+    </ul>
+
+    <h3 class="govuk-heading-s">What not to report</h3>
+
+    <p class="govuk-body">Do not report:</p>
+
+    <ul class="govuk-list govuk-list--bullet">
+      <li>living birds that are sick or injured</li>
+      <li>4 or fewer dead birds, except for the species already named</li>
+    </ul>
+
+    <p class="govuk-body">These birds will not be helpful for this monitoring programme so we will not collect them. There are other ways to deal with these birds.</p>
+
+    {{ govukButton({
+      text: "Report now",
+      href: basePath + "/are-you-reporting-a-dead-bird",
+      isStartButton: true
+    }) }}
+
+    <h2 class="govuk-heading-m">Get help with dead and injured birds</h2>
+
+    <p class="govuk-body">If you’ve found a sick or injured bird that is still alive, follow the <a class="govuk-link" href="https://www.rspb.org.uk/birds-and-wildlife/if-you-find-an-injured-bird" rel="noreferrer noopener" target="_blank">RSPB’s guidance on what to do</a>.</p>
+
+    <p class="govuk-body">If you want to know how to dispose of dead wild birds on your property or ask for them to be removed from public land, read the guidance on <a class="govuk-link" href="https://www.gov.uk/guidance/removing-and-disposing-of-dead-wild-birds" rel="noreferrer noopener" target="_blank">removing and disposing of dead wild birds</a>.</p>
+
+    {{ govukWarningText({
+      text: "Do not touch dead birds with bare hands.",
+      iconFallbackText: "Warning"
+    }) }}
+
+    <p class="govuk-body">If you’ve found a dead wild bird and suspect it has died as a result of:</p>
+
+    <ul class="govuk-list govuk-list--bullet">
+      <li>wildlife crime, you should <a class="govuk-link" href="https://www.gov.uk/government/publications/wildlife-crime-and-how-to-report-it" rel="noreferrer noopener" target="_blank">report it to the police</a></li>
+      <li>poisoning from pesticides or rodenticides, contact the <a class="govuk-link" href="https://www.hse.gov.uk/pesticides/reducing-environmental-impact/wildlife/wildlife-incident-investigation-scheme.htm" rel="noreferrer noopener" target="_blank">Wildlife Incident Investigation Scheme (WISS)</a></li>
+    </ul>
+
+    <p class="govuk-body">If you’ve found any birds you think are sick or dead from disease (excluding waterfowl, waders, gulls and birds of prey), you can send a ‘disease incident report’ to the <a class="govuk-link" href="https://www.gardenwildlifehealth.org/gwh-database/" rel="noreferrer noopener" target="_blank">Garden Wildlife Health reporting service</a>.</p>
+
+    <h2 class="govuk-heading-m">What we do</h2>
+
+    <p class="govuk-body">We decide which eligible dead birds to collect based on their number, species, location and likely condition. We may test those we collect for bird flu or other diseases.</p>
+
+    <p class="govuk-body">If you have trouble using the online form, call Defra’s help centre so someone can submit the details for you.</p>
+
+    <p class="govuk-body">Telephone: 03459 33 55 77</p>
+
+    {# Email signup and print, as at the foot of a GOV.UK guidance page. #}
+    <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-top-8 govuk-!-margin-bottom-4">
+
+    <h2 class="govuk-visually-hidden">Sign up for emails or print this page</h2>
+
+    <a class="app-publication-button app-publication-button--email" href="#">Get emails about this page</a>
+    <a class="app-publication-button app-publication-button--print" href="#" data-print-page>Print this page</a>
+
+  </div>
+
+  <div class="govuk-grid-column-one-third">
+    <aside class="govuk-!-margin-top-3" role="complementary">
+      <h2 class="govuk-heading-s govuk-!-margin-bottom-2" id="related-content">Related content</h2>
+      <nav role="navigation" aria-labelledby="related-content">
+        <ul class="govuk-list govuk-!-font-size-16">
+          <li class="govuk-!-margin-bottom-2">
+            <a class="govuk-link" href="https://www.gov.uk/guidance/avian-influenza-bird-flu" rel="noreferrer noopener" target="_blank">Bird flu (avian influenza) in poultry and other captive birds</a>
+          </li>
+          <li class="govuk-!-margin-bottom-2">
+            <a class="govuk-link" href="https://www.gov.uk/guidance/removing-and-disposing-of-dead-wild-birds" rel="noreferrer noopener" target="_blank">Removing and disposing of dead wild birds</a>
+          </li>
+          <li class="govuk-!-margin-bottom-2">
+            <a class="govuk-link" href="https://www.gov.uk/guidance/bird-flu-prevention-zone" rel="noreferrer noopener" target="_blank">Bird flu prevention measures</a>
+          </li>
+        </ul>
+      </nav>
+
+      <h2 class="govuk-heading-s govuk-!-margin-top-6 govuk-!-margin-bottom-2" id="explore-topic">Explore the topic</h2>
+      <nav role="navigation" aria-labelledby="explore-topic">
+        <ul class="govuk-list govuk-!-font-size-16">
+          <li class="govuk-!-margin-bottom-2">
+            <a class="govuk-link" href="#">Birds</a>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+  </div>
+</div>
+{% endblock %}

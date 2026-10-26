@@ -31,6 +31,7 @@ const VERSIONS = [
     cookieBanner: true,
     phase: 'beta',
     feedbackUrl: 'https://defragroup.eu.qualtrics.com/jfe/form/SV_eyq0grlLV8o4xJs',
+    altLang: { id: 'v6-cy', label: 'Cymraeg', lang: 'cy' },
     changes: [
       'Journey reordered: screener, date, location, numbers, reachability, condition',
       'No country question — the nation is worked out from the location (postcode, map pin or what3words)',
@@ -41,6 +42,27 @@ const VERSIONS = [
       'In Scotland, a single blackbird can meet the collection threshold',
       'Mass mortality (5 or more birds) overrides reachability and condition',
       'Debug panel collapsed by default'
+    ],
+    journey: require('./v6/journey'),
+    decision: require('./v6/decision')
+  },
+  {
+    // Welsh (Cymraeg) version of v6. Reuses v6's journey and decision engine
+    // (the logic is language-independent) with its own Welsh templates in
+    // app/views/v6-cy. Pages whose English still matches the approved
+    // translation are in Welsh; pages that have changed or are new since the
+    // translation grid stay in English until their Welsh is supplied.
+    id: 'v6-cy',
+    number: '6.0',
+    name: 'Cymraeg (Welsh)',
+    date: '1 October 2026',
+    current: false,
+    lang: 'cy',
+    altLang: { id: 'v6', label: 'English', lang: 'en' },
+    changes: [
+      'Welsh-language version of version 6',
+      'Shares the version 6 journey and collection logic',
+      'Pages not yet translated are shown in English'
     ],
     journey: require('./v6/journey'),
     decision: require('./v6/decision')

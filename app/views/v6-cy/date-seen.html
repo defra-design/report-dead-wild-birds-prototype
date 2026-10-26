@@ -1,0 +1,32 @@
+{% extends "layouts/question.html" %}
+
+{% set pageName = "Ar ba ddyddiad y gwelsoch chi'r aderyn?" %}
+{% set backLink = "/are-you-reporting-a-dead-bird" %}
+
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+
+{% block form %}
+<form method="post" novalidate>
+
+  {{ govukDateInput({
+    id: "date-seen",
+    namePrefix: "date",
+    fieldset: {
+      legend: {
+        text: "Ar ba ddyddiad y gwelsoch chi'r aderyn?",
+        isPageHeading: true,
+        classes: "govuk-fieldset__legend--l"
+      }
+    },
+    errorMessage: { text: errors["date-seen"] } if errors["date-seen"],
+    items: [
+      { name: "day", label: "Diwrnod", classes: "govuk-input--width-2", value: data.dateSeen.day if data.dateSeen },
+      { name: "month", label: "Mis", classes: "govuk-input--width-2", value: data.dateSeen.month if data.dateSeen },
+      { name: "year", label: "Blwyddyn", classes: "govuk-input--width-4", value: data.dateSeen.year if data.dateSeen }
+    ]
+  }) }}
+
+  {{ govukButton({ text: "Parhau" }) }}
+
+</form>
+{% endblock %}

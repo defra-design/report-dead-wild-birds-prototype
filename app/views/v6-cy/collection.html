@@ -1,0 +1,46 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName = "Diolch am eich adroddiad" %}
+
+{% from "govuk/components/panel/macro.njk" import govukPanel %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    {# Welsh standalone copy of the collection (WSF) confirmation page. The
+       reference number is a sample. The "Complete this survey" line is not
+       shown here - it is awaiting Welsh. #}
+
+    {{ govukPanel({
+      titleText: "Diolch am eich adroddiad",
+      html: "Eich rhif cyfeirnod<br><strong>WSF-4K2P-9QTR-7B3X</strong>"
+    }) }}
+
+    <h2 class="govuk-heading-m">Beth fydd yn digwydd nesaf</h2>
+
+    <p class="govuk-body">Byddwn yn ceisio casglu corff yr aderyn o fewn y 48 awr nesaf, ar yr amod bod gweithredwyr sy'n casglu yn eich rhanbarth ar gael.</p>
+
+    <h3 class="govuk-heading-s">Aderyn ar dir preifat</h3>
+
+    <p class="govuk-body">Os yw'r aderyn ar eich eiddo, byddwn yn ceisio cysylltu â chi i drefnu amser i'w gasglu.</p>
+
+    <h3 class="govuk-heading-s">Aderyn ar dir cyhoeddus</h3>
+
+    <p class="govuk-body">Os yw'r aderyn ar dir cyhoeddus, efallai y bydd angen i ni gysylltu â chi i gadarnhau'r lleoliad.</p>
+
+    <h3 class="govuk-heading-s">Os byddwn yn profi'r aderyn</h3>
+
+    <p class="govuk-body">Os byddwn yn profi'r aderyn, byddwn yn e-bostio canlyniadau'r prawf atoch o fewn 2 i 4 wythnos.</p>
+
+    <p class="govuk-body"><a class="govuk-link" href="https://www.gov.uk/government/publications/avian-influenza-in-wild-birds" rel="noreferrer noopener" target="_blank">Dysgwch fwy am ein rhaglen gwyliadwriaeth adar gwyllt</a>.</p>
+
+    <h2 class="govuk-heading-m">Ni chasglwyd yr aderyn</h2>
+
+    <p class="govuk-body">Os na fyddwn yn casglu'r aderyn a'ch bod am wybod sut i gael gwared ar adar gwyllt marw ar eich eiddo neu ofyn am iddynt gael eu symud o dir cyhoeddus, darllenwch y canllawiau ar <a class="govuk-link" href="https://www.gov.uk/guidance/removing-and-disposing-of-dead-wild-birds" rel="noreferrer noopener" target="_blank">symud adar gwyllt marw a chael gwared arnynt</a>.</p>
+
+    {% include "includes/risks-to-humans-cy.html" %}
+
+  </div>
+</div>
+{% endblock %}

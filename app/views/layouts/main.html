@@ -27,6 +27,15 @@ To show a Back link, set backLink to a path within the version, for example:
 {% endblock %}
 
 {% block beforeContent %}
+  {# Welsh/English language toggle, top-right (versions with an altLang, see
+     app/lib/versions.js). The link shows the other language's name in that
+     language and leads to the equivalent page. #}
+  {% if version.altLang and altLangHref %}
+    <p class="govuk-body govuk-!-text-align-right govuk-!-margin-top-2 govuk-!-margin-bottom-0">
+      <a class="govuk-link" href="{{ altLangHref }}" lang="{{ version.altLang.lang }}" hreflang="{{ version.altLang.lang }}">{{ version.altLang.label }}</a>
+    </p>
+  {% endif %}
+
   {# A version in beta (phase: 'beta' in app/lib/versions.js) shows the GDS beta
      banner with a link to the feedback form; other versions show the
      prototype banner with a link back to the version picker. #}
