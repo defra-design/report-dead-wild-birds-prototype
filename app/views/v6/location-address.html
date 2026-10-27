@@ -100,6 +100,7 @@
     name: "locationInfo",
     maxlength: 500,
     label: { text: "Tell us any other information about how to get to the location and find the dead bird, such as landmarks or buildings (optional)", classes: "govuk-label--s" },
+    hint: { text: "If you have moved the bird to a different location for any reason, give those details here. Make sure your selected address shows where you saw the bird in the first place." },
     errorMessage: { text: errors.locationInfo } if errors.locationInfo,
     value: data.location.info if data.location
   }) }}
