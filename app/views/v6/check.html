@@ -16,6 +16,7 @@
 {% set countryText = { "england": "England", "scotland": "Scotland", "wales": "Wales", "northern-ireland": "Northern Ireland" } %}
 {% set accessibleText = { "yes": "Yes", "no": "No", "not-sure": "I'm not sure" } %}
 {% set conditionText = { "good": "Good condition or mostly intact", "mixed": "Birds in different conditions", "decomposed": "Decomposed or breaking down" } %}
+{% set touchedBirdText = { "bare-hands": "Yes, with bare hands", "gloves-or-bag": "Yes, with gloves or a plastic bag", "no": "No" } %}
 
 {% set countsHtml %}
   {%- if data.counts -%}
@@ -70,6 +71,7 @@
     { key: { text: "Reached safely" }, value: { text: accessibleText[data.accessible] or "Not provided" }, actions: { items: [ { href: basePath + "/accessible" + change, text: "Change", visuallyHiddenText: "whether the bird can be reached safely" } ] } },
     { key: { text: "Condition" }, value: { text: conditionText[data.condition] or "Not provided" }, actions: { items: [ { href: basePath + "/condition" + change, text: "Change", visuallyHiddenText: "condition" } ] } },
     { key: { text: "Photo" }, value: { text: data.photo if data.photo else "No photo added" }, actions: { items: [ { href: basePath + "/photo" + change, text: "Change", visuallyHiddenText: "photo" } ] } },
+    { key: { text: "Touched the bird" }, value: { text: touchedBirdText[data.touchedBird] or "Not provided" }, actions: { items: [ { href: basePath + "/touched-bird" + change, text: "Change", visuallyHiddenText: "whether you touched the bird" } ] } },
     { key: { text: "Anything else" }, value: { text: data.anythingElse if data.anythingElse else "None" }, actions: { items: [ { href: basePath + "/anything-else" + change, text: "Change", visuallyHiddenText: "anything else" } ] } },
     { key: { text: "Name" }, value: { text: data.name if data.name else "Not provided" }, actions: { items: [ { href: basePath + "/contact" + change, text: "Change", visuallyHiddenText: "name" } ] } },
     { key: { text: "Telephone" }, value: { text: data.phone if data.phone else "Not provided" }, actions: { items: [ { href: basePath + "/contact" + change, text: "Change", visuallyHiddenText: "telephone" } ] } },

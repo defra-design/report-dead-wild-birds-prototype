@@ -15,10 +15,11 @@
 //   7  accessible            ("No" -> straight to the end page, cannot collect)
 //   8  condition             (good/mixed collect; "decomposed" -> end page)
 //   9  photo
-//   10 anything-else         (any other information)
-//   11 contact
-//   12 check
-//   13 outcome (end page)
+//   10 touched-bird          (did you touch the bird — for health security)
+//   11 anything-else         (any other information)
+//   12 contact
+//   13 check
+//   14 outcome (end page)
 //
 // There is no country question: the nation (used for the Northern Ireland exit
 // and the Scotland blackbird rule) is worked out from the location the reporter
@@ -39,6 +40,7 @@ const STEPS = [
   'accessible',
   'condition',
   'photo',
+  'touched-bird',
   'anything-else',
   'contact',
   'check'
@@ -180,6 +182,12 @@ const VALIDATORS = {
   condition: function (body, data) {
     if (isBlank(body.condition)) return [{ field: 'condition', message: 'Select the condition of the bird.' }]
     data.condition = body.condition
+    return []
+  },
+
+  'touched-bird': function (body, data) {
+    if (isBlank(body.touchedBird)) return [{ field: 'touchedBird', message: 'Select whether you touched the bird.' }]
+    data.touchedBird = body.touchedBird
     return []
   },
 

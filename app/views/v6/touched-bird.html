@@ -1,0 +1,33 @@
+{% extends "layouts/question.html" %}
+
+{% set pageName = "Did you touch the bird?" %}
+{% set backLink = "/photo" %}
+
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% block form %}
+<form method="post" novalidate>
+
+  {{ govukRadios({
+    name: "touchedBird",
+    fieldset: {
+      legend: {
+        text: "Did you touch the bird?",
+        isPageHeading: true,
+        classes: "govuk-fieldset__legend--l"
+      }
+    },
+    errorMessage: { text: errors.touchedBird } if errors.touchedBird,
+    items: [
+      { value: "bare-hands", text: "Yes, I did touch the bird with bare hands", checked: data.touchedBird == "bare-hands" },
+      { value: "gloves-or-bag", text: "Yes, I did touch the bird but I used gloves or a plastic bag, which I disposed of without touching the outside", checked: data.touchedBird == "gloves-or-bag" },
+      { value: "no", text: "No, I did not touch the bird at all", checked: data.touchedBird == "no" }
+    ]
+  }) }}
+
+  <p class="govuk-body">This will allow us to pass your details on to a health security team in case the bird tests positive for bird flu.</p>
+
+  {{ govukButton({ text: "Continue" }) }}
+
+</form>
+{% endblock %}
